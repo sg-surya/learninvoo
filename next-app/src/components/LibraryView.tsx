@@ -592,19 +592,50 @@ const LibraryView: React.FC = () => {
 
 
                             {filteredResources.length === 0 ? (
-                                <div className="flex flex-col items-center justify-center py-20 text-center">
-                                    <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-6 text-gray-300">
-                                        <Book size={40} />
+                                <div className="flex flex-col items-center justify-center py-32 text-center animate-in fade-in zoom-in duration-500">
+                                    <div className="relative mb-8 group">
+                                        <div className="absolute inset-0 bg-lime-200 rounded-full blur-3xl opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
+                                        <div className="w-32 h-32 bg-white rounded-3xl shadow-xl flex items-center justify-center relative transform group-hover:scale-105 transition-transform duration-300 border border-gray-100">
+                                            <div className="absolute top-0 right-0 p-3 bg-lime-50 rounded-bl-2xl rounded-tr-2xl">
+                                                <Sparkles size={20} className="text-lime-500 animate-pulse" />
+                                            </div>
+                                            <Book size={48} className="text-gray-300 group-hover:text-lime-500 transition-colors duration-300" />
+                                        </div>
+                                        {/* Floating Elements */}
+                                        <div className="absolute -left-8 top-10 w-12 h-12 bg-white rounded-2xl shadow-lg flex items-center justify-center border border-gray-50 transform -rotate-12 animate-bounce delay-100">
+                                            <ImageIcon size={20} className="text-sky-400" />
+                                        </div>
+                                        <div className="absolute -right-6 bottom-4 w-10 h-10 bg-white rounded-xl shadow-lg flex items-center justify-center border border-gray-50 transform rotate-12 animate-bounce delay-300">
+                                            <Download size={16} className="text-purple-400" />
+                                        </div>
                                     </div>
-                                    <h3 className="text-lg font-bold text-gray-800 mb-2">No books found in {filter.value}</h3>
-                                    <p className="text-gray-400 max-w-xs mx-auto mb-8 text-sm">Add a book to this category or try another filter.</p>
-                                    <button
-                                        onClick={() => setIsModalOpen(true)}
-                                        className="text-lime-600 font-bold hover:underline flex items-center gap-2 mx-auto text-sm"
-                                    >
-                                        <Plus size={16} />
-                                        Add your first book
-                                    </button>
+
+                                    <h3 className="text-2xl font-extrabold text-gray-900 mb-3 tracking-tight">
+                                        {filter.type === 'all' && !searchQuery ? 'Start Your Collection' : 'No matches found'}
+                                    </h3>
+
+                                    <p className="text-gray-500 max-w-md mx-auto mb-10 text-base leading-relaxed">
+                                        {filter.type === 'all' && !searchQuery
+                                            ? "Your library is waiting for its first story. Upload your documents, books, or notes to get started."
+                                            : `We couldn't find any books matching "${searchQuery || filter.value}". Try adjusting your filters or search terms.`}
+                                    </p>
+
+                                    <div className="flex items-center gap-4">
+                                        <button
+                                            onClick={() => setIsModalOpen(true)}
+                                            className="flex items-center gap-2 bg-gradient-to-r from-lime-600 to-lime-500 text-white px-8 py-3.5 rounded-2xl font-bold text-sm shadow-xl hover:shadow-lime-500/30 hover:-translate-y-1 transition-all duration-300"
+                                        >
+                                            <Plus size={18} />
+                                            <span>Add Your First Book</span>
+                                        </button>
+                                        <button
+                                            onClick={() => setActiveTab('community')}
+                                            className="flex items-center gap-2 bg-white text-gray-700 border border-gray-200 px-8 py-3.5 rounded-2xl font-bold text-sm shadow-sm hover:bg-gray-50 hover:border-gray-300 transition-all duration-300"
+                                        >
+                                            <Search size={18} />
+                                            <span>Browse Community</span>
+                                        </button>
+                                    </div>
                                 </div>
                             ) : (
                                 <div className="space-y-10">
