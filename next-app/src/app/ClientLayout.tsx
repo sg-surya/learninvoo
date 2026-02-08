@@ -4,6 +4,7 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
+import { usePathname } from 'next/navigation';
 
 export default function ClientLayout({
     children,
@@ -11,6 +12,15 @@ export default function ClientLayout({
     children: React.ReactNode;
 }) {
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+    const pathname = usePathname();
+    const scrollRef = React.useRef<HTMLDivElement>(null);
+
+    // Reset scroll on route change
+    useEffect(() => {
+        if (scrollRef.current) {
+            scrollRef.current.scrollTo(0, 0);
+        }
+    }, [pathname]);
 
     useEffect(() => {
         const saved = localStorage.getItem('learnivo_sidebar_collapsed');
@@ -46,7 +56,7 @@ export default function ClientLayout({
 
                 {/* Main Content Card */}
                 <main className="flex-1 mx-[10px] mb-[10px] bg-white rounded-[2.5rem] shadow-[16px_16px_40px_-5px_rgba(0,0,0,0.1)] border border-white/40 relative z-10 flex flex-col overflow-hidden">
-                    <div className="flex-1 overflow-y-auto custom-scrollbar">
+                    <div ref={scrollRef} className="flex-1 overflow-y-auto custom-scrollbar">
                         {children}
                     </div>
                 </main>

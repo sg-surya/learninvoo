@@ -13,7 +13,8 @@ import {
     Calendar as CalendarIcon,
     FileText,
     Clock,
-    GraduationCap
+    GraduationCap,
+    Wand2
 } from 'lucide-react';
 
 const Header: React.FC = () => {
@@ -21,6 +22,7 @@ const Header: React.FC = () => {
 
     const navItems = [
         { href: '/', label: 'Dashboard', icon: LayoutDashboard },
+        { href: '/tools', label: 'Tools', icon: Wand2 },
         { href: '/library', label: 'Library', icon: LibraryIcon },
         { href: '/workspace', label: 'Workspace', icon: Briefcase },
         { href: '/calendar', label: 'Calendar', icon: CalendarIcon },
