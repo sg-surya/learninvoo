@@ -392,7 +392,7 @@ const LibraryView: React.FC = () => {
             {/* 1. Fixed Header with Glassmorphism */}
             <header className="shrink-0 bg-white/70 backdrop-blur-xl border-b border-white/20 px-6 py-4 sticky top-0 z-50 shadow-sm">
                 {/* Top Row: Centered Tabs + Right Actions */}
-                <div className="flex justify-between items-center mb-3">
+                <div className="flex justify-between items-center mb-3 relative">
                     {/* Left: Logo/Icon */}
                     <div className="flex items-center gap-2 text-lime-600">
                         <div className="bg-lime-50 p-2 rounded-2xl">
@@ -400,22 +400,29 @@ const LibraryView: React.FC = () => {
                         </div>
                     </div>
 
-                    {/* Center: Tab Menu with Glass Effect */}
-                    <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1 bg-gray-100/80 backdrop-blur-md rounded-xl p-1 shadow-sm border border-white/50">
+                    {/* Center: Liquid Glass Tab Menu */}
+                    <div className="absolute left-0 right-0 mx-auto w-max p-1.5 rounded-full bg-gradient-to-b from-white/30 to-white/10 backdrop-blur-2xl border border-white/40 shadow-[0_8px_32px_0_rgba(31,38,135,0.07),inset_0_0_0_1px_rgba(255,255,255,0.2)] flex items-center gap-0 relative overflow-hidden group hover:bg-white/20 transition-all duration-500 z-20">
+                        {/* The Fluid Morpher - Animated Background Pill */}
+                        <div
+                            className={`absolute top-1.5 bottom-1.5 rounded-full bg-white shadow-[0_2px_10px_rgba(0,0,0,0.1),inset_0_0_20px_rgba(255,255,255,0.5)] transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] ${activeTab === 'my'
+                                ? 'left-1.5 w-[calc(50%-6px)]'
+                                : 'left-[50%] w-[calc(50%-6px)]'
+                                }`}
+                        />
+
+                        {/* Interactive Shine Effect */}
+                        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out pointer-events-none" />
+
                         <button
                             onClick={() => setActiveTab('my')}
-                            className={`px-4 py-1.5 rounded-lg font-bold text-xs transition-all duration-200 ${activeTab === 'my'
-                                    ? 'bg-white shadow-md text-lime-600 scale-105'
-                                    : 'text-gray-500 hover:text-gray-700 hover:bg-white/50'
+                            className={`relative z-10 w-40 py-2.5 rounded-full font-bold text-xs transition-colors duration-300 flex items-center justify-center ${activeTab === 'my' ? 'text-lime-700' : 'text-gray-500 hover:text-gray-700'
                                 }`}
                         >
                             My Library
                         </button>
                         <button
                             onClick={() => setActiveTab('community')}
-                            className={`px-4 py-1.5 rounded-lg font-bold text-xs transition-all duration-200 ${activeTab === 'community'
-                                    ? 'bg-white shadow-md text-lime-600 scale-105'
-                                    : 'text-gray-500 hover:text-gray-700 hover:bg-white/50'
+                            className={`relative z-10 w-40 py-2.5 rounded-full font-bold text-xs transition-colors duration-300 flex items-center justify-center whitespace-nowrap ${activeTab === 'community' ? 'text-lime-700' : 'text-gray-500 hover:text-gray-700'
                                 }`}
                         >
                             Community Library
@@ -423,17 +430,7 @@ const LibraryView: React.FC = () => {
                     </div>
 
                     <div className="flex gap-3">
-                        {/* Search */}
-                        <div className="relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
-                            <input
-                                type="text"
-                                placeholder="Search library..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                className="bg-gray-100 border-none rounded-xl py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-lime-500/20 w-64 transition-all"
-                            />
-                        </div>
+
 
                         {/* Sort Dropdown */}
                         <select
@@ -487,22 +484,37 @@ const LibraryView: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Bottom Row: Statistics Pills (Centered) */}
-                <div className="flex justify-center gap-3 pt-2">
-                    <div className="flex items-center gap-1.5 bg-lime-50 text-lime-700 px-3 py-1.5 rounded-full">
-                        <Book size={12} />
-                        <span className="font-bold">{totalBooks}</span>
-                        <span className="text-gray-500 text-xs">books</span>
+                {/* Bottom Row: Stats & Search Inline */}
+                <div className="flex items-center justify-between gap-4 mt-2 pt-2 border-t border-gray-100/50">
+                    {/* Left: Stats Pills */}
+                    <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-1.5 bg-lime-50 text-lime-700 px-3 py-1.5 rounded-lg text-xs font-bold border border-lime-100/50 hover:bg-lime-100 transition-colors cursor-default">
+                            <Book size={14} />
+                            <span>{resources.length} books</span>
+                        </div>
+                        <div className="flex items-center gap-1.5 bg-sky-50 text-sky-700 px-3 py-1.5 rounded-lg text-xs font-bold border border-sky-100/50 hover:bg-sky-100 transition-colors cursor-default">
+                            <Grid3x3 size={14} />
+                            <span>{new Set(resources.map(r => r.subject)).size} subjects</span>
+                        </div>
+                        <div className="flex items-center gap-1.5 bg-purple-50 text-purple-700 px-3 py-1.5 rounded-lg text-xs font-bold border border-purple-100/50 hover:bg-purple-100 transition-colors cursor-default">
+                            <Layers size={14} />
+                            <span>{classGroups.length} classes</span>
+                        </div>
                     </div>
-                    <div className="flex items-center gap-1.5 bg-sky-50 text-sky-700 px-3 py-1.5 rounded-full">
-                        <Grid size={12} />
-                        <span className="font-bold">{totalSubjects}</span>
-                        <span className="text-gray-500 text-xs">subjects</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 bg-purple-50 text-purple-700 px-3 py-1.5 rounded-full">
-                        <Layers size={12} />
-                        <span className="font-bold">{totalClasses}</span>
-                        <span className="text-gray-500 text-xs">classes</span>
+
+                    {/* Right: Compact Search Bar */}
+                    <div className="relative group w-64">
+                        <div className="absolute inset-0 bg-lime-500/20 blur-md rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        <div className="relative bg-white border border-gray-200 rounded-xl shadow-sm flex items-center px-3 py-1.5 transition-all group-hover:border-lime-300 group-focus-within:ring-2 group-focus-within:ring-lime-500/20 group-focus-within:border-lime-500">
+                            <Search className="text-gray-400 mr-2 shrink-0 transition-colors group-focus-within:text-lime-600" size={16} />
+                            <input
+                                type="text"
+                                placeholder="Search library..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="bg-transparent border-none outline-none text-sm w-full placeholder-gray-400 text-gray-700"
+                            />
+                        </div>
                     </div>
                 </div>
             </header>
@@ -577,18 +589,7 @@ const LibraryView: React.FC = () => {
                     <section className="flex-1 h-full overflow-y-auto bg-gray-50/50">
                         <div className="p-8 pb-20 max-w-[1920px] mx-auto">
 
-                            {/* Section Header */}
-                            <div className="flex items-center justify-between mb-6">
-                                <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-                                    <span className="p-1.5 bg-gray-200 rounded-lg text-gray-600">
-                                        {filter.type === 'all' && <Book size={16} />}
-                                        {filter.type === 'class' && <Layers size={16} />}
-                                        {filter.type === 'subject' && <Grid size={16} />}
-                                    </span>
-                                    {filter.value}
-                                    <span className="text-xs font-medium text-gray-400 bg-gray-100 px-2 py-1 rounded-full">{filteredResources.length}</span>
-                                </h3>
-                            </div>
+
 
                             {filteredResources.length === 0 ? (
                                 <div className="flex flex-col items-center justify-center py-20 text-center">
