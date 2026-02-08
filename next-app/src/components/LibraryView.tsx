@@ -522,7 +522,7 @@ const LibraryView: React.FC = () => {
             {/* 2. Main Content - Conditional based on active tab */}
             {activeTab === 'my' ? (
                 // MY LIBRARY VIEW
-                <main className="flex-1 flex overflow-hidden w-full items-start">
+                <main className="flex-1 flex overflow-hidden w-full items-start animate-in fade-in slide-in-from-bottom-4 duration-500">
 
                     {/* Left Sidebar - Filters */}
                     <aside className="w-64 shrink-0 h-full bg-white border-r border-gray-200 flex flex-col hidden md:flex overflow-y-auto">
@@ -848,7 +848,7 @@ const LibraryView: React.FC = () => {
                 </main>
             ) : (
                 // COMMUNITY LIBRARY VIEW
-                <main className="flex-1 overflow-auto p-8 bg-gray-50">
+                <main className="flex-1 overflow-auto p-8 bg-gray-50 animate-in fade-in slide-in-from-bottom-4 duration-500">
                     <div className="max-w-7xl mx-auto">
                         <div className="mb-6">
                             <h2 className="text-2xl font-bold text-gray-900 mb-2">Community Library</h2>

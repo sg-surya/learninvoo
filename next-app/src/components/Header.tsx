@@ -40,28 +40,33 @@ const Header: React.FC = () => {
             {/* Brand Spacer */}
             <div className="flex-1"></div>
 
-            {/* Compact Floating Pill Navigation with Icons */}
-            <div className="flex items-center bg-gray-100/30 backdrop-blur-md p-1 rounded-full border border-white/40 shadow-[0_2px_8px_rgba(0,0,0,0.02)] gap-1">
+            {/* Compact Floating Pill Navigation with Icons - Liquid Glass Style */}
+            <div className="flex items-center bg-gradient-to-b from-white/60 to-white/30 backdrop-blur-2xl p-1.5 rounded-full border border-white/60 shadow-[0_8px_32px_0_rgba(31,38,135,0.07),inset_0_0_0_1px_rgba(255,255,255,0.2)] gap-1 relative overflow-hidden group hover:bg-white/40 transition-all duration-500">
+
+                {/* Shine Effect */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out pointer-events-none z-0" />
+
                 {navItems.map((item) => {
                     const active = isActive(item.href);
                     const IconComponent = item.icon;
 
                     return (
-                        <Link
-                            key={item.href}
-                            href={item.href}
-                            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full transition-all duration-300 ease-in-out group ${active
-                                    ? 'bg-lime-900 text-white shadow-md'
-                                    : 'text-[#6c727f] hover:text-lime-700 hover:bg-white/40'
-                                }`}
-                        >
-                            <IconComponent size={16} className={`${active ? 'text-white' : 'text-[#6c727f] group-hover:text-lime-600'}`} />
+                        <div key={item.href} className="relative z-10">
+                            <Link
+                                href={item.href}
+                                className={`flex items-center gap-2 px-3.5 py-2 rounded-full transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] ${active
+                                    ? 'bg-lime-600 shadow-[0_2px_12px_rgba(101,163,13,0.3)] text-white scale-105'
+                                    : 'text-gray-500 hover:text-lime-700 hover:bg-white/50'
+                                    }`}
+                            >
+                                <IconComponent size={18} className={`${active ? 'text-white' : 'text-gray-500 group-hover:text-lime-600'} transition-colors`} />
 
-                            <span className={`text-[13px] font-bold overflow-hidden transition-all duration-300 ease-in-out whitespace-nowrap ${active ? 'max-w-[120px] opacity-100' : 'max-w-0 opacity-0'
-                                }`}>
-                                {item.label}
-                            </span>
-                        </Link>
+                                <span className={`text-[13px] font-bold overflow-hidden transition-all duration-300 ease-in-out whitespace-nowrap ${active ? 'max-w-[120px] opacity-100 pl-1' : 'max-w-0 opacity-0'
+                                    }`}>
+                                    {item.label}
+                                </span>
+                            </Link>
+                        </div>
                     );
                 })}
             </div>
