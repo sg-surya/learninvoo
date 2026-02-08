@@ -45,7 +45,7 @@ export default function ClientLayout({
                 <Header />
 
                 {/* Main Content Card */}
-                <main className="flex-1 mx-[10px] mb-[10px] bg-white rounded-[2.5rem] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.05)] border border-white/40 relative z-10 flex flex-col overflow-hidden">
+                <main className="flex-1 mx-[10px] mb-[10px] bg-white rounded-[2.5rem] shadow-[16px_16px_40px_-5px_rgba(0,0,0,0.1)] border border-white/40 relative z-10 flex flex-col overflow-hidden">
                     <div className="flex-1 overflow-y-auto custom-scrollbar">
                         {children}
                     </div>
