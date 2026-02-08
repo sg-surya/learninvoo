@@ -1,9 +1,8 @@
-
 'use client';
 
 import React, { useState, useRef } from 'react';
 import ReactDOM from 'react-dom';
-import { Book, Download, ExternalLink, Search, Plus, X, Image as ImageIcon } from 'lucide-react';
+import { Book, Download, ExternalLink, Search, Plus, X, Image as ImageIcon, Edit2 } from 'lucide-react';
 
 interface Resource {
     title: string;
@@ -115,57 +114,50 @@ const LibraryView: React.FC = () => {
                     </button>
                 </div>
             ) : (
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-8 animate-in fade-in duration-500 pb-10">
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 animate-in fade-in duration-500 pb-10">
                     {resources.map((res, i) => (
-                        <div key={i} className="group relative aspect-[2/3] perspective-1000 cursor-pointer">
-                            <div className="relative w-full h-full transition-all duration-500 transform-style-3d group-hover:-translate-y-4">
-                                {/* Book Spine Effect - Left Edge Shadow */}
-                                <div className="absolute left-0 top-0 bottom-0 w-[4%] bg-gradient-to-r from-black/20 to-transparent z-20 rounded-l-md"></div>
+                        <div key={i} className="group relative aspect-[2/3] rounded-2xl overflow-hidden cursor-pointer shadow-md hover:shadow-xl transition-all duration-300 bg-gray-100 hover:ring-2 hover:ring-lime-500/50">
 
-                                {/* Book Cover & Content Container */}
-                                <div className="absolute inset-0 bg-white rounded-r-xl rounded-l-md shadow-[0_10px_30px_-10px_rgba(0,0,0,0.15)] group-hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.3)] transition-all duration-500 overflow-hidden flex flex-col border border-gray-100">
-
-                                    {/* Cover Image Area */}
-                                    <div className="h-[70%] w-full relative overflow-hidden bg-gray-50">
-                                        {res.cover ? (
-                                            <img src={res.cover} alt={res.title} className="w-full h-full object-cover" />
-                                        ) : (
-                                            <div className={`w-full h-full ${res.color} flex flex-col items-center justify-center p-4 text-center`}>
-                                                <Book className={`${res.iconColor} opacity-50 mb-2`} size={40} />
-                                                <span className={`text-[10px] font-bold ${res.iconColor} uppercase tracking-wider opacity-60`}>{res.subject}</span>
-                                            </div>
-                                        )}
-
-                                        {/* Type Badge */}
-                                        <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded text-[8px] font-bold text-white uppercase tracking-wider">
-                                            {res.type}
-                                        </div>
+                            {/* Full Cover Image Area */}
+                            <div className="absolute inset-0 w-full h-full">
+                                {res.cover ? (
+                                    <img src={res.cover} alt={res.title} className="w-full h-full object-cover" />
+                                ) : (
+                                    <div className={`w-full h-full ${res.color} flex flex-col items-center justify-center p-6 text-center`}>
+                                        <Book className={`${res.iconColor} opacity-50 mb-3`} size={48} />
+                                        <span className={`text-xs font-bold ${res.iconColor} uppercase tracking-wider opacity-60`}>{res.subject}</span>
                                     </div>
+                                )}
+                            </div>
 
-                                    {/* Book Details (Bottom part) */}
-                                    <div className="h-[30%] p-3 flex flex-col justify-between bg-white relative">
-                                        <div>
-                                            <h3 className="text-sm font-bold text-gray-800 line-clamp-2 leading-tight mb-1" title={res.title}>{res.title}</h3>
-                                            <p className="text-[10px] text-gray-400 font-medium line-clamp-1">by {res.author}</p>
-                                        </div>
+                            {/* Hover Overlay with Details - Fades in */}
+                            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4">
 
-                                        <div className="flex items-center justify-between pt-2 border-t border-gray-50 mt-1">
-                                            <span className="text-[9px] font-bold text-gray-400 bg-gray-50 px-1.5 py-0.5 rounded uppercase">{res.classLevel}</span>
-                                            <div className="flex gap-2">
-                                                <button className="text-gray-300 hover:text-lime-600 transition-colors">
-                                                    <Download size={14} />
-                                                </button>
-                                                <button className="text-gray-300 hover:text-lime-600 transition-colors">
-                                                    <ExternalLink size={14} />
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
+                                {/* Top Actions */}
+                                <div className="flex justify-end transform -translate-y-4 group-hover:translate-y-0 transition-transform duration-300 delay-75">
+                                    <button
+                                        className="p-2 bg-white/20 hover:bg-white text-white hover:text-black rounded-full backdrop-blur-md transition-all"
+                                        title="Manage Resource"
+                                    >
+                                        <Edit2 size={14} />
+                                    </button>
                                 </div>
 
-                                {/* Pages Effect (Right Side/Bottom) - Gives thickness */}
-                                <div className="absolute right-[2px] top-[2px] bottom-[2px] w-[3px] bg-gray-200 z-0 rounded-r-sm translate-x-[2px] translate-y-[2px]"></div>
-                                <div className="absolute bottom-0 left-[2px] right-[2px] h-[3px] bg-gray-200 z-0 rounded-b-sm translate-y-[2px]"></div>
+                                {/* Bottom Info */}
+                                <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                                    <div className="mb-2">
+                                        <span className="text-[9px] font-bold text-white/90 bg-white/20 px-2 py-0.5 rounded uppercase tracking-wider backdrop-blur-sm">
+                                            {res.type}
+                                        </span>
+                                    </div>
+
+                                    <h3 className="text-lg font-bold text-white leading-tight mb-1 line-clamp-2">{res.title}</h3>
+                                    <p className="text-xs text-gray-300 font-medium mb-3">by {res.author}</p>
+
+                                    <button className="w-full flex items-center justify-center gap-2 bg-lime-600 hover:bg-lime-500 text-white py-2 rounded-xl text-xs font-bold transition-colors shadow-lg">
+                                        Read Now <ExternalLink size={12} />
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     ))}
