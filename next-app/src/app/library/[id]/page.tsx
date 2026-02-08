@@ -50,115 +50,125 @@ const ReadBookPage = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-gray-50 p-6 md:p-10">
-            <div className="max-w-7xl mx-auto">
-                {/* Back Button */}
+        <div className="h-screen flex flex-col bg-gray-50 overflow-hidden font-sans">
+            {/* 1. Fixed Header */}
+            <header className="shrink-0 h-16 bg-white/80 backdrop-blur-md border-b border-gray-200 px-6 flex items-center justify-between z-50 sticky top-0">
                 <button
                     onClick={() => router.back()}
-                    className="flex items-center text-gray-600 hover:text-gray-900 transition-colors mb-8"
+                    className="flex items-center gap-2 text-gray-600 hover:text-black transition-colors group px-3 py-1.5 rounded-lg hover:bg-gray-100"
                 >
-                    <ArrowLeft size={20} className="mr-2" />
-                    Back to Library
+                    <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
+                    <span className="font-semibold text-sm">Back to Library</span>
                 </button>
+                <div className="flex items-center gap-4">
+                    {/* Optional: Add breadcrumbs or book title in header for context when scrolling */}
+                    <span className="text-sm font-bold text-gray-400 hidden md:block">{book.title}</span>
+                </div>
+            </header>
 
-                <div className="flex flex-col lg:flex-row gap-8">
-                    {/* Left Column: Book Cover & Details */}
-                    <div className="w-full lg:w-1/3 space-y-6">
-                        {/* Cover Image Card */}
-                        <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center">
-                            <div className="w-full aspect-[2/3] rounded-xl overflow-hidden shadow-lg mb-6 relative group">
-                                {book.cover ? (
-                                    <img src={book.cover} alt={book.title} className="w-full h-full object-cover" />
-                                ) : (
-                                    <div className={`w-full h-full ${book.color} flex flex-col items-center justify-center p-6 text-center`}>
-                                        <Book className={`${book.iconColor} opacity-50 mb-4`} size={64} />
-                                        <span className={`text-sm font-bold ${book.iconColor} uppercase tracking-wider opacity-60`}>{book.subject}</span>
-                                    </div>
-                                )}
+            {/* 2. Main Split Layout */}
+            <main className="flex-1 flex overflow-hidden w-full items-start">
+
+                {/* Left Panel: Book Details (Static - No Scroll) */}
+                <aside className="w-full md:w-[320px] lg:w-[360px] shrink-0 h-auto bg-white p-6 flex flex-col gap-6 border-r border-gray-200">
+
+                    {/* Cover Image - Modern styled */}
+                    <div className="w-full aspect-[2/3] rounded-2xl overflow-hidden shadow-2xl relative group ring-1 ring-gray-900/5 mx-auto max-w-[280px]">
+                        {book.cover ? (
+                            <img src={book.cover} alt={book.title} className="w-full h-full object-cover" />
+                        ) : (
+                            <div className={`w-full h-full ${book.color} flex flex-col items-center justify-center p-6 text-center`}>
+                                <Book className={`${book.iconColor} opacity-50 mb-4`} size={64} />
+                                <span className={`text-sm font-bold ${book.iconColor} uppercase tracking-wider opacity-60`}>{book.subject}</span>
                             </div>
-
-                            <div className="text-center w-full space-y-2 mb-6">
-                                <h1 className="text-2xl font-bold text-gray-900 leading-tight">{book.title}</h1>
-                                <p className="text-gray-500 font-medium">by <span className="text-gray-800">{book.author}</span></p>
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-4 w-full mb-6">
-                                <div className="bg-gray-50 p-3 rounded-xl text-center">
-                                    <p className="text-xs text-gray-400 uppercase font-bold mb-1">Subject</p>
-                                    <p className="font-bold text-gray-800 text-sm">{book.subject}</p>
-                                </div>
-                                <div className="bg-gray-50 p-3 rounded-xl text-center">
-                                    <p className="text-xs text-gray-400 uppercase font-bold mb-1">Level</p>
-                                    <p className="font-bold text-gray-800 text-sm">{book.classLevel}</p>
-                                </div>
-                            </div>
-
-                            <Link
-                                href={`/library/${book.id}/manage`}
-                                className="w-full border border-gray-200 text-gray-600 font-bold py-3 rounded-xl hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 mb-3"
-                            >
-                                Manage / Edit
-                            </Link>
-
-                            <button className="w-full bg-black text-white font-bold py-3 rounded-xl hover:bg-gray-800 transition-colors flex items-center justify-center gap-2">
-                                <Download size={18} />
-                                Download PDF
-                            </button>
+                        )}
+                        {/* Type Badge Overlay */}
+                        <div className="absolute top-3 right-3">
+                            <span className="px-3 py-1 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-wider rounded-full shadow-lg">
+                                {book.type}
+                            </span>
                         </div>
                     </div>
 
-                    {/* Right Column: Content & Chapters */}
-                    <div className="w-full lg:w-2/3 space-y-8">
-                        {/* Overview Section */}
-                        <section>
-                            <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                                <FileText className="text-lime-600" size={24} />
+                    {/* Book Info */}
+                    <div className="text-center space-y-2">
+                        <h1 className="text-2xl font-bold text-gray-900 leading-tight">{book.title}</h1>
+                        <p className="text-sm text-gray-500 font-medium">by <span className="text-gray-900">{book.author}</span></p>
+                    </div>
+
+                    {/* Meta Grid */}
+                    <div className="grid grid-cols-2 gap-3">
+                        <div className="bg-gray-50 p-3 rounded-xl text-center border border-gray-100">
+                            <p className="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1">Subject</p>
+                            <p className="font-bold text-gray-800 text-sm">{book.subject}</p>
+                        </div>
+                        <div className="bg-gray-50 p-3 rounded-xl text-center border border-gray-100">
+                            <p className="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1">Level</p>
+                            <p className="font-bold text-gray-800 text-sm">{book.classLevel}</p>
+                        </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="pt-6">
+                        <Link
+                            href={`/library/${book.id}/manage`}
+                            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-lime-600 text-white font-bold text-sm shadow-lg shadow-lime-200 hover:bg-lime-700 transition-all hover:-translate-y-0.5"
+                        >
+                            Manage Resource
+                        </Link>
+                    </div>
+                </aside>
+
+                {/* Right Panel: Content (Scrollable) */}
+                <section className="flex-1 h-full overflow-y-auto bg-gray-50/50 p-6 lg:p-10 custom-scrollbar">
+                    <div className="max-w-3xl mx-auto space-y-10">
+                        {/* Overview */}
+                        <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
+                            <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2 border-b border-gray-100 pb-3">
+                                <FileText className="text-lime-600" size={20} />
                                 Book Overview
                             </h2>
-                            <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 text-gray-600 leading-relaxed">
-                                <p>
-                                    {book.description ||
-                                        "No description available for this resource. This is a comprehensive guide tailored for students and educators. It covers essential topics, theories, and practical applications relevant to the subject matter. Designed to enhance learning outcomes and provide structured knowledge."}
-                                </p>
-                            </div>
-                        </section>
+                            <p className="text-gray-600 leading-relaxed text-sm md:text-base">
+                                {book.description ||
+                                    "No description available for this resource. This is a comprehensive guide tailored for students and educators. It covers essential topics, theories, and practical applications relevant to the subject matter."}
+                            </p>
+                        </div>
 
-                        {/* Chapters List */}
-                        <section>
-                            <div className="flex justify-between items-end mb-4">
-                                <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                                    <Book className="text-lime-600" size={24} />
-                                    Table of Contents
+                        {/* Chapters */}
+                        <div>
+                            <div className="flex justify-between items-center mb-6">
+                                <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                                    <Book className="text-lime-600" size={20} />
+                                    <span>Table of Contents</span>
                                 </h2>
-                                <span className="text-sm font-medium text-gray-400">{chapters.length} Chapters</span>
+                                <span className="bg-lime-100 text-lime-800 text-xs font-bold px-3 py-1 rounded-full">
+                                    {chapters.length} Chapters
+                                </span>
                             </div>
 
-                            <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden divide-y divide-gray-100">
+                            <div className="space-y-4">
                                 {chapters.map((chapter, idx) => (
                                     <div
                                         key={idx}
-                                        className="p-5 hover:bg-lime-50/50 transition-colors group cursor-pointer flex justify-between items-center"
+                                        className="group bg-white p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-lime-200 transition-all cursor-pointer flex items-center gap-5"
                                     >
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-full bg-gray-100 text-gray-400 font-bold flex items-center justify-center text-sm group-hover:bg-lime-200 group-hover:text-lime-800 transition-colors">
-                                                {idx + 1}
-                                            </div>
-                                            <div>
-                                                <h4 className="font-bold text-gray-800 text-sm md:text-base group-hover:text-lime-900 transition-colors">{chapter.title}</h4>
-                                                <p className="text-xs text-gray-400">{chapter.pages} pages</p>
-                                            </div>
+                                        <div className="w-12 h-12 shrink-0 rounded-xl bg-gray-50 text-gray-400 font-bold flex items-center justify-center text-sm group-hover:bg-lime-600 group-hover:text-white transition-colors duration-300">
+                                            {idx + 1}
                                         </div>
-
-                                        <button className="text-xs font-bold bg-white border border-gray-200 px-4 py-2 rounded-lg text-gray-600 group-hover:bg-lime-600 group-hover:text-white group-hover:border-lime-600 transition-all shadow-sm">
-                                            Read
-                                        </button>
+                                        <div className="flex-1">
+                                            <h4 className="font-bold text-gray-900 mb-1 group-hover:text-lime-700 transition-colors">{chapter.title}</h4>
+                                            <p className="text-xs text-gray-400 font-medium">{chapter.pages} pages • PDF</p>
+                                        </div>
+                                        <div className="bg-gray-50 p-2 rounded-full text-gray-300 group-hover:text-lime-600 group-hover:bg-lime-50 transition-colors">
+                                            <FileText size={18} />
+                                        </div>
                                     </div>
                                 ))}
                             </div>
-                        </section>
+                        </div>
                     </div>
-                </div>
-            </div>
+                </section>
+            </main>
         </div>
     );
 };
