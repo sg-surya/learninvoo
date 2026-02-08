@@ -1,10 +1,12 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import ReactDOM from 'react-dom';
+import Link from 'next/link';
 import { Book, Download, ExternalLink, Search, Plus, X, Image as ImageIcon, Edit2 } from 'lucide-react';
 
 interface Resource {
+    id: string;
     title: string;
     author: string;
     subject: string;
@@ -30,6 +32,14 @@ const LibraryView: React.FC = () => {
     const [coverPreview, setCoverPreview] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
+    // Load from localStorage on mount
+    useEffect(() => {
+        const saved = localStorage.getItem('library_resources');
+        if (saved) {
+            setResources(JSON.parse(saved));
+        }
+    }, []);
+
     const [newBook, setNewBook] = useState({
         title: '',
         author: '',
@@ -42,8 +52,44 @@ const LibraryView: React.FC = () => {
         const file = e.target.files?.[0];
         if (file) {
             const reader = new FileReader();
-            reader.onloadend = () => {
-                setCoverPreview(reader.result as string);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.onload = () => {
+                    // Create canvas for resizing
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+
+                    // Set max dimensions (e.g. 400x600 is enough for a thumbnail)
+                    const MAX_WIDTH = 400;
+                    const MAX_HEIGHT = 600;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+
+                    const ctx = canvas.getContext('2d');
+                    if (ctx) {
+                        ctx.drawImage(img, 0, 0, width, height);
+                        // Compress to JPEG with 0.7 quality to save space
+                        const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                        setCoverPreview(compressedDataUrl);
+                    }
+                };
+                if (event.target?.result) {
+                    img.src = event.target.result as string;
+                }
             };
             reader.readAsDataURL(file);
         }
@@ -54,15 +100,40 @@ const LibraryView: React.FC = () => {
         if (!newBook.title || !newBook.author) return;
 
         const randomTheme = THEMES[Math.floor(Math.random() * THEMES.length)];
+        const newId = Date.now().toString(); // Simple ID generation
 
         const resource: Resource = {
+            id: newId,
             ...newBook,
             cover: coverPreview || undefined,
             color: randomTheme.color,
             iconColor: randomTheme.iconColor
         };
 
-        setResources([resource, ...resources]);
+        const updatedResources = [resource, ...resources];
+        setResources(updatedResources);
+
+        try {
+            localStorage.setItem('library_resources', JSON.stringify(updatedResources));
+        } catch (error) {
+            console.error("Storage limit exceeded:", error);
+            // Fallback: Try saving without the cover image if it's too large
+            if (resource.cover) {
+                alert("Image too large for local storage. Book saved without cover.");
+                const resourceWithoutCover = { ...resource, cover: undefined };
+                const resourcesFallback = [resourceWithoutCover, ...resources];
+                // Update state to match fallback (remove cover from UI too to avoid confusion on refresh)
+                setResources(resourcesFallback);
+                try {
+                    localStorage.setItem('library_resources', JSON.stringify(resourcesFallback));
+                } catch (e) {
+                    alert("Storage full. changes will be lost on refresh.");
+                }
+            } else {
+                alert("Storage full. Book added temporarily but won't persist.");
+            }
+        }
+
         resetForm();
         setIsModalOpen(false);
     };
@@ -135,12 +206,14 @@ const LibraryView: React.FC = () => {
 
                                 {/* Top Actions */}
                                 <div className="flex justify-end transform -translate-y-4 group-hover:translate-y-0 transition-transform duration-300 delay-75">
-                                    <button
+                                    <Link
+                                        href={`/library/${res.id}/manage`}
+                                        onClick={(e) => e.stopPropagation()}
                                         className="p-2 bg-white/20 hover:bg-white text-white hover:text-black rounded-full backdrop-blur-md transition-all"
                                         title="Manage Resource"
                                     >
                                         <Edit2 size={14} />
-                                    </button>
+                                    </Link>
                                 </div>
 
                                 {/* Bottom Info */}
@@ -154,9 +227,13 @@ const LibraryView: React.FC = () => {
                                     <h3 className="text-lg font-bold text-white leading-tight mb-1 line-clamp-2">{res.title}</h3>
                                     <p className="text-xs text-gray-300 font-medium mb-3">by {res.author}</p>
 
-                                    <button className="w-full flex items-center justify-center gap-2 bg-lime-600 hover:bg-lime-500 text-white py-2 rounded-xl text-xs font-bold transition-colors shadow-lg">
+                                    <Link
+                                        href={`/library/${res.id}`}
+                                        className="w-full flex items-center justify-center gap-2 bg-lime-600 hover:bg-lime-500 text-white py-2 rounded-xl text-xs font-bold transition-colors shadow-lg"
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
                                         Read Now <ExternalLink size={12} />
-                                    </button>
+                                    </Link>
                                 </div>
                             </div>
                         </div>
