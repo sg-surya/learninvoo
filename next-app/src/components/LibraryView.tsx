@@ -55,6 +55,55 @@ const LibraryView: React.FC = () => {
         }
     }, []);
 
+    // Community Books (Mock data - public library)
+    const communityBooks: Resource[] = [
+        {
+            id: 'comm-1',
+            title: 'Introduction to Algorithms',
+            author: 'Thomas H. Cormen',
+            subject: 'Computer Science',
+            classLevel: 'Grade 12',
+            type: 'PDF',
+            color: 'bg-blue-100',
+            iconColor: 'text-blue-600',
+            dateAdded: Date.now() - 1000000,
+            isFavorite: false,
+        },
+        {
+            id: 'comm-2',
+            title: 'Physics for Scientists',
+            author: 'Raymond Serway',
+            subject: 'Physics',
+            classLevel: 'Grade 11',
+            type: 'PDF',
+            color: 'bg-purple-100',
+            iconColor: 'text-purple-600',
+            dateAdded: Date.now() - 2000000,
+        },
+        {
+            id: 'comm-3',
+            title: 'Organic Chemistry Basics',
+            author: 'Peter Atkins',
+            subject: 'Chemistry',
+            classLevel: 'Grade 12',
+            type: 'PDF',
+            color: 'bg-green-100',
+            iconColor: 'text-green-600',
+            dateAdded: Date.now() - 3000000,
+        },
+        {
+            id: 'comm-4',
+            title: 'World History: Medieval Era',
+            author: 'John Smith',
+            subject: 'History',
+            classLevel: 'Grade 10',
+            type: 'PDF',
+            color: 'bg-orange-100',
+            iconColor: 'text-orange-600',
+            dateAdded: Date.now() - 4000000,
+        },
+    ];
+
     const [newBook, setNewBook] = useState({
         title: '',
         author: '',
@@ -299,6 +348,27 @@ const LibraryView: React.FC = () => {
         }
     };
 
+    // Add community book to user's library
+    const addToMyLibrary = (book: Resource) => {
+        // Check if already in library
+        if (resources.some(r => r.id === book.id || r.title === book.title)) {
+            alert('This book is already in your library!');
+            return;
+        }
+
+        // Create new book with unique ID
+        const newBook: Resource = {
+            ...book,
+            id: `my-${Date.now()}`, // New unique ID
+            dateAdded: Date.now(),
+        };
+
+        const updated = [...resources, newBook];
+        setResources(updated);
+        localStorage.setItem('library_resources', JSON.stringify(updated));
+        alert(`"${book.title}" added to your library!`);
+    };
+
     const toggleSectionCollapse = (sectionLabel: string) => {
         const newCollapsed = new Set(collapsedSections);
         if (newCollapsed.has(sectionLabel)) {
@@ -309,6 +379,9 @@ const LibraryView: React.FC = () => {
         setCollapsedSections(newCollapsed);
     };
 
+    // Tab state
+    const [activeTab, setActiveTab] = useState<'my' | 'community'>('my');
+
     // Statistics
     const totalBooks = resources.length;
     const totalSubjects = uniqueSubjects.length;
@@ -316,31 +389,37 @@ const LibraryView: React.FC = () => {
 
     return (
         <div className="flex flex-col h-full w-full bg-gray-50 overflow-hidden font-sans">
-            {/* 1. Fixed Header */}
-            <header className="shrink-0 bg-white/80 backdrop-blur-md border-b border-gray-200 px-6 py-3 sticky top-0 z-50">
-                {/* Top Row: Title + Actions */}
-                <div className="flex justify-between items-center mb-2">
-                    <div className="flex items-center gap-4">
-                        <h2 className="text-xl font-bold text-gray-900">My Library</h2>
-
-                        {/* Statistics Pills */}
-                        <div className="flex gap-2 text-xs">
-                            <div className="flex items-center gap-1.5 bg-lime-50 text-lime-700 px-2.5 py-1 rounded-full">
-                                <Book size={12} />
-                                <span className="font-bold">{totalBooks}</span>
-                                <span className="text-gray-500">books</span>
-                            </div>
-                            <div className="flex items-center gap-1.5 bg-sky-50 text-sky-700 px-2.5 py-1 rounded-full">
-                                <Grid size={12} />
-                                <span className="font-bold">{totalSubjects}</span>
-                                <span className="text-gray-500">subjects</span>
-                            </div>
-                            <div className="flex items-center gap-1.5 bg-purple-50 text-purple-700 px-2.5 py-1 rounded-full">
-                                <Layers size={12} />
-                                <span className="font-bold">{totalClasses}</span>
-                                <span className="text-gray-500">classes</span>
-                            </div>
+            {/* 1. Fixed Header with Glassmorphism */}
+            <header className="shrink-0 bg-white/70 backdrop-blur-xl border-b border-white/20 px-6 py-4 sticky top-0 z-50 shadow-sm">
+                {/* Top Row: Centered Tabs + Right Actions */}
+                <div className="flex justify-between items-center mb-3">
+                    {/* Left: Logo/Icon */}
+                    <div className="flex items-center gap-2 text-lime-600">
+                        <div className="bg-lime-50 p-2 rounded-2xl">
+                            <Book size={20} className="shrink-0" />
                         </div>
+                    </div>
+
+                    {/* Center: Tab Menu with Glass Effect */}
+                    <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 bg-gray-100/80 backdrop-blur-md rounded-2xl p-1.5 shadow-sm border border-white/50">
+                        <button
+                            onClick={() => setActiveTab('my')}
+                            className={`px-6 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 ${activeTab === 'my'
+                                ? 'bg-white shadow-lg text-lime-600 scale-105'
+                                : 'text-gray-500 hover:text-gray-700 hover:bg-white/50'
+                                }`}
+                        >
+                            My Library
+                        </button>
+                        <button
+                            onClick={() => setActiveTab('community')}
+                            className={`px-6 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 ${activeTab === 'community'
+                                ? 'bg-white shadow-lg text-lime-600 scale-105'
+                                : 'text-gray-500 hover:text-gray-700 hover:bg-white/50'
+                                }`}
+                        >
+                            Community Library
+                        </button>
                     </div>
 
                     <div className="flex gap-3">
@@ -407,344 +486,442 @@ const LibraryView: React.FC = () => {
                         </button>
                     </div>
                 </div>
+
+                {/* Bottom Row: Statistics Pills (Centered) */}
+                <div className="flex justify-center gap-3 pt-2">
+                    <div className="flex items-center gap-1.5 bg-lime-50 text-lime-700 px-3 py-1.5 rounded-full">
+                        <Book size={12} />
+                        <span className="font-bold">{totalBooks}</span>
+                        <span className="text-gray-500 text-xs">books</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 bg-sky-50 text-sky-700 px-3 py-1.5 rounded-full">
+                        <Grid size={12} />
+                        <span className="font-bold">{totalSubjects}</span>
+                        <span className="text-gray-500 text-xs">subjects</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 bg-purple-50 text-purple-700 px-3 py-1.5 rounded-full">
+                        <Layers size={12} />
+                        <span className="font-bold">{totalClasses}</span>
+                        <span className="text-gray-500 text-xs">classes</span>
+                    </div>
+                </div>
             </header>
 
-            {/* 2. Main Split Layout */}
-            <main className="flex-1 flex overflow-hidden w-full items-start">
+            {/* 2. Main Content - Conditional based on active tab */}
+            {activeTab === 'my' ? (
+                // MY LIBRARY VIEW
+                <main className="flex-1 flex overflow-hidden w-full items-start">
 
-                {/* Left Sidebar - Filters */}
-                <aside className="w-64 shrink-0 h-full bg-white border-r border-gray-200 flex flex-col hidden md:flex overflow-y-auto">
-                    <div className="p-6 space-y-8">
-                        {/* Collections */}
-                        <div>
-                            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 px-2">Collections</h3>
-                            <ul className="space-y-1">
-                                <li
-                                    onClick={() => setFilter({ type: 'all', value: 'All Books' })}
-                                    className={`flex items-center gap-3 text-sm font-bold px-3 py-2.5 rounded-xl cursor-pointer transition-all ${filter.type === 'all' ? 'text-lime-700 bg-lime-50' : 'text-gray-600 hover:bg-gray-50'}`}
-                                >
-                                    <Book size={18} />
-                                    All Books
-                                </li>
-                                <li className="flex items-center gap-3 text-sm font-medium text-gray-600 hover:bg-gray-50 px-3 py-2.5 rounded-xl cursor-pointer transition-colors">
-                                    <Download size={18} />
-                                    Downloads
-                                </li>
-                                <li className="flex items-center gap-3 text-sm font-medium text-gray-600 hover:bg-gray-50 px-3 py-2.5 rounded-xl cursor-pointer transition-colors">
-                                    <ExternalLink size={18} />
-                                    Recent
-                                </li>
-                            </ul>
-                        </div>
-
-                        {/* Classes / Grades */}
-                        <div>
-                            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 px-2">Classes</h3>
-                            <ul className="space-y-1">
-                                {displayClasses.map((cls) => (
+                    {/* Left Sidebar - Filters */}
+                    <aside className="w-64 shrink-0 h-full bg-white border-r border-gray-200 flex flex-col hidden md:flex overflow-y-auto">
+                        <div className="p-6 space-y-8">
+                            {/* Collections */}
+                            <div>
+                                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 px-2">Collections</h3>
+                                <ul className="space-y-1">
                                     <li
-                                        key={cls}
-                                        onClick={() => setFilter({ type: 'class', value: cls })}
-                                        className={`flex items-center gap-3 text-sm font-medium px-3 py-2 rounded-xl cursor-pointer transition-colors ${filter.type === 'class' && filter.value === cls ? 'text-lime-700 bg-lime-50 font-bold' : 'text-gray-600 hover:bg-gray-50'}`}
+                                        onClick={() => setFilter({ type: 'all', value: 'All Books' })}
+                                        className={`flex items-center gap-3 text-sm font-bold px-3 py-2.5 rounded-xl cursor-pointer transition-all ${filter.type === 'all' ? 'text-lime-700 bg-lime-50' : 'text-gray-600 hover:bg-gray-50'}`}
                                     >
-                                        <Layers size={16} className={filter.type === 'class' && filter.value === cls ? 'text-lime-600' : 'text-gray-400'} />
-                                        {cls}
+                                        <Book size={18} />
+                                        All Books
                                     </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        {/* Subjects */}
-                        <div>
-                            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 px-2">Subjects</h3>
-                            <ul className="space-y-1">
-                                {displaySubjects.map((subject) => (
-                                    <li
-                                        key={subject}
-                                        onClick={() => setFilter({ type: 'subject', value: subject })}
-                                        className={`flex items-center gap-3 text-sm font-medium px-3 py-2 rounded-xl cursor-pointer transition-colors ${filter.type === 'subject' && filter.value === subject ? 'text-lime-700 bg-lime-50 font-bold' : 'text-gray-600 hover:bg-gray-50'}`}
-                                    >
-                                        <div className={`w-2 h-2 rounded-full transition-colors ${filter.type === 'subject' && filter.value === subject ? 'bg-lime-600' : 'bg-gray-300 group-hover:bg-lime-500'}`} />
-                                        {subject}
+                                    <li className="flex items-center gap-3 text-sm font-medium text-gray-600 hover:bg-gray-50 px-3 py-2.5 rounded-xl cursor-pointer transition-colors">
+                                        <Download size={18} />
+                                        Downloads
                                     </li>
-                                ))}
-                            </ul>
-                        </div>
-                    </div>
-                </aside>
-
-                {/* Right Content - Scrollable Grid */}
-                <section className="flex-1 h-full overflow-y-auto bg-gray-50/50">
-                    <div className="p-8 pb-20 max-w-[1920px] mx-auto">
-
-                        {/* Section Header */}
-                        <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-                                <span className="p-1.5 bg-gray-200 rounded-lg text-gray-600">
-                                    {filter.type === 'all' && <Book size={16} />}
-                                    {filter.type === 'class' && <Layers size={16} />}
-                                    {filter.type === 'subject' && <Grid size={16} />}
-                                </span>
-                                {filter.value}
-                                <span className="text-xs font-medium text-gray-400 bg-gray-100 px-2 py-1 rounded-full">{filteredResources.length}</span>
-                            </h3>
-                        </div>
-
-                        {filteredResources.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center py-20 text-center">
-                                <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-6 text-gray-300">
-                                    <Book size={40} />
-                                </div>
-                                <h3 className="text-lg font-bold text-gray-800 mb-2">No books found in {filter.value}</h3>
-                                <p className="text-gray-400 max-w-xs mx-auto mb-8 text-sm">Add a book to this category or try another filter.</p>
-                                <button
-                                    onClick={() => setIsModalOpen(true)}
-                                    className="text-lime-600 font-bold hover:underline flex items-center gap-2 mx-auto text-sm"
-                                >
-                                    <Plus size={16} />
-                                    Add your first book
-                                </button>
+                                    <li className="flex items-center gap-3 text-sm font-medium text-gray-600 hover:bg-gray-50 px-3 py-2.5 rounded-xl cursor-pointer transition-colors">
+                                        <ExternalLink size={18} />
+                                        Recent
+                                    </li>
+                                </ul>
                             </div>
-                        ) : (
-                            <div className="space-y-10">
-                                {classGroups.map((classLabel) => (
-                                    <div key={classLabel} className="animate-in fade-in duration-500">
-                                        {/* Class Heading - Redesigned */}
-                                        <button
-                                            onClick={() => toggleSectionCollapse(classLabel)}
-                                            className="w-full flex items-center gap-3 mb-5 pb-3 border-b border-gray-200 hover:border-lime-500 transition-colors group cursor-pointer"
+
+                            {/* Classes / Grades */}
+                            <div>
+                                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 px-2">Classes</h3>
+                                <ul className="space-y-1">
+                                    {displayClasses.map((cls) => (
+                                        <li
+                                            key={cls}
+                                            onClick={() => setFilter({ type: 'class', value: cls })}
+                                            className={`flex items-center gap-3 text-sm font-medium px-3 py-2 rounded-xl cursor-pointer transition-colors ${filter.type === 'class' && filter.value === cls ? 'text-lime-700 bg-lime-50 font-bold' : 'text-gray-600 hover:bg-gray-50'}`}
                                         >
-                                            <div className="p-1.5 bg-gray-100 group-hover:bg-lime-50 rounded-lg transition-colors">
-                                                {collapsedSections.has(classLabel) ? (
-                                                    <ChevronDown size={16} className="text-gray-500 group-hover:text-lime-600" />
-                                                ) : (
-                                                    <ChevronUp size={16} className="text-gray-500 group-hover:text-lime-600" />
-                                                )}
-                                            </div>
-                                            <Layers size={16} className="text-gray-400 group-hover:text-lime-600" />
-                                            <h4 className="text-base font-bold text-gray-800 group-hover:text-lime-700">{classLabel}</h4>
-                                            <span className="text-xs font-bold text-gray-500 bg-gray-100 group-hover:bg-lime-100 group-hover:text-lime-700 px-2.5 py-1 rounded-full transition-colors">
-                                                {groupedByClass[classLabel].length}
-                                            </span>
-                                            <div className="flex-1"></div>
-                                            <span className="text-xs text-gray-400 group-hover:text-lime-600 font-medium">
-                                                {collapsedSections.has(classLabel) ? 'Click to expand' : 'Click to collapse'}
-                                            </span>
-                                        </button>
+                                            <Layers size={16} className={filter.type === 'class' && filter.value === cls ? 'text-lime-600' : 'text-gray-400'} />
+                                            {cls}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
 
-                                        {/* Books Grid or List */}
-                                        {!collapsedSections.has(classLabel) && (
-                                            viewMode === 'grid' ? (
-                                                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6">
-                                                    {groupedByClass[classLabel].map((res, i) => (
-                                                        <div key={i} className="group relative aspect-[2/3] rounded-2xl overflow-hidden cursor-pointer shadow-sm hover:shadow-xl transition-all duration-300 bg-white ring-1 ring-gray-100 hover:ring-2 hover:ring-lime-500/50">
+                            {/* Subjects */}
+                            <div>
+                                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 px-2">Subjects</h3>
+                                <ul className="space-y-1">
+                                    {displaySubjects.map((subject) => (
+                                        <li
+                                            key={subject}
+                                            onClick={() => setFilter({ type: 'subject', value: subject })}
+                                            className={`flex items-center gap-3 text-sm font-medium px-3 py-2 rounded-xl cursor-pointer transition-colors ${filter.type === 'subject' && filter.value === subject ? 'text-lime-700 bg-lime-50 font-bold' : 'text-gray-600 hover:bg-gray-50'}`}
+                                        >
+                                            <div className={`w-2 h-2 rounded-full transition-colors ${filter.type === 'subject' && filter.value === subject ? 'bg-lime-600' : 'bg-gray-300 group-hover:bg-lime-500'}`} />
+                                            {subject}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
+                    </aside>
 
-                                                            {/* Full Cover Image Area */}
-                                                            <div className="absolute inset-0 w-full h-full bg-gray-50">
-                                                                {res.cover ? (
-                                                                    <img src={res.cover} alt={res.title} className="w-full h-full object-cover" />
-                                                                ) : (
-                                                                    <div className={`w-full h-full ${res.color} flex flex-col items-center justify-center p-6 text-center`}>
-                                                                        <Book className={`${res.iconColor} opacity-50 mb-3`} size={40} />
-                                                                        <span className={`text-[10px] font-bold ${res.iconColor} uppercase tracking-wider opacity-60`}>{res.subject}</span>
-                                                                    </div>
-                                                                )}
-                                                            </div>
+                    {/* Right Content - Scrollable Grid */}
+                    <section className="flex-1 h-full overflow-y-auto bg-gray-50/50">
+                        <div className="p-8 pb-20 max-w-[1920px] mx-auto">
 
-                                                            {/* NEW Badge (top-left, only if new) */}
-                                                            {isNewBook(res.dateAdded) && (
-                                                                <div className="absolute top-2 left-2 z-10">
-                                                                    <span className="bg-gradient-to-r from-lime-500 to-green-500 text-white text-[9px] font-bold px-2 py-1 rounded-full shadow-lg animate-pulse flex items-center gap-1">
-                                                                        <Sparkles size={10} />
-                                                                        NEW
-                                                                    </span>
-                                                                </div>
-                                                            )}
+                            {/* Section Header */}
+                            <div className="flex items-center justify-between mb-6">
+                                <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+                                    <span className="p-1.5 bg-gray-200 rounded-lg text-gray-600">
+                                        {filter.type === 'all' && <Book size={16} />}
+                                        {filter.type === 'class' && <Layers size={16} />}
+                                        {filter.type === 'subject' && <Grid size={16} />}
+                                    </span>
+                                    {filter.value}
+                                    <span className="text-xs font-medium text-gray-400 bg-gray-100 px-2 py-1 rounded-full">{filteredResources.length}</span>
+                                </h3>
+                            </div>
 
-                                                            {/* Favorite Star (bottom-right, only if favorited) */}
-                                                            {res.isFavorite && (
-                                                                <div className="absolute bottom-16 right-2 z-10">
-                                                                    <Star size={16} className="fill-yellow-400 text-yellow-400 drop-shadow-lg" />
-                                                                </div>
-                                                            )}
-
-                                                            {/* Hover Overlay - Clean Actions Only */}
-                                                            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-between p-4">
-
-                                                                {/* Top Row: Quick Actions */}
-                                                                <div className="flex justify-between items-start transform -translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                                                                    {/* Checkbox */}
-                                                                    <input
-                                                                        type="checkbox"
-                                                                        checked={selectedBooks.has(res.id)}
-                                                                        onChange={() => toggleSelectBook(res.id)}
-                                                                        onClick={(e) => e.stopPropagation()}
-                                                                        className="w-5 h-5 rounded border-2 border-white cursor-pointer accent-lime-600 shadow-lg"
-                                                                    />
-
-                                                                    {/* Action Buttons */}
-                                                                    <div className="flex gap-2">
-                                                                        <button
-                                                                            onClick={(e) => {
-                                                                                e.stopPropagation();
-                                                                                toggleFavorite(res.id);
-                                                                            }}
-                                                                            className="p-2 bg-white/10 hover:bg-yellow-500 rounded-lg transition-all backdrop-blur-sm"
-                                                                            title="Favorite"
-                                                                        >
-                                                                            <Star
-                                                                                size={14}
-                                                                                className={res.isFavorite ? 'fill-yellow-400 text-yellow-400' : 'text-white'}
-                                                                            />
-                                                                        </button>
-                                                                        <button
-                                                                            onClick={(e) => {
-                                                                                e.stopPropagation();
-                                                                                handleDeleteBook(res.id);
-                                                                            }}
-                                                                            className="p-2 bg-white/10 hover:bg-red-500 rounded-lg transition-all backdrop-blur-sm"
-                                                                            title="Delete"
-                                                                        >
-                                                                            <Trash2 size={14} className="text-white" />
-                                                                        </button>
-                                                                        <Link
-                                                                            href={`/library/${res.id}/manage`}
-                                                                            onClick={(e) => e.stopPropagation()}
-                                                                            className="p-2 bg-white/10 hover:bg-white text-white hover:text-black rounded-lg transition-all backdrop-blur-sm"
-                                                                            title="Manage"
-                                                                        >
-                                                                            <Edit2 size={14} />
-                                                                        </Link>
-                                                                    </div>
-                                                                </div>
-
-                                                                {/* Bottom Info */}
-                                                                <div className="transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                                                                    <div className="mb-2">
-                                                                        <span className="text-[9px] font-bold text-white/90 bg-lime-600 px-2 py-0.5 rounded uppercase tracking-wider shadow-sm">
-                                                                            {res.type}
-                                                                        </span>
-                                                                    </div>
-
-                                                                    <h3 className="text-sm font-bold text-white leading-tight mb-0.5 line-clamp-2">{res.title}</h3>
-                                                                    <p className="text-[10px] text-gray-400 font-medium mb-3">by {res.author}</p>
-
-                                                                    <div className="flex gap-2">
-                                                                        <button
-                                                                            onClick={(e) => {
-                                                                                e.stopPropagation();
-                                                                                setPreviewBook(res);
-                                                                            }}
-                                                                            className="flex-1 flex items-center justify-center gap-2 bg-gray-700 text-white hover:bg-gray-600 py-2 rounded-lg text-xs font-bold transition-colors shadow-sm"
-                                                                        >
-                                                                            <ExternalLink size={12} />
-                                                                            Preview
-                                                                        </button>
-                                                                        <Link
-                                                                            href={`/library/${res.id}`}
-                                                                            className="flex-1 flex items-center justify-center gap-2 bg-white text-black hover:bg-lime-400 py-2 rounded-lg text-xs font-bold transition-colors shadow-sm"
-                                                                            onClick={(e) => e.stopPropagation()}
-                                                                        >
-                                                                            <Book size={12} />
-                                                                            Read Now
-                                                                        </Link>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    ))}
+                            {filteredResources.length === 0 ? (
+                                <div className="flex flex-col items-center justify-center py-20 text-center">
+                                    <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-6 text-gray-300">
+                                        <Book size={40} />
+                                    </div>
+                                    <h3 className="text-lg font-bold text-gray-800 mb-2">No books found in {filter.value}</h3>
+                                    <p className="text-gray-400 max-w-xs mx-auto mb-8 text-sm">Add a book to this category or try another filter.</p>
+                                    <button
+                                        onClick={() => setIsModalOpen(true)}
+                                        className="text-lime-600 font-bold hover:underline flex items-center gap-2 mx-auto text-sm"
+                                    >
+                                        <Plus size={16} />
+                                        Add your first book
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="space-y-10">
+                                    {classGroups.map((classLabel) => (
+                                        <div key={classLabel} className="animate-in fade-in duration-500">
+                                            {/* Class Heading - Redesigned */}
+                                            <button
+                                                onClick={() => toggleSectionCollapse(classLabel)}
+                                                className="w-full flex items-center gap-3 mb-5 pb-3 border-b border-gray-200 hover:border-lime-500 transition-colors group cursor-pointer"
+                                            >
+                                                <div className="p-1.5 bg-gray-100 group-hover:bg-lime-50 rounded-lg transition-colors">
+                                                    {collapsedSections.has(classLabel) ? (
+                                                        <ChevronDown size={16} className="text-gray-500 group-hover:text-lime-600" />
+                                                    ) : (
+                                                        <ChevronUp size={16} className="text-gray-500 group-hover:text-lime-600" />
+                                                    )}
                                                 </div>
-                                            ) : (
-                                                // List View
-                                                <div className="space-y-3">
-                                                    {groupedByClass[classLabel].map((res, i) => (
-                                                        <div key={i} className="group bg-white rounded-xl p-4 shadow-sm hover:shadow-lg transition-all flex gap-4 items-center border border-gray-100 hover:border-lime-500/50">
-                                                            {/* Checkbox */}
-                                                            <input
-                                                                type="checkbox"
-                                                                checked={selectedBooks.has(res.id)}
-                                                                onChange={() => toggleSelectBook(res.id)}
-                                                                className="w-5 h-5 rounded border-2 cursor-pointer accent-lime-600"
-                                                            />
+                                                <Layers size={16} className="text-gray-400 group-hover:text-lime-600" />
+                                                <h4 className="text-base font-bold text-gray-800 group-hover:text-lime-700">{classLabel}</h4>
+                                                <span className="text-xs font-bold text-gray-500 bg-gray-100 group-hover:bg-lime-100 group-hover:text-lime-700 px-2.5 py-1 rounded-full transition-colors">
+                                                    {groupedByClass[classLabel].length}
+                                                </span>
+                                                <div className="flex-1"></div>
+                                                <span className="text-xs text-gray-400 group-hover:text-lime-600 font-medium">
+                                                    {collapsedSections.has(classLabel) ? 'Click to expand' : 'Click to collapse'}
+                                                </span>
+                                            </button>
 
-                                                            {/* Thumbnail */}
-                                                            <div className="w-12 h-16 shrink-0 rounded-lg overflow-hidden shadow-sm">
-                                                                {res.cover ? (
-                                                                    <img src={res.cover} alt={res.title} className="w-full h-full object-cover" />
-                                                                ) : (
-                                                                    <div className={`w-full h-full ${res.color} flex items-center justify-center`}>
-                                                                        <Book className={res.iconColor} size={20} />
-                                                                    </div>
-                                                                )}
-                                                            </div>
+                                            {/* Books Grid or List */}
+                                            {!collapsedSections.has(classLabel) && (
+                                                viewMode === 'grid' ? (
+                                                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6">
+                                                        {groupedByClass[classLabel].map((res, i) => (
+                                                            <div key={i} className="group relative aspect-[2/3] rounded-2xl overflow-hidden cursor-pointer shadow-sm hover:shadow-xl transition-all duration-300 bg-white ring-1 ring-gray-100 hover:ring-2 hover:ring-lime-500/50">
 
-                                                            {/* Info */}
-                                                            <div className="flex-1 min-w-0">
-                                                                <div className="flex items-start gap-2 mb-1">
-                                                                    <h4 className="font-bold text-gray-900 text-sm truncate">{res.title}</h4>
-                                                                    {isNewBook(res.dateAdded) && (
-                                                                        <span className="bg-gradient-to-r from-lime-500 to-green-500 text-white text-[8px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shrink-0">
-                                                                            <Sparkles size={8} />
-                                                                            NEW
-                                                                        </span>
+                                                                {/* Full Cover Image Area */}
+                                                                <div className="absolute inset-0 w-full h-full bg-gray-50">
+                                                                    {res.cover ? (
+                                                                        <img src={res.cover} alt={res.title} className="w-full h-full object-cover" />
+                                                                    ) : (
+                                                                        <div className={`w-full h-full ${res.color} flex flex-col items-center justify-center p-6 text-center`}>
+                                                                            <Book className={`${res.iconColor} opacity-50 mb-3`} size={40} />
+                                                                            <span className={`text-[10px] font-bold ${res.iconColor} uppercase tracking-wider opacity-60`}>{res.subject}</span>
+                                                                        </div>
                                                                     )}
                                                                 </div>
-                                                                <p className="text-xs text-gray-500">{res.author}</p>
-                                                                <div className="flex gap-2 mt-2 flex-wrap">
-                                                                    <span className="bg-gray-100 text-gray-700 text-[10px] font-bold px-2 py-0.5 rounded-full">{res.subject}</span>
-                                                                    {res.tags && res.tags.slice(0, 3).map((tag, idx) => (
-                                                                        <span key={idx} className="bg-lime-50 text-lime-700 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
-                                                                            <Tag size={8} />
-                                                                            {tag}
+
+                                                                {/* NEW Badge (top-left, only if new) */}
+                                                                {isNewBook(res.dateAdded) && (
+                                                                    <div className="absolute top-2 left-2 z-10">
+                                                                        <span className="bg-gradient-to-r from-lime-500 to-green-500 text-white text-[9px] font-bold px-2 py-1 rounded-full shadow-lg animate-pulse flex items-center gap-1">
+                                                                            <Sparkles size={10} />
+                                                                            NEW
                                                                         </span>
-                                                                    ))}
+                                                                    </div>
+                                                                )}
+
+                                                                {/* Favorite Star (bottom-right, only if favorited) */}
+                                                                {res.isFavorite && (
+                                                                    <div className="absolute bottom-16 right-2 z-10">
+                                                                        <Star size={16} className="fill-yellow-400 text-yellow-400 drop-shadow-lg" />
+                                                                    </div>
+                                                                )}
+
+                                                                {/* Hover Overlay - Clean Actions Only */}
+                                                                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-between p-4">
+
+                                                                    {/* Top Row: Quick Actions */}
+                                                                    <div className="flex justify-between items-start transform -translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                                                                        {/* Checkbox */}
+                                                                        <input
+                                                                            type="checkbox"
+                                                                            checked={selectedBooks.has(res.id)}
+                                                                            onChange={() => toggleSelectBook(res.id)}
+                                                                            onClick={(e) => e.stopPropagation()}
+                                                                            className="w-5 h-5 rounded border-2 border-white cursor-pointer accent-lime-600 shadow-lg"
+                                                                        />
+
+                                                                        {/* Action Buttons */}
+                                                                        <div className="flex gap-2">
+                                                                            <button
+                                                                                onClick={(e) => {
+                                                                                    e.stopPropagation();
+                                                                                    toggleFavorite(res.id);
+                                                                                }}
+                                                                                className="p-2 bg-white/10 hover:bg-yellow-500 rounded-lg transition-all backdrop-blur-sm"
+                                                                                title="Favorite"
+                                                                            >
+                                                                                <Star
+                                                                                    size={14}
+                                                                                    className={res.isFavorite ? 'fill-yellow-400 text-yellow-400' : 'text-white'}
+                                                                                />
+                                                                            </button>
+                                                                            <button
+                                                                                onClick={(e) => {
+                                                                                    e.stopPropagation();
+                                                                                    handleDeleteBook(res.id);
+                                                                                }}
+                                                                                className="p-2 bg-white/10 hover:bg-red-500 rounded-lg transition-all backdrop-blur-sm"
+                                                                                title="Delete"
+                                                                            >
+                                                                                <Trash2 size={14} className="text-white" />
+                                                                            </button>
+                                                                            <Link
+                                                                                href={`/library/${res.id}/manage`}
+                                                                                onClick={(e) => e.stopPropagation()}
+                                                                                className="p-2 bg-white/10 hover:bg-white text-white hover:text-black rounded-lg transition-all backdrop-blur-sm"
+                                                                                title="Manage"
+                                                                            >
+                                                                                <Edit2 size={14} />
+                                                                            </Link>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    {/* Bottom Info */}
+                                                                    <div className="transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                                                                        <div className="mb-2">
+                                                                            <span className="text-[9px] font-bold text-white/90 bg-lime-600 px-2 py-0.5 rounded uppercase tracking-wider shadow-sm">
+                                                                                {res.type}
+                                                                            </span>
+                                                                        </div>
+
+                                                                        <h3 className="text-sm font-bold text-white leading-tight mb-0.5 line-clamp-2">{res.title}</h3>
+                                                                        <p className="text-[10px] text-gray-400 font-medium mb-3">by {res.author}</p>
+
+                                                                        <div className="flex gap-2">
+                                                                            <button
+                                                                                onClick={(e) => {
+                                                                                    e.stopPropagation();
+                                                                                    setPreviewBook(res);
+                                                                                }}
+                                                                                className="flex-1 flex items-center justify-center gap-2 bg-gray-700 text-white hover:bg-gray-600 py-2 rounded-lg text-xs font-bold transition-colors shadow-sm"
+                                                                            >
+                                                                                <ExternalLink size={12} />
+                                                                                Preview
+                                                                            </button>
+                                                                            <Link
+                                                                                href={`/library/${res.id}`}
+                                                                                className="flex-1 flex items-center justify-center gap-2 bg-white text-black hover:bg-lime-400 py-2 rounded-lg text-xs font-bold transition-colors shadow-sm"
+                                                                                onClick={(e) => e.stopPropagation()}
+                                                                            >
+                                                                                <Book size={12} />
+                                                                                Read Now
+                                                                            </Link>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                             </div>
+                                                        ))}
+                                                    </div>
+                                                ) : (
+                                                    // List View
+                                                    <div className="space-y-3">
+                                                        {groupedByClass[classLabel].map((res, i) => (
+                                                            <div key={i} className="group bg-white rounded-xl p-4 shadow-sm hover:shadow-lg transition-all flex gap-4 items-center border border-gray-100 hover:border-lime-500/50">
+                                                                {/* Checkbox */}
+                                                                <input
+                                                                    type="checkbox"
+                                                                    checked={selectedBooks.has(res.id)}
+                                                                    onChange={() => toggleSelectBook(res.id)}
+                                                                    className="w-5 h-5 rounded border-2 cursor-pointer accent-lime-600"
+                                                                />
 
-                                                            {/* Actions */}
-                                                            <div className="flex items-center gap-2 shrink-0">
-                                                                <button
-                                                                    onClick={() => toggleFavorite(res.id)}
-                                                                    className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                                                                >
-                                                                    <Star
-                                                                        size={18}
-                                                                        className={res.isFavorite ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}
-                                                                    />
-                                                                </button>
-                                                                <button
-                                                                    onClick={() => setPreviewBook(res)}
-                                                                    className="px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-xs font-bold transition-colors flex items-center gap-1"
-                                                                >
-                                                                    <ExternalLink size={12} />
-                                                                    Preview
-                                                                </button>
-                                                                <Link
-                                                                    href={`/library/${res.id}`}
-                                                                    className="px-3 py-2 bg-lime-600 hover:bg-lime-700 text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-1"
-                                                                >
-                                                                    <Book size={12} />
-                                                                    Read
-                                                                </Link>
-                                                                <button
-                                                                    onClick={() => handleDeleteBook(res.id)}
-                                                                    className="p-2 hover:bg-red-50 text-gray-400 hover:text-red-600 rounded-lg transition-colors"
-                                                                >
-                                                                    <Trash2 size={16} />
-                                                                </button>
+                                                                {/* Thumbnail */}
+                                                                <div className="w-12 h-16 shrink-0 rounded-lg overflow-hidden shadow-sm">
+                                                                    {res.cover ? (
+                                                                        <img src={res.cover} alt={res.title} className="w-full h-full object-cover" />
+                                                                    ) : (
+                                                                        <div className={`w-full h-full ${res.color} flex items-center justify-center`}>
+                                                                            <Book className={res.iconColor} size={20} />
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+
+                                                                {/* Info */}
+                                                                <div className="flex-1 min-w-0">
+                                                                    <div className="flex items-start gap-2 mb-1">
+                                                                        <h4 className="font-bold text-gray-900 text-sm truncate">{res.title}</h4>
+                                                                        {isNewBook(res.dateAdded) && (
+                                                                            <span className="bg-gradient-to-r from-lime-500 to-green-500 text-white text-[8px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shrink-0">
+                                                                                <Sparkles size={8} />
+                                                                                NEW
+                                                                            </span>
+                                                                        )}
+                                                                    </div>
+                                                                    <p className="text-xs text-gray-500">{res.author}</p>
+                                                                    <div className="flex gap-2 mt-2 flex-wrap">
+                                                                        <span className="bg-gray-100 text-gray-700 text-[10px] font-bold px-2 py-0.5 rounded-full">{res.subject}</span>
+                                                                        {res.tags && res.tags.slice(0, 3).map((tag, idx) => (
+                                                                            <span key={idx} className="bg-lime-50 text-lime-700 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                                                                                <Tag size={8} />
+                                                                                {tag}
+                                                                            </span>
+                                                                        ))}
+                                                                    </div>
+                                                                </div>
+
+                                                                {/* Actions */}
+                                                                <div className="flex items-center gap-2 shrink-0">
+                                                                    <button
+                                                                        onClick={() => toggleFavorite(res.id)}
+                                                                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                                                                    >
+                                                                        <Star
+                                                                            size={18}
+                                                                            className={res.isFavorite ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}
+                                                                        />
+                                                                    </button>
+                                                                    <button
+                                                                        onClick={() => setPreviewBook(res)}
+                                                                        className="px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-xs font-bold transition-colors flex items-center gap-1"
+                                                                    >
+                                                                        <ExternalLink size={12} />
+                                                                        Preview
+                                                                    </button>
+                                                                    <Link
+                                                                        href={`/library/${res.id}`}
+                                                                        className="px-3 py-2 bg-lime-600 hover:bg-lime-700 text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-1"
+                                                                    >
+                                                                        <Book size={12} />
+                                                                        Read
+                                                                    </Link>
+                                                                    <button
+                                                                        onClick={() => handleDeleteBook(res.id)}
+                                                                        className="p-2 hover:bg-red-50 text-gray-400 hover:text-red-600 rounded-lg transition-colors"
+                                                                    >
+                                                                        <Trash2 size={16} />
+                                                                    </button>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            )
+                                                        ))}
+                                                    </div>
+                                                )
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </section>
+                </main>
+            ) : (
+                // COMMUNITY LIBRARY VIEW
+                <main className="flex-1 overflow-auto p-8 bg-gray-50">
+                    <div className="max-w-7xl mx-auto">
+                        <div className="mb-6">
+                            <h2 className="text-2xl font-bold text-gray-900 mb-2">Community Library</h2>
+                            <p className="text-gray-600">Explore and add books from our public collection</p>
+                        </div>
+
+                        {/* Community Books Grid */}
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                            {communityBooks.map(book => (
+                                <div key={book.id} className="group relative aspect-[2/3] rounded-2xl overflow-hidden cursor-pointer shadow-sm hover:shadow-xl transition-all duration-300 bg-white ring-1 ring-gray-100 hover:ring-2 hover:ring-lime-500/50">
+                                    {/* Full Cover Image Area */}
+                                    <div className="absolute inset-0 w-full h-full bg-gray-50">
+                                        {book.cover ? (
+                                            <img src={book.cover} alt={book.title} className="w-full h-full object-cover" />
+                                        ) : (
+                                            <div className={`w-full h-full ${book.color} flex flex-col items-center justify-center p-6 text-center`}>
+                                                <Book className={`${book.iconColor} opacity-50 mb-3`} size={40} />
+                                                <span className={`text-[10px] font-bold ${book.iconColor} uppercase tracking-wider opacity-60`}>{book.subject}</span>
+                                            </div>
                                         )}
                                     </div>
-                                ))}
+
+                                    {/* Public Badge */}
+                                    <div className="absolute top-2 right-2 z-10">
+                                        <span className="bg-lime-500 text-white text-[9px] font-bold px-2 py-1 rounded-full shadow-lg flex items-center gap-1">
+                                            Public
+                                        </span>
+                                    </div>
+
+                                    {/* Hover Overlay */}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-4">
+                                        <div className="transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                                            <div className="mb-2">
+                                                <span className="text-[9px] font-bold text-white/90 bg-lime-600 px-2 py-0.5 rounded uppercase tracking-wider shadow-sm">
+                                                    {book.type}
+                                                </span>
+                                            </div>
+
+                                            <h3 className="text-sm font-bold text-white leading-tight mb-0.5 line-clamp-2">{book.title}</h3>
+                                            <p className="text-[10px] text-gray-400 font-medium mb-3">by {book.author}</p>
+
+                                            <div className="flex gap-2">
+                                                <button
+                                                    onClick={() => addToMyLibrary(book)}
+                                                    className="flex-1 flex items-center justify-center gap-2 bg-lime-600 text-white hover:bg-lime-700 py-2 rounded-lg text-xs font-bold transition-colors shadow-sm"
+                                                >
+                                                    <Plus size={12} />
+                                                    Add
+                                                </button>
+                                                <Link
+                                                    href={`/library/${book.id}`}
+                                                    className="flex-1 flex items-center justify-center gap-2 bg-white text-black hover:bg-gray-200 py-2 rounded-lg text-xs font-bold transition-colors shadow-sm"
+                                                >
+                                                    <Book size={12} />
+                                                    Read
+                                                </Link>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Empty State */}
+                        {communityBooks.length === 0 && (
+                            <div className="text-center py-20">
+                                <Book size={64} className="text-gray-300 mx-auto mb-4" />
+                                <h3 className="text-xl font-bold text-gray-700 mb-2">No Community Books</h3>
+                                <p className="text-gray-500">Check back later for new additions!</p>
                             </div>
                         )}
                     </div>
-                </section>
-            </main>
+                </main>
+            )}
 
             {
                 isModalOpen && typeof document !== 'undefined' ? (
@@ -896,8 +1073,8 @@ const LibraryView: React.FC = () => {
 
                                         {/* Info */}
                                         <div className="flex-1">
-                                            <div className="flex items-start justify-between mb-2">
-                                                <div>
+                                            <div className="flex items-start justify-between mb-2 gap-3">
+                                                <div className="flex-1">
                                                     <h2 className="text-2xl font-bold text-gray-900 mb-1">{previewBook.title}</h2>
                                                     <p className="text-sm text-gray-500 flex items-center gap-2">
                                                         <User size={14} />
@@ -905,12 +1082,16 @@ const LibraryView: React.FC = () => {
                                                     </p>
                                                 </div>
                                                 <button
-                                                    onClick={() => toggleFavorite(previewBook.id)}
-                                                    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        toggleFavorite(previewBook.id);
+                                                    }}
+                                                    className="p-2.5 hover:bg-gray-100 rounded-full transition-colors shrink-0"
+                                                    title={previewBook.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
                                                 >
                                                     <Star
                                                         size={24}
-                                                        className={previewBook.isFavorite ? 'fill-yellow-400 text-yellow-400' : 'text-gray-400'}
+                                                        className={previewBook.isFavorite ? 'fill-yellow-400 text-yellow-400' : 'text-gray-400 hover:text-yellow-400'}
                                                     />
                                                 </button>
                                             </div>
