@@ -17,9 +17,12 @@ export default function ClientLayout({
 
     // Reset scroll on route change
     useEffect(() => {
-        if (scrollRef.current) {
-            scrollRef.current.scrollTo(0, 0);
-        }
+        // Small delay to ensure layout reflow has happened
+        setTimeout(() => {
+            if (scrollRef.current) {
+                scrollRef.current.scrollTo({ top: 0, behavior: 'instant' });
+            }
+        }, 10);
     }, [pathname]);
 
     useEffect(() => {
