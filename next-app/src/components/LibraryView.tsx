@@ -144,8 +144,8 @@ const LibraryView: React.FC = () => {
     };
 
     return (
-        <div className="p-8 w-full min-h-full relative">
-            <header className="flex justify-between items-center mb-10">
+        <div className="flex flex-col h-full w-full bg-white relative overflow-hidden rounded-3xl">
+            <header className="shrink-0 px-8 py-6 flex justify-between items-center border-b border-gray-100 bg-white sticky top-0 z-20">
                 <div>
                     <h2 className="text-2xl font-bold text-gray-800">My Library</h2>
                     <p className="text-gray-400 text-sm">Your personal collection of academic books and guides.</p>
@@ -169,77 +169,79 @@ const LibraryView: React.FC = () => {
                 </div>
             </header>
 
-            {resources.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-24 text-center">
-                    <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mb-6 text-gray-300">
-                        <Book size={48} />
-                    </div>
-                    <h3 className="text-xl font-bold text-gray-800 mb-2">Your library is empty</h3>
-                    <p className="text-gray-400 max-w-xs mx-auto mb-8">Start adding your favorite academic books and resources to keep them organized.</p>
-                    <button
-                        onClick={() => setIsModalOpen(true)}
-                        className="text-lime-600 font-bold hover:underline flex items-center gap-2 mx-auto"
-                    >
-                        <Plus size={18} />
-                        Add your first book
-                    </button>
-                </div>
-            ) : (
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 animate-in fade-in duration-500 pb-10">
-                    {resources.map((res, i) => (
-                        <div key={i} className="group relative aspect-[2/3] rounded-2xl overflow-hidden cursor-pointer shadow-md hover:shadow-xl transition-all duration-300 bg-gray-100 hover:ring-2 hover:ring-lime-500/50">
-
-                            {/* Full Cover Image Area */}
-                            <div className="absolute inset-0 w-full h-full">
-                                {res.cover ? (
-                                    <img src={res.cover} alt={res.title} className="w-full h-full object-cover" />
-                                ) : (
-                                    <div className={`w-full h-full ${res.color} flex flex-col items-center justify-center p-6 text-center`}>
-                                        <Book className={`${res.iconColor} opacity-50 mb-3`} size={48} />
-                                        <span className={`text-xs font-bold ${res.iconColor} uppercase tracking-wider opacity-60`}>{res.subject}</span>
-                                    </div>
-                                )}
-                            </div>
-
-                            {/* Hover Overlay with Details - Fades in */}
-                            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4">
-
-                                {/* Top Actions */}
-                                <div className="flex justify-end transform -translate-y-4 group-hover:translate-y-0 transition-transform duration-300 delay-75">
-                                    <Link
-                                        href={`/library/${res.id}/manage`}
-                                        onClick={(e) => e.stopPropagation()}
-                                        className="p-2 bg-white/20 hover:bg-white text-white hover:text-black rounded-full backdrop-blur-md transition-all"
-                                        title="Manage Resource"
-                                    >
-                                        <Edit2 size={14} />
-                                    </Link>
-                                </div>
-
-                                {/* Bottom Info */}
-                                <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                                    <div className="mb-2">
-                                        <span className="text-[9px] font-bold text-white/90 bg-white/20 px-2 py-0.5 rounded uppercase tracking-wider backdrop-blur-sm">
-                                            {res.type}
-                                        </span>
-                                    </div>
-
-                                    <h3 className="text-lg font-bold text-white leading-tight mb-1 line-clamp-2">{res.title}</h3>
-                                    <p className="text-xs text-gray-300 font-medium mb-3">by {res.author}</p>
-
-                                    <Link
-                                        href={`/library/${res.id}`}
-                                        className="w-full flex items-center justify-center gap-2 bg-lime-600 hover:bg-lime-500 text-white py-2 rounded-xl text-xs font-bold transition-colors shadow-lg"
-                                        onClick={(e) => e.stopPropagation()}
-                                    >
-                                        Read Now <ExternalLink size={12} />
-                                    </Link>
-                                </div>
-                            </div>
+            <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
+                {resources.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center h-full text-center">
+                        <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mb-6 text-gray-300">
+                            <Book size={48} />
                         </div>
-                    ))}
-                </div>
-            )}
+                        <h3 className="text-xl font-bold text-gray-800 mb-2">Your library is empty</h3>
+                        <p className="text-gray-400 max-w-xs mx-auto mb-8">Start adding your favorite academic books and resources to keep them organized.</p>
+                        <button
+                            onClick={() => setIsModalOpen(true)}
+                            className="text-lime-600 font-bold hover:underline flex items-center gap-2 mx-auto"
+                        >
+                            <Plus size={18} />
+                            Add your first book
+                        </button>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 animate-in fade-in duration-500 pb-10">
+                        {resources.map((res, i) => (
+                            <div key={i} className="group relative aspect-[2/3] rounded-2xl overflow-hidden cursor-pointer shadow-md hover:shadow-xl transition-all duration-300 bg-gray-100 hover:ring-2 hover:ring-lime-500/50">
+
+                                {/* Full Cover Image Area */}
+                                <div className="absolute inset-0 w-full h-full">
+                                    {res.cover ? (
+                                        <img src={res.cover} alt={res.title} className="w-full h-full object-cover" />
+                                    ) : (
+                                        <div className={`w-full h-full ${res.color} flex flex-col items-center justify-center p-6 text-center`}>
+                                            <Book className={`${res.iconColor} opacity-50 mb-3`} size={48} />
+                                            <span className={`text-xs font-bold ${res.iconColor} uppercase tracking-wider opacity-60`}>{res.subject}</span>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Hover Overlay with Details - Fades in */}
+                                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4">
+
+                                    {/* Top Actions */}
+                                    <div className="flex justify-end transform -translate-y-4 group-hover:translate-y-0 transition-transform duration-300 delay-75">
+                                        <Link
+                                            href={`/library/${res.id}/manage`}
+                                            onClick={(e) => e.stopPropagation()}
+                                            className="p-2 bg-white/20 hover:bg-white text-white hover:text-black rounded-full backdrop-blur-md transition-all"
+                                            title="Manage Resource"
+                                        >
+                                            <Edit2 size={14} />
+                                        </Link>
+                                    </div>
+
+                                    {/* Bottom Info */}
+                                    <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                                        <div className="mb-2">
+                                            <span className="text-[9px] font-bold text-white/90 bg-white/20 px-2 py-0.5 rounded uppercase tracking-wider backdrop-blur-sm">
+                                                {res.type}
+                                            </span>
+                                        </div>
+
+                                        <h3 className="text-lg font-bold text-white leading-tight mb-1 line-clamp-2">{res.title}</h3>
+                                        <p className="text-xs text-gray-300 font-medium mb-3">by {res.author}</p>
+
+                                        <Link
+                                            href={`/library/${res.id}`}
+                                            className="w-full flex items-center justify-center gap-2 bg-lime-600 hover:bg-lime-500 text-white py-2 rounded-xl text-xs font-bold transition-colors shadow-lg"
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
+                                            Read Now <ExternalLink size={12} />
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
 
             {isModalOpen && typeof document !== 'undefined' ? (
                 ReactDOM.createPortal(
