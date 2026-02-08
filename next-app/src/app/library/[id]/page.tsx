@@ -151,8 +151,9 @@ const ReadBookPage = () => {
 
                             <div className="space-y-4">
                                 {chapters.map((chapter, idx) => (
-                                    <div
+                                    <Link
                                         key={idx}
+                                        href={`/library/${book.id}/chapter/${idx}`}
                                         className="group bg-white p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-lime-200 transition-all cursor-pointer flex items-center gap-5"
                                     >
                                         <div className="w-12 h-12 shrink-0 rounded-xl bg-gray-50 text-gray-400 font-bold flex items-center justify-center text-sm group-hover:bg-lime-600 group-hover:text-white transition-colors duration-300">
@@ -165,7 +166,7 @@ const ReadBookPage = () => {
                                         <div className="bg-gray-50 p-2 rounded-full text-gray-300 group-hover:text-lime-600 group-hover:bg-lime-50 transition-colors">
                                             <FileText size={18} />
                                         </div>
-                                    </div>
+                                    </Link>
                                 ))}
                             </div>
                         </div>

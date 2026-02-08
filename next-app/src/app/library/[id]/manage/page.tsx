@@ -89,12 +89,15 @@ const ManageBookPage = () => {
         }
     };
 
-    const handleAddChapter = (e: React.FormEvent) => {
+    const handleAddChapter = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!book || !selectedPDF) {
             alert('Please select a PDF file to upload');
             return;
         }
+
+        // Create a blob URL for the PDF (no storage quota issues)
+        const pdfBlobUrl = URL.createObjectURL(selectedPDF);
 
         // Get chapter title (use filename if not provided)
         const chapterTitle = newChapterTitle || selectedPDF.name.replace('.pdf', '');
@@ -102,9 +105,10 @@ const ManageBookPage = () => {
         const newChapter = {
             id: Date.now().toString(),
             title: chapterTitle,
-            pages: Math.floor(Math.random() * 50) + 5, // Simulating page count
+            pages: Math.floor(Math.random() * 50) + 5, // Will be updated when PDF loads
             fileName: selectedPDF.name,
-            fileSize: (selectedPDF.size / 1024).toFixed(2) + ' KB'
+            fileSize: (selectedPDF.size / 1024).toFixed(2) + ' KB',
+            pdfUrl: pdfBlobUrl // Store blob URL instead of base64
         };
 
         setBook({
