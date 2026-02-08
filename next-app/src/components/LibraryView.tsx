@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import Link from 'next/link';
-import { Book, Download, ExternalLink, Search, Plus, X, Image as ImageIcon, Edit2, Layers, Grid, Trash2, SortAsc, BarChart3, Calendar, User, List, Grid3x3, Star, Tag, Upload, Sparkles, Filter, ChevronDown, ChevronUp } from 'lucide-react';
+import { Book, Download, ExternalLink, Search, Plus, X, Image as ImageIcon, Edit2, Layers, Grid, Trash2, SortAsc, BarChart3, Calendar, User, List, Grid3x3, Star, Tag, Upload, Sparkles, Filter, ChevronDown, ChevronUp, Lock } from 'lucide-react';
 
 interface Resource {
     id: string;
@@ -401,21 +401,21 @@ const LibraryView: React.FC = () => {
                     </div>
 
                     {/* Center: Tab Menu with Glass Effect */}
-                    <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 bg-gray-100/80 backdrop-blur-md rounded-2xl p-1.5 shadow-sm border border-white/50">
+                    <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1 bg-gray-100/80 backdrop-blur-md rounded-xl p-1 shadow-sm border border-white/50">
                         <button
                             onClick={() => setActiveTab('my')}
-                            className={`px-6 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 ${activeTab === 'my'
-                                ? 'bg-white shadow-lg text-lime-600 scale-105'
-                                : 'text-gray-500 hover:text-gray-700 hover:bg-white/50'
+                            className={`px-4 py-1.5 rounded-lg font-bold text-xs transition-all duration-200 ${activeTab === 'my'
+                                    ? 'bg-white shadow-md text-lime-600 scale-105'
+                                    : 'text-gray-500 hover:text-gray-700 hover:bg-white/50'
                                 }`}
                         >
                             My Library
                         </button>
                         <button
                             onClick={() => setActiveTab('community')}
-                            className={`px-6 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 ${activeTab === 'community'
-                                ? 'bg-white shadow-lg text-lime-600 scale-105'
-                                : 'text-gray-500 hover:text-gray-700 hover:bg-white/50'
+                            className={`px-4 py-1.5 rounded-lg font-bold text-xs transition-all duration-200 ${activeTab === 'community'
+                                    ? 'bg-white shadow-md text-lime-600 scale-105'
+                                    : 'text-gray-500 hover:text-gray-700 hover:bg-white/50'
                                 }`}
                         >
                             Community Library
@@ -891,19 +891,21 @@ const LibraryView: React.FC = () => {
 
                                             <div className="flex gap-2">
                                                 <button
-                                                    onClick={() => addToMyLibrary(book)}
-                                                    className="flex-1 flex items-center justify-center gap-2 bg-lime-600 text-white hover:bg-lime-700 py-2 rounded-lg text-xs font-bold transition-colors shadow-sm"
+                                                    disabled
+                                                    className="flex-1 flex items-center justify-center gap-2 bg-gray-500/50 text-white/50 cursor-not-allowed py-2 rounded-lg text-xs font-bold transition-colors shadow-sm border border-white/10"
+                                                    title="Feature Coming Soon"
                                                 >
-                                                    <Plus size={12} />
-                                                    Add
+                                                    <Lock size={12} />
+                                                    Soon
                                                 </button>
-                                                <Link
-                                                    href={`/library/${book.id}`}
-                                                    className="flex-1 flex items-center justify-center gap-2 bg-white text-black hover:bg-gray-200 py-2 rounded-lg text-xs font-bold transition-colors shadow-sm"
+                                                <button
+                                                    disabled
+                                                    className="flex-1 flex items-center justify-center gap-2 bg-gray-100 text-gray-400 cursor-not-allowed py-2 rounded-lg text-xs font-bold transition-colors shadow-sm"
+                                                    title="Coming Soon"
                                                 >
-                                                    <Book size={12} />
+                                                    <Lock size={12} />
                                                     Read
-                                                </Link>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -911,14 +913,15 @@ const LibraryView: React.FC = () => {
                             ))}
                         </div>
 
-                        {/* Empty State */}
-                        {communityBooks.length === 0 && (
-                            <div className="text-center py-20">
-                                <Book size={64} className="text-gray-300 mx-auto mb-4" />
-                                <h3 className="text-xl font-bold text-gray-700 mb-2">No Community Books</h3>
-                                <p className="text-gray-500">Check back later for new additions!</p>
-                            </div>
-                        )}
+                        {/* Coming Soon Message */}
+                        <div className="mt-20 text-center py-16 border-t border-gray-200/50">
+                            <h1 className="text-6xl md:text-8xl font-black text-gray-200 uppercase tracking-widest select-none">
+                                COMING SOON
+                            </h1>
+                            <p className="mt-4 text-gray-400 text-lg font-medium">
+                                We are building a vast library for the community. Stay tuned! 🚀
+                            </p>
+                        </div>
                     </div>
                 </main>
             )}
