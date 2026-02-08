@@ -4,7 +4,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, GraduationCap, PieChart, BookOpen, Settings, LogOut, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, GraduationCap, PieChart, BookOpen, Settings, LogOut, ChevronLeft, ChevronRight, Wand2 } from 'lucide-react';
 
 interface SidebarProps {
     isCollapsed: boolean;
@@ -16,6 +16,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
 
     const navItems = [
         { href: '/', label: 'Dashboard', icon: LayoutDashboard },
+        { href: '/tools', label: 'Tools', icon: Wand2 },
         { href: '/classes', label: 'Classes', icon: GraduationCap },
         { href: '/reports', label: 'Report', icon: PieChart },
         { href: '/assignments', label: 'Assignments', icon: BookOpen },

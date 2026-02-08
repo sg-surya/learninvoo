@@ -1,0 +1,110 @@
+'use client';
+
+import React from 'react';
+import { Plus, Search, BookOpen, CheckSquare, Image as ImageIcon, Feather, MapPin, Scan, Brain, Sparkles, Wand2, Calculator, MessageSquare, ArrowRight, Layout, Library, Gamepad2, ClipboardList } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+
+const TOOLS = [
+    { label: 'Lesson Planner', desc: 'Generate comprehensive weekly lesson plans.', icon: BookOpen, color: 'text-lime-600', bg: 'bg-lime-50' },
+    { label: 'Visual Generator', desc: 'Create simple drawings or charts for your lessons.', icon: ImageIcon, color: 'text-sky-600', bg: 'bg-sky-50' },
+    { label: 'Hyper Local Content', desc: 'Create content tailored to your students\' region.', icon: MapPin, color: 'text-rose-600', bg: 'bg-rose-50' },
+    { label: 'Story Generator', desc: 'Generate creative stories for any topic or moral.', icon: Feather, color: 'text-orange-600', bg: 'bg-orange-50' },
+    { label: 'Quiz/Exam Generator', desc: 'Create engaging quizzes tailored to your curriculum.', icon: CheckSquare, color: 'text-purple-600', bg: 'bg-purple-50' },
+    { label: 'Paper Digitizer', desc: 'Digitize handwritten notes and papers instantly.', icon: Scan, color: 'text-gray-600', bg: 'bg-gray-50' },
+    { label: 'Simulation Generator', desc: 'Create interactive simulations for complex concepts.', icon: Gamepad2, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+    { label: 'Rubric Generator', desc: 'Design detailed grading rubrics for assignments.', icon: ClipboardList, color: 'text-cyan-600', bg: 'bg-cyan-50' },
+];
+
+const ToolsView: React.FC = () => {
+    const router = useRouter();
+
+    return (
+        <div className="p-8 w-full bg-gray-50/50 min-h-screen">
+            {/* Header Section */}
+            <div className="bg-gradient-to-r from-lime-50 to-emerald-50 rounded-[2.5rem] p-10 mb-12 relative overflow-hidden">
+                <div className="relative z-10">
+                    <div className="inline-flex items-center gap-2 bg-white/60 backdrop-blur-sm px-4 py-1.5 rounded-full text-lime-800 text-xs font-bold mb-4 border border-lime-100 shadow-sm">
+                        <Sparkles size={14} className="fill-lime-600 text-lime-600" />
+                        AI Power Tools
+                    </div>
+                    <h1 className="text-4xl font-extrabold text-gray-900 mb-4 tracking-tight">
+                        What would you like to create?
+                    </h1>
+                    <p className="text-gray-600 max-w-2xl text-lg opacity-90 leading-relaxed">
+                        Select a tool below to get started with your content generation.
+                    </p>
+                </div>
+                {/* Decorative Elements */}
+                <div className="absolute right-0 top-0 w-96 h-96 bg-gradient-to-br from-lime-200/30 to-emerald-200/30 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+            </div>
+
+            {/* Stats Overview */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
+                    <div className="absolute left-0 top-6 bottom-6 w-1 bg-lime-500 rounded-r-full"></div>
+                    <div className="ml-4">
+                        <p className="text-gray-400 text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-2">
+                            <BookOpen size={14} className="text-lime-500" />
+                            Total Topics
+                        </p>
+                        <h3 className="text-4xl font-extrabold text-gray-900">2</h3>
+                    </div>
+                </div>
+                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
+                    <div className="absolute left-0 top-6 bottom-6 w-1 bg-sky-500 rounded-r-full"></div>
+                    <div className="ml-4">
+                        <p className="text-gray-400 text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-2">
+                            <Layout size={14} className="text-sky-500" />
+                            Total Assets
+                        </p>
+                        <h3 className="text-4xl font-extrabold text-gray-900">3557</h3>
+                    </div>
+                </div>
+                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
+                    <div className="absolute left-0 top-6 bottom-6 w-1 bg-purple-500 rounded-r-full"></div>
+                    <div className="ml-4">
+                        <p className="text-gray-400 text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-2">
+                            <Sparkles size={14} className="text-purple-500" />
+                            This Week
+                        </p>
+                        <h3 className="text-4xl font-extrabold text-gray-900">0</h3>
+                    </div>
+                </div>
+            </div>
+
+            {/* AI Tools Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-20">
+                {TOOLS.map((tool, idx) => {
+                    const slug = tool.label.toLowerCase().replace(/[\/\s]+/g, '-');
+                    return (
+                        <div
+                            key={idx}
+                            onClick={() => router.push(`/tools/${slug}`)}
+                            className="bg-white rounded-2xl p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-gray-100 hover:shadow-xl hover:shadow-lime-100/50 hover:border-lime-200 transition-all duration-300 cursor-pointer flex flex-col items-start group relative h-64 overflow-hidden"
+                        >
+                            {/* Hover Gradient Background */}
+                            <div className="absolute inset-0 bg-gradient-to-br from-lime-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                            <div className="relative z-10 w-full flex flex-col h-full">
+                                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${tool.bg} ${tool.color} mb-5 group-hover:scale-110 transition-transform duration-300 shadow-sm`}>
+                                    <tool.icon size={26} />
+                                </div>
+                                <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-lime-700 transition-colors">{tool.label}</h3>
+                                <p className="text-gray-500 text-sm leading-relaxed mb-4">{tool.desc}</p>
+
+                                <div className="mt-auto w-full flex items-center justify-between pt-4 border-t border-gray-50 group-hover:border-lime-100 transition-colors">
+                                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest group-hover:text-lime-600 transition-colors">Launch Tool</span>
+                                    <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-lime-500 group-hover:text-white transition-all duration-300">
+                                        <ArrowRight size={14} className="-rotate-45 group-hover:rotate-0 transition-transform duration-300" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )
+                })}
+            </div>
+        </div>
+    );
+};
+
+export default ToolsView;
