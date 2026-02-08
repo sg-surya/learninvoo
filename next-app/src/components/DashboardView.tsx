@@ -1,11 +1,19 @@
-
 'use client';
 
 import React from 'react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { Plus, Search } from 'lucide-react';
+import { Plus, Search, BookOpen, CheckSquare, Image as ImageIcon, Feather, MapPin, Scan, Brain, Sparkles, Wand2, Calculator, MessageSquare, ArrowRight, Layout, Library, Gamepad2, ClipboardList } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { PERFORMANCE_DATA, CLASSES_DATA, TOP_STUDENTS } from '../constants';
+
+const TOOLS = [
+    { label: 'Lesson Planner', desc: 'Generate comprehensive weekly lesson plans.', icon: BookOpen, color: 'text-lime-600', bg: 'bg-lime-50' },
+    { label: 'Visual Generator', desc: 'Create simple drawings or charts for your lessons.', icon: ImageIcon, color: 'text-sky-600', bg: 'bg-sky-50' },
+    { label: 'Hyper Local Content', desc: 'Create content tailored to your students\' region.', icon: MapPin, color: 'text-rose-600', bg: 'bg-rose-50' },
+    { label: 'Story Generator', desc: 'Generate creative stories for any topic or moral.', icon: Feather, color: 'text-orange-600', bg: 'bg-orange-50' },
+    { label: 'Quiz/Exam Generator', desc: 'Create engaging quizzes tailored to your curriculum.', icon: CheckSquare, color: 'text-purple-600', bg: 'bg-purple-50' },
+    { label: 'Paper Digitizer', desc: 'Digitize handwritten notes and papers instantly.', icon: Scan, color: 'text-gray-600', bg: 'bg-gray-50' },
+    { label: 'Simulation Generator', desc: 'Create interactive simulations for complex concepts.', icon: Gamepad2, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+    { label: 'Rubric Generator', desc: 'Design detailed grading rubrics for assignments.', icon: ClipboardList, color: 'text-cyan-600', bg: 'bg-cyan-50' },
+];
 
 const DashboardView: React.FC = () => {
     const router = useRouter();
@@ -15,139 +23,86 @@ const DashboardView: React.FC = () => {
     };
 
     return (
-        <div className="p-8 w-full">
-            <header className="flex justify-between items-center mb-10">
-                <div>
-                    <h2 className="text-2xl font-bold text-gray-800">Welcome Back, Jane!</h2>
-                    <p className="text-gray-400 text-sm">Here's what's happening with your students today.</p>
+        <div className="p-8 w-full bg-gray-50/50 min-h-screen">
+            {/* Header Section */}
+            <div className="bg-gradient-to-r from-lime-50 to-emerald-50 rounded-[2.5rem] p-10 mb-12 relative overflow-hidden">
+                <div className="relative z-10">
+                    <div className="inline-flex items-center gap-2 bg-white/60 backdrop-blur-sm px-4 py-1.5 rounded-full text-lime-800 text-xs font-bold mb-4 border border-lime-100 shadow-sm">
+                        <Sparkles size={14} className="fill-lime-600 text-lime-600" />
+                        Seekhna aasaan Sikhana aur bhi aasaan
+                    </div>
+                    <h1 className="text-4xl font-extrabold text-gray-900 mb-4 tracking-tight">
+                        Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-lime-600 to-emerald-600">Jane!</span>
+                    </h1>
+                    <p className="text-gray-600 max-w-2xl text-lg opacity-90 leading-relaxed">
+                        What would you like to create today? Select a tool below to get started.
+                    </p>
                 </div>
-                <button className="flex items-center gap-2 bg-lime-600 text-white px-5 py-2.5 rounded-xl font-semibold shadow-lg shadow-lime-100 hover:bg-lime-700 transition-colors">
-                    <Plus size={18} />
-                    <span>Quick Actions</span>
-                </button>
-            </header>
+                {/* Decorative Elements */}
+                <div className="absolute right-0 top-0 w-96 h-96 bg-gradient-to-br from-lime-200/30 to-emerald-200/30 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+            </div>
 
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                {[
-                    { label: 'Total Students', value: '450', color: 'bg-lime-400', img: 'https://picsum.photos/seed/kids1/200/200' },
-                    { label: 'Total Assignments', value: '1,050', color: 'bg-emerald-400', img: 'https://picsum.photos/seed/kids2/200/200' },
-                    { label: 'Total Classrooms', value: '20', color: 'bg-sky-400', img: 'https://picsum.photos/seed/kids3/200/200' },
-                ].map((stat, i) => (
-                    <div key={i} className={`relative overflow-hidden rounded-3xl p-8 h-44 flex flex-col justify-between group cursor-pointer`}>
-                        {/* Background Gradient Simulation */}
-                        <div className={`absolute inset-0 ${stat.color} opacity-10 group-hover:opacity-20 transition-opacity`}></div>
-                        <div className="relative z-10">
-                            <span className="text-4xl font-extrabold text-gray-800">{stat.value}</span>
-                            <p className="text-gray-500 font-medium mt-1">{stat.label}</p>
-                        </div>
-                        {/* Character Illustration */}
-                        <div className="absolute right-[-10px] bottom-[-10px] w-32 h-32 opacity-80 group-hover:scale-110 transition-transform">
-                            <img src={stat.img} alt="Character" className="rounded-full object-cover w-full h-full shadow-lg border-4 border-white" />
+            {/* Stats Overview */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
+                    <div className="absolute left-0 top-6 bottom-6 w-1 bg-lime-500 rounded-r-full"></div>
+                    <div className="ml-4">
+                        <p className="text-gray-400 text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-2">
+                            <BookOpen size={14} className="text-lime-500" />
+                            Total Topics
+                        </p>
+                        <h3 className="text-4xl font-extrabold text-gray-900">2</h3>
+                    </div>
+                </div>
+                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
+                    <div className="absolute left-0 top-6 bottom-6 w-1 bg-sky-500 rounded-r-full"></div>
+                    <div className="ml-4">
+                        <p className="text-gray-400 text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-2">
+                            <Layout size={14} className="text-sky-500" />
+                            Total Assets
+                        </p>
+                        <h3 className="text-4xl font-extrabold text-gray-900">3557</h3>
+                    </div>
+                </div>
+                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
+                    <div className="absolute left-0 top-6 bottom-6 w-1 bg-purple-500 rounded-r-full"></div>
+                    <div className="ml-4">
+                        <p className="text-gray-400 text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-2">
+                            <Sparkles size={14} className="text-purple-500" />
+                            This Week
+                        </p>
+                        <h3 className="text-4xl font-extrabold text-gray-900">0</h3>
+                    </div>
+                </div>
+            </div>
+
+            {/* AI Tools Grid */}
+            <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                <Wand2 size={20} className="text-lime-600" />
+                Quick Launch Tools
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-20">
+                {TOOLS.map((tool, idx) => (
+                    <div key={idx} className="bg-white rounded-2xl p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-gray-100 hover:shadow-xl hover:shadow-lime-100/50 hover:border-lime-200 transition-all duration-300 cursor-pointer flex flex-col items-start group relative h-64 overflow-hidden">
+                        {/* Hover Gradient Background */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-lime-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                        <div className="relative z-10 w-full flex flex-col h-full">
+                            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${tool.bg} ${tool.color} mb-5 group-hover:scale-110 transition-transform duration-300 shadow-sm`}>
+                                <tool.icon size={26} />
+                            </div>
+                            <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-lime-700 transition-colors">{tool.label}</h3>
+                            <p className="text-gray-500 text-sm leading-relaxed mb-4">{tool.desc}</p>
+
+                            <div className="mt-auto w-full flex items-center justify-between pt-4 border-t border-gray-50 group-hover:border-lime-100 transition-colors">
+                                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest group-hover:text-lime-600 transition-colors">Launch Tool</span>
+                                <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-lime-500 group-hover:text-white transition-all duration-300">
+                                    <ArrowRight size={14} className="-rotate-45 group-hover:rotate-0 transition-transform duration-300" />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 ))}
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Performance Chart */}
-                <div className="lg:col-span-2 bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
-                    <div className="flex justify-between items-center mb-6">
-                        <div>
-                            <h3 className="text-lg font-bold text-gray-800"><span className="text-lime-600">86.45%</span> Average Performance</h3>
-                        </div>
-                        <div className="flex gap-1 bg-gray-50 p-1 rounded-lg text-xs font-semibold text-gray-500">
-                            <button className="px-3 py-1 hover:text-lime-700">Weekly</button>
-                            <button className="px-3 py-1 hover:text-lime-700">Monthly</button>
-                            <button className="px-3 py-1 bg-lime-600 text-white shadow-sm rounded-md">Annually</button>
-                        </div>
-                    </div>
-                    <div className="h-64">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={PERFORMANCE_DATA}>
-                                <defs>
-                                    <linearGradient id="colorVal" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#84cc16" stopOpacity={0.2} />
-                                        <stop offset="95%" stopColor="#84cc16" stopOpacity={0} />
-                                    </linearGradient>
-                                </defs>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                                <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 11 }} />
-                                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 11 }} />
-                                <Tooltip
-                                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}
-                                    labelStyle={{ fontWeight: 'bold', color: '#374151' }}
-                                />
-                                <Area type="monotone" dataKey="value" stroke="#65a30d" strokeWidth={3} fillOpacity={1} fill="url(#colorVal)" />
-                            </AreaChart>
-                        </ResponsiveContainer>
-                    </div>
-                </div>
-
-                {/* Top Scoring Students */}
-                <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
-                    <h3 className="text-lg font-bold text-gray-800 mb-6">Top Scoring Students</h3>
-                    <div className="space-y-6">
-                        {TOP_STUDENTS.map((student, i) => (
-                            <div key={i} className="flex items-center justify-between group cursor-pointer">
-                                <div className="flex items-center gap-3">
-                                    <img src={student.image} className="w-10 h-10 rounded-full" alt="" />
-                                    <div>
-                                        <h4 className="font-semibold text-sm text-gray-800">{student.name}</h4>
-                                        <p className="text-xs text-gray-400">{student.class}</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-center gap-4">
-                                    <span className="font-bold text-gray-800">{student.score}%</span>
-                                    <div className="w-8 h-8 flex items-center justify-center rounded-full bg-lime-50 text-lime-600 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <Search size={14} />
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Classrooms Table */}
-                <div className="lg:col-span-3 bg-white rounded-3xl p-8 border border-gray-100 shadow-sm overflow-hidden">
-                    <div className="flex justify-between items-center mb-8">
-                        <h3 className="text-lg font-bold text-gray-800">Recent Classrooms</h3>
-                        <button className="text-sm font-semibold text-gray-500 hover:text-lime-600">View all</button>
-                    </div>
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left text-sm">
-                            <thead className="text-gray-400 font-semibold border-b border-gray-50">
-                                <tr>
-                                    <th className="pb-4">MY CLASS</th>
-                                    <th className="pb-4">STUDENTS</th>
-                                    <th className="pb-4">GRADE</th>
-                                    <th className="pb-4">START DATE</th>
-                                    <th className="pb-4 text-center">ACTION</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-50">
-                                {CLASSES_DATA.map((cls) => (
-                                    <tr key={cls.id} className="hover:bg-lime-50/50 transition-colors cursor-pointer" onClick={() => handleClassClick(cls.id)}>
-                                        <td className="py-5 font-semibold text-gray-800">{cls.name}</td>
-                                        <td className="py-5 text-gray-600">{cls.studentsCount}</td>
-                                        <td className="py-5">
-                                            <span className={`px-2.5 py-1 rounded-lg font-bold text-xs ${cls.grade === 'A' ? 'bg-lime-50 text-lime-600' :
-                                                    cls.grade === 'B' ? 'bg-blue-50 text-blue-600' :
-                                                        'bg-orange-50 text-orange-600'
-                                                }`}>
-                                                {cls.grade}
-                                            </span>
-                                        </td>
-                                        <td className="py-5 text-gray-500">{cls.startDate}</td>
-                                        <td className="py-5 text-center">
-                                            <button className="p-2 text-gray-400 hover:text-lime-600"><Plus size={18} /></button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
             </div>
         </div>
     );
