@@ -50,9 +50,9 @@ const ReadBookPage = () => {
     ];
 
     return (
-        <div className="h-screen flex flex-col bg-gray-50 overflow-hidden font-sans">
-            {/* 1. Fixed Header */}
-            <header className="shrink-0 h-16 bg-white/80 backdrop-blur-md border-b border-gray-200 px-6 flex items-center justify-between z-50 sticky top-0">
+        <div className="h-screen flex flex-col bg-gray-50 font-sans">
+            {/* 1. Sticky Header - This stays at top */}
+            <header className="sticky top-0 z-50 h-16 bg-white/95 backdrop-blur-md border-b border-gray-200 px-6 flex items-center justify-between shadow-sm">
                 <button
                     onClick={() => router.back()}
                     className="flex items-center gap-2 text-gray-600 hover:text-black transition-colors group px-3 py-1.5 rounded-lg hover:bg-gray-100"
@@ -61,65 +61,68 @@ const ReadBookPage = () => {
                     <span className="font-semibold text-sm">Back to Library</span>
                 </button>
                 <div className="flex items-center gap-4">
-                    {/* Optional: Add breadcrumbs or book title in header for context when scrolling */}
                     <span className="text-sm font-bold text-gray-400 hidden md:block">{book.title}</span>
                 </div>
             </header>
 
-            {/* 2. Main Split Layout */}
-            <main className="flex-1 flex overflow-hidden w-full items-start">
+            {/* 2. Main Split Layout - Independent Scroll Areas */}
+            <main className="flex-1 flex overflow-hidden w-full items-start gap-0">
 
-                {/* Left Panel: Book Details (Static - No Scroll) */}
-                <aside className="w-full md:w-[320px] lg:w-[360px] shrink-0 h-auto bg-white p-6 flex flex-col gap-6 border-r border-gray-200">
-
-                    {/* Cover Image - Modern styled */}
-                    <div className="w-full aspect-[2/3] rounded-2xl overflow-hidden shadow-2xl relative group ring-1 ring-gray-900/5 mx-auto max-w-[280px]">
-                        {book.cover ? (
-                            <img src={book.cover} alt={book.title} className="w-full h-full object-cover" />
-                        ) : (
-                            <div className={`w-full h-full ${book.color} flex flex-col items-center justify-center p-6 text-center`}>
-                                <Book className={`${book.iconColor} opacity-50 mb-4`} size={64} />
-                                <span className={`text-sm font-bold ${book.iconColor} uppercase tracking-wider opacity-60`}>{book.subject}</span>
+                {/* Left Panel: Book Details (Independent Scrollable Area) */}
+                <aside className="w-full md:w-[320px] lg:w-[360px] shrink-0 h-full bg-white border-r-2 border-gray-200 flex flex-col shadow-sm">
+                    <div className="p-6 flex flex-col gap-6 h-full overflow-y-auto custom-scrollbar">
+                        {/* Cover Image - Modern styled */}
+                        <div className="w-full aspect-[2/3] rounded-2xl overflow-hidden shadow-2xl relative group ring-1 ring-gray-900/5 mx-auto max-w-[280px] shrink-0">
+                            {book.cover ? (
+                                <img src={book.cover} alt={book.title} className="w-full h-full object-cover" />
+                            ) : (
+                                <div className={`w-full h-full ${book.color} flex flex-col items-center justify-center p-6 text-center`}>
+                                    <Book className={`${book.iconColor} opacity-50 mb-4`} size={64} />
+                                    <span className={`text-sm font-bold ${book.iconColor} uppercase tracking-wider opacity-60`}>{book.subject}</span>
+                                </div>
+                            )}
+                            {/* Type Badge Overlay */}
+                            <div className="absolute top-3 right-3">
+                                <span className="px-3 py-1 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-wider rounded-full shadow-lg">
+                                    {book.type}
+                                </span>
                             </div>
-                        )}
-                        {/* Type Badge Overlay */}
-                        <div className="absolute top-3 right-3">
-                            <span className="px-3 py-1 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-wider rounded-full shadow-lg">
-                                {book.type}
-                            </span>
                         </div>
-                    </div>
 
-                    {/* Book Info */}
-                    <div className="text-center space-y-2">
-                        <h1 className="text-2xl font-bold text-gray-900 leading-tight">{book.title}</h1>
-                        <p className="text-sm text-gray-500 font-medium">by <span className="text-gray-900">{book.author}</span></p>
-                    </div>
-
-                    {/* Meta Grid */}
-                    <div className="grid grid-cols-2 gap-3">
-                        <div className="bg-gray-50 p-3 rounded-xl text-center border border-gray-100">
-                            <p className="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1">Subject</p>
-                            <p className="font-bold text-gray-800 text-sm">{book.subject}</p>
+                        {/* Book Info */}
+                        <div className="text-center space-y-2 shrink-0">
+                            <h1 className="text-2xl font-bold text-gray-900 leading-tight">{book.title}</h1>
+                            <p className="text-sm text-gray-500 font-medium">by <span className="text-gray-900">{book.author}</span></p>
                         </div>
-                        <div className="bg-gray-50 p-3 rounded-xl text-center border border-gray-100">
-                            <p className="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1">Level</p>
-                            <p className="font-bold text-gray-800 text-sm">{book.classLevel}</p>
-                        </div>
-                    </div>
 
-                    {/* Actions */}
-                    <div className="pt-6">
-                        <Link
-                            href={`/library/${book.id}/manage`}
-                            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-lime-600 text-white font-bold text-sm shadow-lg shadow-lime-200 hover:bg-lime-700 transition-all hover:-translate-y-0.5"
-                        >
-                            Manage Resource
-                        </Link>
+                        {/* Meta Grid */}
+                        <div className="grid grid-cols-2 gap-3 shrink-0">
+                            <div className="bg-gray-50 p-3 rounded-xl text-center border border-gray-100">
+                                <p className="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1">Subject</p>
+                                <p className="font-bold text-gray-800 text-sm">{book.subject}</p>
+                            </div>
+                            <div className="bg-gray-50 p-3 rounded-xl text-center border border-gray-100">
+                                <p className="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1">Level</p>
+                                <p className="font-bold text-gray-800 text-sm">{book.classLevel}</p>
+                            </div>
+                        </div>
+
+                        {/* Spacer */}
+                        <div className="flex-1"></div>
+
+                        {/* Actions - Always at bottom */}
+                        <div className="shrink-0">
+                            <Link
+                                href={`/library/${book.id}/manage`}
+                                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-lime-600 text-white font-bold text-sm shadow-lg shadow-lime-200 hover:bg-lime-700 transition-all hover:-translate-y-0.5"
+                            >
+                                Manage Resource
+                            </Link>
+                        </div>
                     </div>
                 </aside>
 
-                {/* Right Panel: Content (Scrollable) */}
+                {/* Right Panel: Content (Independent Scrollable Area) */}
                 <section className="flex-1 h-full overflow-y-auto bg-gray-50/50 p-6 lg:p-10 custom-scrollbar">
                     <div className="max-w-3xl mx-auto space-y-10">
                         {/* Overview */}
