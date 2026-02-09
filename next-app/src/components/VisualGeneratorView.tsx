@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import {
     Sparkles, Image as ImageIcon, ChevronDown, ChevronLeft, ChevronRight, Check, X,
     ArrowLeft, Download, ZoomIn, ZoomOut, RotateCcw, CheckCircle2, RefreshCw,
-    Send, Mic, Bot, Zap, Brush, PenTool, Frame, ImagePlus, BookOpen
+    Send, Mic, Bot, Zap, Brush, PenTool, Frame, ImagePlus, BookOpen, Search, Layers, Maximize2
 } from 'lucide-react';
 import { saveGeneratedContent, generateId } from '@/lib/storage';
 
@@ -15,6 +15,24 @@ interface GeneratedVisual {
     id: string;
     url: string;
     style: string;
+}
+
+interface Chapter {
+    id: string;
+    title: string;
+    pages: number;
+}
+
+interface Book {
+    id: string;
+    title: string;
+    author: string;
+    subject: string;
+    classLevel: string;
+    cover?: string;
+    color: string;
+    iconColor: string;
+    chapters?: Chapter[];
 }
 
 // Custom Dropdown Component - Underline Style like LessonPlanner
@@ -86,11 +104,70 @@ const VisualGeneratorView: React.FC = () => {
     const [isSaved, setIsSaved] = useState(false);
     const [chatMessage, setChatMessage] = useState('');
 
+    // Book Mode States
+    const [isBookPickerOpen, setIsBookPickerOpen] = useState(false);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [books, setBooks] = useState<Book[]>([]);
+    const [selectedBook, setSelectedBook] = useState<Book | null>(null);
+    const [selectedChapters, setSelectedChapters] = useState<Set<string>>(new Set());
+    const [bookSearchQuery, setBookSearchQuery] = useState('');
+    const [isChapterDropdownOpen, setIsChapterDropdownOpen] = useState(false);
+
+    const dropdownRef = useRef<HTMLDivElement>(null);
+    const chapterDropdownRef = useRef<HTMLDivElement>(null);
+
     const gradeOptions = ['Elementary School', 'Middle School', 'High School', 'University / Higher Ed'];
     const styleOptions = ['Scientific Diagram', 'Minimalist Illustration', 'Photorealistic Asset', 'Artistic Watercolor', 'Cinematic 3D Render'];
 
+    // Load books from localStorage
+    useEffect(() => {
+        const saved = localStorage.getItem('library_resources');
+        if (saved) setBooks(JSON.parse(saved));
+    }, []);
+
+    // Close dropdowns on outside click
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setIsDropdownOpen(false);
+            }
+            if (chapterDropdownRef.current && !chapterDropdownRef.current.contains(event.target as Node)) {
+                setIsChapterDropdownOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const filteredBooks = books.filter(book =>
+        book.title.toLowerCase().includes(bookSearchQuery.toLowerCase()) ||
+        book.author.toLowerCase().includes(bookSearchQuery.toLowerCase())
+    );
+
+    const handleBookSelect = (book: Book) => {
+        setSelectedBook(book);
+        setSelectedChapters(new Set());
+        setBookSearchQuery('');
+        setIsDropdownOpen(false);
+        setIsBookPickerOpen(false);
+        if (book.classLevel) setGrade(book.classLevel);
+    };
+
+    const toggleChapter = (chapterId: string) => {
+        const newSelected = new Set(selectedChapters);
+        if (newSelected.has(chapterId)) newSelected.delete(chapterId);
+        else newSelected.add(chapterId);
+        setSelectedChapters(newSelected);
+    };
+
+    const clearBookSelection = () => {
+        setSelectedBook(null);
+        setSelectedChapters(new Set());
+    };
+
     const handleGenerate = () => {
-        if (!topic.trim()) return;
+        const canGenerate = sourceMode === 'topic' ? topic.trim() : selectedBook;
+        if (!canGenerate) return;
         setViewState('generating');
         setTimeout(() => {
             setGeneratedVisuals([
@@ -132,13 +209,13 @@ const VisualGeneratorView: React.FC = () => {
                 <div className="absolute w-[400px] h-[400px] bg-teal-100 rounded-full blur-[100px] top-[20%] right-[10%] opacity-50 pointer-events-none" />
 
                 {/* Tool Name - Top Left */}
-                <div className="absolute top-4 left-6 flex items-center gap-2 z-20">
-                    <div className="w-8 h-8 bg-gradient-to-br from-lime-400 to-emerald-500 rounded-lg flex items-center justify-center shadow-lg shadow-emerald-200">
-                        <ImageIcon size={16} className="text-white" />
+                <div className="absolute top-6 left-8 flex items-center gap-3 z-20">
+                    <div className="w-12 h-12 bg-gradient-to-br from-lime-400 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-200">
+                        <ImageIcon size={24} className="text-white" />
                     </div>
                     <div>
-                        <h2 className="text-xs font-bold text-slate-800">Visuals Generator</h2>
-                        <p className="text-[9px] text-slate-500 uppercase tracking-widest font-bold">AI Powered</p>
+                        <h2 className="text-lg font-bold text-slate-800">Visuals Generator</h2>
+                        <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">AI Powered</p>
                     </div>
                 </div>
 
@@ -166,53 +243,199 @@ const VisualGeneratorView: React.FC = () => {
                         </button>
                     </div>
 
-                    {/* Heading - Single Line */}
+                    {/* Heading - Changes based on mode */}
                     <h1 className="text-4xl md:text-5xl font-serif italic text-slate-900 mb-3 text-center whitespace-nowrap" style={{ fontFamily: "'Georgia', serif" }}>
-                        What are we <span className="text-emerald-600">visualizing</span> today?
+                        {sourceMode === 'topic' ? (
+                            <>What are we <span className="text-emerald-600">visualizing</span> today?</>
+                        ) : (
+                            <>Which book are we <span className="text-emerald-600">illustrating</span> today?</>
+                        )}
                     </h1>
-                    <p className="text-slate-500 font-light text-base tracking-tight mb-8">AI-powered education, rendered with precision.</p>
+                    <p className="text-slate-500 font-light text-base tracking-tight mb-8">
+                        {sourceMode === 'topic'
+                            ? 'AI-powered education, rendered with precision.'
+                            : 'Extract precision visuals from your favorite textbooks.'
+                        }
+                    </p>
 
                     {/* Glass Panel - Compact */}
                     <div className="w-full bg-white/45 backdrop-blur-[20px] rounded-[40px] p-8 md:p-10 relative border border-white/60 shadow-[0_4px_24px_-1px_rgba(0,0,0,0.05),0_40px_80px_-20px_rgba(0,0,0,0.1),inset_0_0_0_1px_rgba(255,255,255,0.4)]">
-                        <div className="space-y-8">
-                            {/* Topic Input - Underline Style */}
-                            <div>
-                                <label className="block text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-2">
-                                    Topic or Description
-                                </label>
-                                <input
-                                    type="text"
-                                    value={topic}
-                                    onChange={(e) => setTopic(e.target.value)}
-                                    className="w-full bg-transparent border-0 border-b-2 border-slate-200 px-0 py-3 text-lg font-medium text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 transition-all"
-                                    placeholder="e.g., Water cycle, Solar system, Cell division..."
-                                />
-                            </div>
+                        <div className="space-y-6">
+                            {/* Topic Mode - Input */}
+                            {sourceMode === 'topic' && (
+                                <div>
+                                    <label className="block text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-2">
+                                        Topic or Description
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={topic}
+                                        onChange={(e) => setTopic(e.target.value)}
+                                        className="w-full bg-transparent border-0 border-b-2 border-slate-200 px-0 py-3 text-lg font-medium text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 transition-all"
+                                        placeholder="e.g., Water cycle, Solar system, Cell division..."
+                                    />
+                                </div>
+                            )}
 
-                            {/* Custom Dropdowns Grid */}
-                            <div className="grid grid-cols-2 gap-8">
-                                <CustomDropdown
-                                    label="Grade Level"
-                                    value={grade}
-                                    onChange={setGrade}
-                                    options={gradeOptions}
-                                    placeholder="Select grade"
-                                />
-                                <CustomDropdown
-                                    label="Visual Style"
-                                    value={visualStyle}
-                                    onChange={setVisualStyle}
-                                    options={styleOptions}
-                                    placeholder="Select style"
-                                />
-                            </div>
+                            {/* Book Mode - Clean Inline Design */}
+                            {sourceMode === 'book' && (
+                                <div className="space-y-6">
+                                    {/* Book Search */}
+                                    <div className="relative" ref={dropdownRef}>
+                                        <label className="block text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-2">
+                                            Book Title or ISBN
+                                        </label>
+                                        <div className="relative">
+                                            <input
+                                                type="text"
+                                                value={selectedBook ? selectedBook.title : bookSearchQuery}
+                                                onChange={(e) => {
+                                                    if (selectedBook) {
+                                                        clearBookSelection();
+                                                    }
+                                                    setBookSearchQuery(e.target.value);
+                                                    setIsDropdownOpen(true);
+                                                }}
+                                                onFocus={() => !selectedBook && setIsDropdownOpen(true)}
+                                                placeholder="Search for Campbell Biology, University Physics..."
+                                                className={`w-full bg-transparent border-0 border-b-2 px-0 py-3 text-lg font-medium placeholder:text-slate-400 focus:outline-none transition-all pr-10 ${selectedBook ? 'border-emerald-500 text-emerald-700' : 'border-slate-200 text-slate-800 focus:border-emerald-500'
+                                                    }`}
+                                            />
+                                            <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                                                {selectedBook && (
+                                                    <button onClick={clearBookSelection} className="p-1 text-slate-400 hover:text-red-500 transition-all">
+                                                        <X size={16} />
+                                                    </button>
+                                                )}
+                                                <Search size={18} className="text-slate-400" />
+                                            </div>
+                                        </div>
+
+                                        {/* Book Dropdown */}
+                                        {isDropdownOpen && !selectedBook && filteredBooks.length > 0 && (
+                                            <div className="absolute z-50 mt-2 w-full bg-white rounded-2xl shadow-xl border border-slate-100 py-2 max-h-[200px] overflow-y-auto">
+                                                {filteredBooks.slice(0, 5).map((book) => (
+                                                    <button key={book.id} onClick={() => handleBookSelect(book)} className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-emerald-50 transition-all text-left group">
+                                                        <div className={`w-8 h-10 rounded-lg ${book.cover ? '' : book.color} flex items-center justify-center overflow-hidden shadow-sm`}>
+                                                            {book.cover ? <img src={book.cover} alt="" className="w-full h-full object-cover" /> : <BookOpen size={14} className={book.iconColor} />}
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <h4 className="font-bold text-sm text-slate-800 group-hover:text-emerald-700 truncate">{book.title}</h4>
+                                                            <p className="text-[10px] text-slate-500">{book.author}</p>
+                                                        </div>
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Chapter & Topic Dropdowns - Side by Side */}
+                                    <div className="grid grid-cols-2 gap-8">
+                                        {/* Select Chapter Dropdown */}
+                                        <div className="relative" ref={chapterDropdownRef}>
+                                            <label className="block text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-2">
+                                                Select Chapter
+                                            </label>
+                                            <button
+                                                onClick={() => selectedBook && setIsChapterDropdownOpen(!isChapterDropdownOpen)}
+                                                disabled={!selectedBook}
+                                                className={`w-full flex items-center justify-between border-0 border-b-2 px-0 py-3 text-left transition-all ${!selectedBook
+                                                    ? 'border-slate-200 cursor-not-allowed'
+                                                    : selectedChapters.size > 0
+                                                        ? 'border-emerald-500'
+                                                        : 'border-slate-200 hover:border-slate-300'
+                                                    }`}
+                                            >
+                                                <span className={`text-lg font-medium ${selectedChapters.size > 0 ? 'text-emerald-700' : 'text-slate-400'
+                                                    }`}>
+                                                    {selectedChapters.size > 0
+                                                        ? `${selectedChapters.size} chapter${selectedChapters.size > 1 ? 's' : ''} selected`
+                                                        : 'Select a chapter...'
+                                                    }
+                                                </span>
+                                                <ChevronDown size={16} className={`text-slate-400 transition-transform duration-200 ${isChapterDropdownOpen ? 'rotate-180' : ''}`} />
+                                            </button>
+
+                                            {/* Chapter Dropdown List */}
+                                            {isChapterDropdownOpen && selectedBook && selectedBook.chapters && (
+                                                <div className="absolute z-50 mt-2 w-full bg-white rounded-xl shadow-xl border border-slate-100 py-1 max-h-[200px] overflow-y-auto animate-fadeIn">
+                                                    {selectedBook.chapters.length > 0 ? (
+                                                        selectedBook.chapters.map((chapter, idx) => (
+                                                            <button
+                                                                key={chapter.id}
+                                                                type="button"
+                                                                onClick={() => toggleChapter(chapter.id)}
+                                                                className={`w-full px-4 py-2.5 text-left text-sm font-medium transition-all flex items-center gap-3
+                                                                    ${selectedChapters.has(chapter.id) ? 'bg-emerald-50 text-emerald-700' : 'text-slate-700 hover:bg-slate-50'}`}
+                                                            >
+                                                                <span className={`w-6 h-6 rounded-md text-xs font-bold flex items-center justify-center shrink-0 ${selectedChapters.has(chapter.id) ? 'bg-emerald-500 text-white' : 'bg-slate-100 text-slate-500'
+                                                                    }`}>
+                                                                    {idx + 1}
+                                                                </span>
+                                                                <span className="flex-1 truncate">{chapter.title}</span>
+                                                                {selectedChapters.has(chapter.id) && <Check size={14} className="text-emerald-600 shrink-0" />}
+                                                            </button>
+                                                        ))
+                                                    ) : (
+                                                        <div className="px-4 py-3 text-sm text-slate-400 text-center">No chapters available</div>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* Topic/Concept Dropdown */}
+                                        <div>
+                                            <label className="block text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-2">
+                                                Topic/Concept
+                                            </label>
+                                            <div className="relative">
+                                                <input
+                                                    type="text"
+                                                    value={topic}
+                                                    onChange={(e) => setTopic(e.target.value)}
+                                                    disabled={!selectedBook || selectedChapters.size === 0}
+                                                    placeholder="Choose a concept..."
+                                                    className={`w-full bg-transparent border-0 border-b-2 px-0 py-3 text-lg font-medium placeholder:text-slate-400 focus:outline-none transition-all pr-8 ${!selectedBook || selectedChapters.size === 0
+                                                        ? 'border-slate-200 cursor-not-allowed text-slate-300'
+                                                        : topic.trim()
+                                                            ? 'border-emerald-500 text-emerald-700'
+                                                            : 'border-slate-200 text-slate-800 focus:border-emerald-500'
+                                                        }`}
+                                                />
+                                                <div className={`absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 rounded ${selectedBook && selectedChapters.size > 0 ? 'bg-emerald-100' : 'bg-slate-100'
+                                                    }`} />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Grade & Style Dropdowns - Only show for Topic mode */}
+                            {sourceMode === 'topic' && (
+                                <div className="grid grid-cols-2 gap-8">
+                                    <CustomDropdown
+                                        label="Grade Level"
+                                        value={grade}
+                                        onChange={setGrade}
+                                        options={gradeOptions}
+                                        placeholder="Select grade"
+                                    />
+                                    <CustomDropdown
+                                        label="Visual Style"
+                                        value={visualStyle}
+                                        onChange={setVisualStyle}
+                                        options={styleOptions}
+                                        placeholder="Select style"
+                                    />
+                                </div>
+                            )}
                         </div>
 
                         {/* Magic Button */}
                         <div className="absolute -bottom-10 left-1/2 -translate-x-1/2">
                             <button
                                 onClick={handleGenerate}
-                                disabled={!topic.trim()}
+                                disabled={sourceMode === 'topic' ? !topic.trim() : !selectedBook}
                                 className="w-20 h-20 bg-gradient-to-br from-lime-400 to-emerald-500 rounded-full flex items-center justify-center text-white relative group transition-all duration-400 hover:scale-110 hover:shadow-[0_20px_40px_-5px_rgba(16,185,129,0.4)] disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-none"
                             >
                                 <Sparkles size={32} className="drop-shadow-md" />
@@ -221,18 +444,115 @@ const VisualGeneratorView: React.FC = () => {
                         </div>
                     </div>
 
-                    {/* Engine Status */}
-                    <div className="mt-16 text-center">
-                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-slate-200 text-slate-400 text-[9px] uppercase tracking-widest font-bold bg-white/50 backdrop-blur-sm">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                            Engine Ready v3.1
+
+                </main>
+
+                {/* Chapter/Book Picker Modal */}
+                {isBookPickerOpen && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+                        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-xl max-h-[70vh] overflow-hidden animate-fadeIn">
+                            <div className="p-4 border-b border-slate-100 flex items-center justify-between">
+                                <h3 className="text-lg font-bold text-slate-800">
+                                    {selectedBook ? 'Select Chapters' : 'Select Book'}
+                                </h3>
+                                <button onClick={() => setIsBookPickerOpen(false)} className="p-2 text-slate-400 hover:text-slate-600 rounded-xl">
+                                    <X size={18} />
+                                </button>
+                            </div>
+
+                            {/* Show chapters if book is selected */}
+                            {selectedBook ? (
+                                <div className="p-4">
+                                    {/* Selected Book Info */}
+                                    <div className="flex items-center gap-3 bg-emerald-50 rounded-xl p-3 mb-4 border border-emerald-200">
+                                        <div className={`w-10 h-12 rounded-lg ${selectedBook.cover ? '' : selectedBook.color} flex items-center justify-center overflow-hidden shadow-sm`}>
+                                            {selectedBook.cover ? <img src={selectedBook.cover} alt="" className="w-full h-full object-cover" /> : <BookOpen size={16} className={selectedBook.iconColor} />}
+                                        </div>
+                                        <div className="flex-1">
+                                            <h4 className="font-bold text-sm text-slate-800">{selectedBook.title}</h4>
+                                            <p className="text-xs text-slate-500">{selectedBook.author}</p>
+                                        </div>
+                                    </div>
+
+                                    {/* Chapters Grid */}
+                                    {selectedBook.chapters && selectedBook.chapters.length > 0 ? (
+                                        <div className="grid grid-cols-1 gap-2 max-h-[300px] overflow-y-auto">
+                                            {selectedBook.chapters.map((chapter, idx) => (
+                                                <button
+                                                    key={chapter.id}
+                                                    onClick={() => toggleChapter(chapter.id)}
+                                                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all text-left ${selectedChapters.has(chapter.id)
+                                                        ? 'bg-emerald-500 text-white shadow-md'
+                                                        : 'bg-slate-50 text-slate-700 hover:bg-emerald-50 border border-slate-200'
+                                                        }`}
+                                                >
+                                                    <span className={`w-7 h-7 rounded-lg text-xs font-bold flex items-center justify-center shrink-0 ${selectedChapters.has(chapter.id) ? 'bg-white/20' : 'bg-white'
+                                                        }`}>
+                                                        {idx + 1}
+                                                    </span>
+                                                    <span className="flex-1">{chapter.title}</span>
+                                                    {selectedChapters.has(chapter.id) && <Check size={16} />}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className="text-center py-8 text-slate-400">
+                                            <Layers size={32} className="mx-auto mb-2 opacity-50" />
+                                            <p className="text-sm">No chapters available</p>
+                                        </div>
+                                    )}
+
+                                    {/* Done Button */}
+                                    <button
+                                        onClick={() => setIsBookPickerOpen(false)}
+                                        className="w-full mt-4 py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-bold text-sm transition-all"
+                                    >
+                                        Done ({selectedChapters.size} selected)
+                                    </button>
+                                </div>
+                            ) : (
+                                <>
+                                    <div className="p-3 border-b border-slate-100">
+                                        <div className="relative">
+                                            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                                            <input
+                                                type="text"
+                                                value={bookSearchQuery}
+                                                onChange={(e) => setBookSearchQuery(e.target.value)}
+                                                placeholder="Search..."
+                                                className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 focus:outline-none"
+                                                autoFocus
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="overflow-y-auto max-h-[400px] divide-y divide-slate-100">
+                                        {filteredBooks.length > 0 ? (
+                                            filteredBooks.map((book) => (
+                                                <button key={book.id} onClick={() => handleBookSelect(book)} className="w-full flex items-center gap-3 p-3 hover:bg-emerald-50 text-left group">
+                                                    <div className={`w-10 h-12 rounded-lg ${book.cover ? '' : book.color} flex items-center justify-center overflow-hidden shadow-sm`}>
+                                                        {book.cover ? <img src={book.cover} alt="" className="w-full h-full object-cover" /> : <BookOpen size={16} className={book.iconColor} />}
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <h4 className="font-bold text-sm text-slate-800 group-hover:text-emerald-700">{book.title}</h4>
+                                                        <p className="text-xs text-slate-500">{book.author} • {book.classLevel}</p>
+                                                    </div>
+                                                </button>
+                                            ))
+                                        ) : (
+                                            <div className="p-8 text-center text-slate-400">
+                                                <BookOpen size={32} className="mx-auto mb-2 opacity-50" />
+                                                <p className="text-sm">No books found in library</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </div>
-                </main>
+                )}
             </div>
         );
     }
-
     // GENERATING VIEW - Premium Orbital Design
     if (viewState === 'generating') {
         return (
@@ -452,8 +772,8 @@ const VisualGeneratorView: React.FC = () => {
                             <button
                                 onClick={handleSave}
                                 className={`px-5 py-3 border rounded-2xl text-sm font-bold flex items-center gap-2 shadow-sm transition-all ${isSaved
-                                        ? 'bg-emerald-500 text-white border-emerald-500'
-                                        : 'bg-white border-slate-200 text-slate-700 hover:border-emerald-200 hover:bg-emerald-50'
+                                    ? 'bg-emerald-500 text-white border-emerald-500'
+                                    : 'bg-white border-slate-200 text-slate-700 hover:border-emerald-200 hover:bg-emerald-50'
                                     }`}
                             >
                                 {isSaved ? <CheckCircle2 size={18} /> : <BookOpen size={18} />}
