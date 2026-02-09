@@ -1,9 +1,92 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Sparkles, BookOpen, ChevronDown } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Sparkles, BookOpen, ChevronDown, Check } from 'lucide-react';
 
 type PlanMode = 'topic' | 'book';
+
+// Custom Dropdown Component
+const CustomDropdown = ({
+    label,
+    value,
+    onChange,
+    options,
+    placeholder
+}: {
+    label: string;
+    value: string;
+    onChange: (val: string) => void;
+    options: string[];
+    placeholder: string;
+}) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setIsOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const handleSelect = (option: string) => {
+        onChange(option);
+        setIsOpen(false);
+    };
+
+    return (
+        <div className="relative" ref={dropdownRef}>
+            <label className="block text-sm font-bold text-slate-700 mb-2">
+                {label}
+            </label>
+
+            {/* Dropdown Trigger */}
+            <button
+                type="button"
+                onClick={() => setIsOpen(!isOpen)}
+                className={`w-full flex items-center justify-between bg-transparent border-0 border-b-2 
+                    ${isOpen ? 'border-lime-500' : 'border-slate-200'} 
+                    px-0 py-3 text-sm font-medium transition-all cursor-pointer text-left
+                    hover:border-lime-400`}
+            >
+                <span className={value ? 'text-slate-800' : 'text-slate-400'}>
+                    {value || placeholder}
+                </span>
+                <ChevronDown
+                    size={16}
+                    className={`text-slate-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+                />
+            </button>
+
+            {/* Dropdown Menu */}
+            {isOpen && (
+                <div className="absolute z-50 mt-2 w-full bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 py-2 max-h-[240px] overflow-y-auto animate-fadeIn">
+                    {options.map((option) => (
+                        <button
+                            key={option}
+                            type="button"
+                            onClick={() => handleSelect(option)}
+                            className={`w-full px-4 py-2.5 text-left text-sm font-medium transition-all flex items-center justify-between
+                                ${value === option
+                                    ? 'bg-lime-50 text-lime-700'
+                                    : 'text-slate-700 hover:bg-slate-50'
+                                }`}
+                        >
+                            <span>{option}</span>
+                            {value === option && (
+                                <Check size={14} className="text-lime-600" />
+                            )}
+                        </button>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+};
 
 const LessonPlannerView: React.FC = () => {
     const [mode, setMode] = useState<PlanMode>('topic');
@@ -62,46 +145,6 @@ const LessonPlannerView: React.FC = () => {
         'Audio-Visual',
         'Field Visit Based'
     ];
-
-    // Custom Select Component
-    const CustomSelect = ({
-        label,
-        value,
-        onChange,
-        options,
-        placeholder
-    }: {
-        label: string;
-        value: string;
-        onChange: (val: string) => void;
-        options: string[];
-        placeholder: string;
-    }) => (
-        <div className="relative">
-            <label className="block text-sm font-bold text-slate-700 mb-2">
-                {label}
-            </label>
-            <div className="relative">
-                <select
-                    value={value}
-                    onChange={(e) => onChange(e.target.value)}
-                    className="w-full appearance-none bg-transparent border-0 border-b-2 border-slate-200 
-                        px-0 py-3 pr-8 text-sm font-medium text-slate-800 
-                        focus:border-lime-500 focus:ring-0 focus:outline-none
-                        transition-all cursor-pointer"
-                >
-                    <option value="" className="text-slate-400">{placeholder}</option>
-                    {options.map((option) => (
-                        <option key={option} value={option} className="text-slate-800 py-2">{option}</option>
-                    ))}
-                </select>
-                <ChevronDown
-                    size={16}
-                    className="absolute right-0 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
-                />
-            </div>
-        </div>
-    );
 
     return (
         <div className="h-full w-full flex flex-col relative bg-white">
@@ -179,37 +222,37 @@ const LessonPlannerView: React.FC = () => {
                         </div>
                     </div>
 
-                    {/* Options Grid - All separate fields with underline style */}
+                    {/* Options Grid - Custom Dropdowns */}
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mt-8">
-                        <CustomSelect
+                        <CustomDropdown
                             label="Grade"
                             value={grade}
                             onChange={setGrade}
                             options={gradeOptions}
                             placeholder="Select grade..."
                         />
-                        <CustomSelect
+                        <CustomDropdown
                             label="Duration"
                             value={duration}
                             onChange={setDuration}
                             options={durationOptions}
                             placeholder="Per session..."
                         />
-                        <CustomSelect
+                        <CustomDropdown
                             label="Days"
                             value={days}
                             onChange={setDays}
                             options={daysOptions}
                             placeholder="Total days..."
                         />
-                        <CustomSelect
+                        <CustomDropdown
                             label="Language"
                             value={language}
                             onChange={setLanguage}
                             options={languageOptions}
                             placeholder="Select language..."
                         />
-                        <CustomSelect
+                        <CustomDropdown
                             label="Lesson Format"
                             value={format}
                             onChange={setFormat}
@@ -248,19 +291,14 @@ const LessonPlannerView: React.FC = () => {
                 </div>
             </div>
 
-            {/* Custom styles for select dropdown */}
-            <style jsx global>{`
-                select option {
-                    padding: 12px 16px;
-                    background: white;
-                    color: #1e293b;
+            {/* Animation styles */}
+            <style jsx>{`
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(-8px); }
+                    to { opacity: 1; transform: translateY(0); }
                 }
-                select option:hover {
-                    background: #f0fdf4;
-                }
-                select:focus {
-                    outline: none !important;
-                    box-shadow: none !important;
+                .animate-fadeIn {
+                    animation: fadeIn 0.2s ease-out;
                 }
             `}</style>
         </div>
