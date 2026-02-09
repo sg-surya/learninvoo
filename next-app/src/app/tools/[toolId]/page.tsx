@@ -23,12 +23,13 @@ const MOCK_BOOKS = [
 
 interface ToolInput {
     id: string;
-    type: 'text' | 'textarea' | 'select' | 'number' | 'file' | 'book-select' | 'checkbox';
+    type: 'text' | 'textarea' | 'select' | 'number' | 'file' | 'book-select' | 'checkbox' | 'duration-preset';
     label: string;
     placeholder?: string;
     options?: string[];
     readOnly?: boolean;
     defaultValue?: string;
+    icon?: string;
 }
 
 interface ToolConfigItem {
@@ -49,21 +50,23 @@ const TOOLS_CONFIG: Record<string, ToolConfigItem> = {
         hasSourceToggle: true,
         inputs: {
             topic: [
-                { id: 'topic', type: 'text', label: 'Topic', placeholder: 'e.g., Photosynthesis' },
-                { id: 'grade', type: 'select', label: 'Grade Level', options: ['Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 'Grade 6-8', 'High School'] },
-                { id: 'duration', type: 'text', label: 'Duration', placeholder: 'e.g., 45 mins' },
-                { id: 'notes', type: 'textarea', label: 'Specific Objectives / Notes', placeholder: 'Any specific standards or activities to include...' }
+                { id: 'topic', type: 'text', label: 'Topic', placeholder: 'e.g., Photosynthesis', icon: 'sparkles' },
+                { id: 'grade', type: 'select', label: 'Grade Level', options: ['Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 'Grade 6-8', 'High School'], icon: 'users' },
+                { id: 'lessonType', type: 'select', label: 'Lesson Type', options: ['Introduction', 'Deep Dive', 'Revision', 'Lab/Practical', 'Assessment', 'Project Based'], icon: 'layers' },
+                { id: 'duration', type: 'duration-preset', label: 'Duration', options: ['30 mins', '45 mins', '60 mins', '90 mins', '2 hours'], icon: 'clock' },
+                { id: 'objectives', type: 'textarea', label: 'Learning Objectives', placeholder: 'What should students learn by the end?', icon: 'target' },
+                { id: 'notes', type: 'textarea', label: 'Additional Notes', placeholder: 'Any specific standards, activities, or resources to include...', icon: 'file-text' }
             ],
             book: [
-                { id: 'book', type: 'book-select', label: 'Book / Source', placeholder: 'Select a book...' },
-                { id: 'chapter', type: 'text', label: 'Chapter / Unit', placeholder: 'e.g., Chapter 4' },
-                { id: 'grade', type: 'text', label: 'Grade Level (Auto-fetched)', readOnly: true, placeholder: 'Select a book first...' },
-                { id: 'duration', type: 'text', label: 'Duration', placeholder: 'e.g., 45 mins' }
+                { id: 'book', type: 'book-select', label: 'Book / Source', placeholder: 'Select a book...', icon: 'book' },
+                { id: 'lessonType', type: 'select', label: 'Lesson Type', options: ['Introduction', 'Deep Dive', 'Revision', 'Lab/Practical', 'Assessment', 'Project Based'], icon: 'layers' },
+                { id: 'duration', type: 'duration-preset', label: 'Duration', options: ['30 mins', '45 mins', '60 mins', '90 mins', '2 hours'], icon: 'clock' },
+                { id: 'objectives', type: 'textarea', label: 'Learning Objectives', placeholder: 'What should students learn by the end?', icon: 'target' }
             ]
         },
         dummyOutput: {
             type: 'text',
-            content: `## Weekly Lesson Plan: Photosynthesis\n\n**Grade Level:** 5th Grade\n**Subject:** Science\n\n### Monday: Introduction to Photosynthesis\n- **Objective:** Students will define photosynthesis and identify the necessary components (sunlight, water, carbon dioxide).\n- **Activity:** "Plant needs" interactive discussion and diagram labeling.\n\n### Tuesday: The Process\n- **Objective:** detailed breakdown of the chemical process (simplified).\n- **Activity:** Leaf diagram coloring sheet showing inputs and outputs.\n\n### Wednesday: Experiment Day\n- **Objective:** Observe photosynthesis in action.\n- **Activity:** Leaf in water experiment to see oxygen bubbles.\n\n### Thursday: Role of Chlorophyll\n- **Objective:** Understand why plants are green.\n- **Activity:** Chromatography experiment with spinach leaves.\n\n### Friday: Review and Quiz\n- **Objective:** Assess understanding.\n- **Activity:** Group presentation and short quiz.`
+            content: `## Weekly Lesson Plan: Photosynthesis\n\n**Grade Level:** 5th Grade\n**Subject:** Science\n**Duration:** 45 minutes per session\n\n---\n\n### 📚 Learning Objectives\n- Define photosynthesis and identify key components\n- Explain the role of sunlight, water, and CO₂\n- Observe and document the process\n\n---\n\n### 📅 Day 1: Introduction to Photosynthesis\n**Duration:** 45 mins\n\n| Time | Activity | Resources |\n|------|----------|-----------|\n| 0-10 min | Hook: Show plant time-lapse video | Projector |\n| 10-25 min | Interactive lecture with diagram | Whiteboard |\n| 25-40 min | Pair-share: "What do plants need?" | Worksheets |\n| 40-45 min | Exit ticket | Index cards |\n\n**Assessment:** Verbal check-in, Exit ticket review\n\n---\n\n### 📅 Day 2: The Process Deep Dive\n**Duration:** 45 mins\n\n| Time | Activity | Resources |\n|------|----------|-----------|\n| 0-5 min | Recap Day 1 | - |\n| 5-20 min | Chemical equation breakdown | Chart |\n| 20-35 min | Leaf diagram coloring | Worksheets |\n| 35-45 min | Group discussion | - |\n\n---\n\n### 📅 Day 3: Experiment Day 🧪\n**Duration:** 45 mins\n\n| Time | Activity | Resources |\n|------|----------|-----------|\n| 0-10 min | Safety briefing | Lab coats |\n| 10-35 min | Leaf in water experiment | Beakers, leaves |\n| 35-45 min | Record observations | Lab notebooks |\n\n---\n\n### ✅ Assessment Rubric\n| Criteria | Excellent (4) | Good (3) | Needs Work (2) |\n|----------|--------------|----------|----------------|\n| Understanding | Clear explanation | Partial | Confused |\n| Participation | Active | Moderate | Minimal |`
         }
     },
     'quiz-exam-generator': {
@@ -217,6 +220,10 @@ const ToolPage = () => {
     const [books, setBooks] = useState<any[]>([]);
     const [isBookModalOpen, setIsBookModalOpen] = useState(false);
     const [searchBookQuery, setSearchBookQuery] = useState('');
+
+    // Chapter selection state
+    const [selectedBookInModal, setSelectedBookInModal] = useState<any>(null);
+    const [selectedChapters, setSelectedChapters] = useState<Set<string>>(new Set());
 
     // Load books
     useEffect(() => {
@@ -426,14 +433,58 @@ const ToolPage = () => {
 
                     {/* Input Card */}
                     <div className="flex-1 bg-white rounded-[2rem] border border-gray-100 shadow-[0_4px_20px_rgba(0,0,0,0.02)] flex flex-col overflow-hidden">
-                        <div className="p-6 border-b border-gray-50 bg-gray-50/30 flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-lime-100 flex items-center justify-center text-lime-600">
-                                <ScanLine size={16} />
+                        <div className="p-6 border-b border-gray-50 bg-gray-50/30">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="w-8 h-8 rounded-full bg-lime-100 flex items-center justify-center text-lime-600">
+                                    <ScanLine size={16} />
+                                </div>
+                                <h2 className="font-bold text-gray-800 flex-1">Configuration</h2>
+                                {/* Progress Indicator */}
+                                <div className="flex items-center gap-2">
+                                    <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                        <div
+                                            className="h-full bg-gradient-to-r from-lime-400 to-green-500 rounded-full transition-all duration-500"
+                                            style={{ width: `${Math.min(100, (Object.values(formData).filter(v => v && v !== '').length / currentInputs.length) * 100)}%` }}
+                                        />
+                                    </div>
+                                    <span className="text-[10px] font-bold text-gray-500">
+                                        {Object.values(formData).filter(v => v && v !== '').length}/{currentInputs.length}
+                                    </span>
+                                </div>
                             </div>
-                            <h2 className="font-bold text-gray-800">Configuration</h2>
+
+                            {/* Quick Templates - Only for Lesson Planner */}
+                            {toolId === 'lesson-planner' && (
+                                <div className="space-y-2">
+                                    <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Quick Templates</p>
+                                    <div className="flex flex-wrap gap-2">
+                                        {[
+                                            { label: '📚 Introduction', topic: 'Introduction Lesson', lessonType: 'Introduction', duration: '45 mins' },
+                                            { label: '🔬 Lab Class', topic: 'Practical Lab Session', lessonType: 'Lab/Practical', duration: '90 mins' },
+                                            { label: '📝 Revision', topic: 'Revision Session', lessonType: 'Revision', duration: '45 mins' },
+                                            { label: '🎯 Assessment', topic: 'Assessment Class', lessonType: 'Assessment', duration: '60 mins' },
+                                        ].map((template, idx) => (
+                                            <button
+                                                key={idx}
+                                                type="button"
+                                                onClick={() => {
+                                                    handleInputChange('lessonType', template.lessonType);
+                                                    handleInputChange('duration', template.duration);
+                                                    if (!formData['topic']) {
+                                                        handleInputChange('topic', template.topic);
+                                                    }
+                                                }}
+                                                className="px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-xs font-medium text-gray-600 hover:border-lime-300 hover:bg-lime-50 hover:text-lime-700 transition-all shadow-sm"
+                                            >
+                                                {template.label}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
-                        <div className="p-6 space-y-5 overflow-y-auto custom-scrollbar flex-1 max-h-[calc(100vh-300px)] lg:max-h-none">
+                        <div className="p-6 space-y-5 overflow-y-auto custom-scrollbar flex-1 max-h-[calc(100vh-350px)] lg:max-h-none">
                             {currentInputs.map((input: ToolInput, idx: number) => (
                                 <div key={idx} className="space-y-2 group">
                                     <label className="text-xs font-bold text-gray-600 uppercase tracking-wider ml-1 group-focus-within:text-lime-700 transition-colors">
@@ -467,12 +518,38 @@ const ToolPage = () => {
                                         <div className="relative">
                                             <div
                                                 onClick={() => setIsBookModalOpen(true)}
-                                                className="w-full bg-gray-100 border-transparent hover:border-gray-300 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-lime-500/20 focus:border-lime-500 focus:bg-white transition-all font-medium cursor-pointer flex items-center justify-between group-hover:bg-white group-hover:shadow-sm"
+                                                className={`w-full rounded-xl px-4 py-3 text-sm transition-all font-medium cursor-pointer flex items-center gap-3 ${formData['book']
+                                                    ? 'bg-gradient-to-r from-lime-50 to-green-50 border-2 border-lime-200 hover:border-lime-300 shadow-sm'
+                                                    : 'bg-gray-100 border-2 border-transparent hover:border-gray-200'
+                                                    }`}
                                             >
-                                                <span className={formData[input.id] ? 'text-gray-900' : 'text-gray-400'}>
-                                                    {formData[input.id] ? (formData[input.id] as string) : input.placeholder}
-                                                </span>
-                                                <BookOpen size={16} className="text-gray-500" />
+                                                {formData['book'] ? (
+                                                    <>
+                                                        <div className="w-10 h-10 bg-lime-500 rounded-lg flex items-center justify-center text-white shrink-0">
+                                                            <BookOpen size={18} />
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <span className="text-gray-900 font-bold block truncate text-sm">{formData['book'] as string}</span>
+                                                            {formData['chapterTitles'] ? (
+                                                                <span className="text-xs text-lime-600 mt-0.5 block truncate">
+                                                                    📖 {formData['chapterTitles'] as string}
+                                                                </span>
+                                                            ) : (
+                                                                <span className="text-xs text-gray-400">Click to select chapters</span>
+                                                            )}
+                                                        </div>
+                                                        <div className="bg-lime-100 text-lime-700 text-[10px] font-bold px-2 py-1 rounded-full shrink-0">
+                                                            {(formData['chapters'] as string)?.split(',').filter(Boolean).length || 0} CH
+                                                        </div>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <div className="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center text-gray-400 shrink-0">
+                                                            <BookOpen size={18} />
+                                                        </div>
+                                                        <span className="text-gray-400 flex-1">{input.placeholder}</span>
+                                                    </>
+                                                )}
                                             </div>
                                         </div>
                                     ) : input.type === 'file' ? (
@@ -490,6 +567,22 @@ const ToolPage = () => {
                                             </div>
                                             <span className="text-sm font-bold text-gray-700 select-none">{input.label}</span>
                                         </div>
+                                    ) : input.type === 'duration-preset' ? (
+                                        <div className="flex flex-wrap gap-2">
+                                            {(input.options || []).map((duration, idx) => (
+                                                <button
+                                                    key={idx}
+                                                    type="button"
+                                                    onClick={() => handleInputChange(input.id, duration)}
+                                                    className={`px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${formData[input.id] === duration
+                                                        ? 'bg-gradient-to-r from-lime-500 to-green-500 text-white shadow-md shadow-lime-200'
+                                                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-800'
+                                                        }`}
+                                                >
+                                                    {duration}
+                                                </button>
+                                            ))}
+                                        </div>
                                     ) : (
                                         <input
                                             type={input.type}
@@ -504,21 +597,36 @@ const ToolPage = () => {
                             ))}
                         </div>
 
-                        <div className="p-6 pt-4 bg-white border-t border-gray-100">
+                        {/* Sticky Generate Button */}
+                        <div className="p-4 bg-gradient-to-t from-white via-white to-white/90 border-t border-gray-100 sticky bottom-0 z-10">
+                            <div className="flex items-center gap-3 mb-3">
+                                <div className="flex-1 h-1 bg-gray-100 rounded-full overflow-hidden">
+                                    <div
+                                        className="h-full bg-gradient-to-r from-lime-400 to-green-500 transition-all duration-300"
+                                        style={{ width: `${Math.min(100, (Object.values(formData).filter(v => v && v !== '').length / Math.max(currentInputs.length, 1)) * 100)}%` }}
+                                    />
+                                </div>
+                                <span className="text-[10px] font-bold text-gray-400">
+                                    {Object.values(formData).filter(v => v && v !== '').length === currentInputs.length
+                                        ? '✓ Ready!'
+                                        : `${currentInputs.length - Object.values(formData).filter(v => v && v !== '').length} fields left`}
+                                </span>
+                            </div>
                             <button
                                 onClick={handleGenerate}
                                 disabled={isGenerating}
-                                className={`w-full bg-gradient-to-r from-lime-600 to-emerald-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-lime-200 flex items-center justify-center gap-2 hover:shadow-xl hover:scale-[1.01] transition-all disabled:opacity-80 disabled:cursor-not-allowed`}
+                                className={`w-full bg-gradient-to-r from-lime-600 via-lime-500 to-emerald-600 text-white font-bold py-4 rounded-2xl shadow-lg shadow-lime-300/40 flex items-center justify-center gap-2.5 hover:shadow-xl hover:shadow-lime-400/30 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-80 disabled:cursor-not-allowed group`}
                             >
                                 {isGenerating ? (
                                     <>
                                         <RefreshCw size={20} className="animate-spin" />
-                                        <span>Processing...</span>
+                                        <span>Generating magic...</span>
                                     </>
                                 ) : (
                                     <>
-                                        <Wand2 size={20} className="fill-white/20" />
+                                        <Wand2 size={20} className="fill-white/20 group-hover:rotate-12 transition-transform" />
                                         <span>Generate Result</span>
+                                        <span className="ml-1 text-lime-200">✨</span>
                                     </>
                                 )}
                             </button>
@@ -696,97 +804,242 @@ const ToolPage = () => {
                 </div>
             </main>
 
-            {/* Book Selection Modal - Portal */}
+            {/* Book & Chapter Selection Modal - Portal */}
             {isBookModalOpen && typeof document !== 'undefined' && ReactDOM.createPortal(
                 <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-lg animate-in fade-in duration-200">
-                    <div className="bg-white rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh] animate-in zoom-in-95 duration-200 border border-gray-100">
+                    <div className="bg-white rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh] animate-in zoom-in-95 duration-200 border border-gray-100">
+
                         {/* Modal Header */}
-                        <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
-                            <div>
-                                <h3 className="text-lg font-bold text-gray-800">Select a Source Book</h3>
-                                <p className="text-xs text-gray-500 mt-1">Choose a book from your library to use as context</p>
+                        <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-gradient-to-r from-lime-50 to-green-50">
+                            <div className="flex items-center gap-3">
+                                {selectedBookInModal && (
+                                    <button
+                                        onClick={() => {
+                                            setSelectedBookInModal(null);
+                                            setSelectedChapters(new Set());
+                                        }}
+                                        className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-gray-500 hover:bg-gray-100 hover:text-gray-800 transition-colors shadow-sm"
+                                    >
+                                        <ArrowLeft size={16} />
+                                    </button>
+                                )}
+                                <div>
+                                    <h3 className="text-lg font-bold text-gray-800">
+                                        {selectedBookInModal ? 'Select Chapters' : 'Select Source Book'}
+                                    </h3>
+                                    <p className="text-xs text-gray-500 mt-0.5">
+                                        {selectedBookInModal
+                                            ? `From: ${selectedBookInModal.title}`
+                                            : 'Choose a book from your library'}
+                                    </p>
+                                </div>
                             </div>
                             <button
-                                onClick={() => setIsBookModalOpen(false)}
-                                className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200 hover:text-gray-800 transition-colors"
+                                onClick={() => {
+                                    setIsBookModalOpen(false);
+                                    setSelectedBookInModal(null);
+                                    setSelectedChapters(new Set());
+                                    setSearchBookQuery('');
+                                }}
+                                className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-gray-500 hover:bg-red-50 hover:text-red-600 transition-colors shadow-sm"
                             >
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                             </button>
                         </div>
 
-                        {/* Search Bar */}
-                        <div className="p-4 border-b border-gray-100 bg-white sticky top-0 z-10">
-                            <div className="relative">
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
-                                <input
-                                    type="text"
-                                    placeholder="Search library..."
-                                    value={searchBookQuery}
-                                    onChange={(e) => setSearchBookQuery(e.target.value)}
-                                    className="w-full bg-gray-50 border-none rounded-xl py-3 pl-10 pr-4 text-sm focus:ring-2 focus:ring-lime-200 transition-all"
-                                    autoFocus
-                                />
-                            </div>
-                        </div>
+                        {/* Step 1: Book Selection */}
+                        {!selectedBookInModal ? (
+                            <>
+                                {/* Search Bar */}
+                                <div className="p-4 border-b border-gray-100 bg-white sticky top-0 z-10">
+                                    <div className="relative">
+                                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                                        <input
+                                            type="text"
+                                            placeholder="Search books..."
+                                            value={searchBookQuery}
+                                            onChange={(e) => setSearchBookQuery(e.target.value)}
+                                            className="w-full bg-gray-50 border-none rounded-xl py-3 pl-10 pr-4 text-sm focus:ring-2 focus:ring-lime-200 transition-all"
+                                            autoFocus
+                                        />
+                                    </div>
+                                </div>
 
-                        {/* Book List */}
-                        <div className="overflow-y-auto p-4 grid grid-cols-1 gap-3 custom-scrollbar flex-1">
-                            {filteredBooks.length > 0 ? (
-                                filteredBooks.map((book, idx) => (
-                                    <div
-                                        key={idx}
-                                        onClick={() => {
-                                            handleInputChange('book', book.title);
-                                            setIsBookModalOpen(false);
-                                        }}
-                                        className={`flex items-center gap-4 p-3 rounded-xl border cursor-pointer group transition-all ${formData['book'] === book.title
-                                            ? 'bg-lime-50 border-lime-200 shadow-sm'
-                                            : 'bg-white hover:bg-gray-50 border-transparent hover:border-gray-200'
-                                            }`}
-                                    >
-                                        <div className={`w-12 h-16 rounded-lg shadow-sm flex items-center justify-center text-white font-bold text-xs shrink-0 overflow-hidden ${['bg-blue-500', 'bg-purple-500', 'bg-emerald-500', 'bg-orange-500', 'bg-pink-500'][idx % 5]}`}>
-                                            {book.cover ? (
-                                                <img src={book.cover} alt="" className="w-full h-full object-cover" />
+                                {/* Book List */}
+                                <div className="overflow-y-auto p-4 grid grid-cols-1 gap-2 custom-scrollbar flex-1">
+                                    {filteredBooks.length > 0 ? (
+                                        filteredBooks.map((book, idx) => (
+                                            <div
+                                                key={idx}
+                                                onClick={() => setSelectedBookInModal(book)}
+                                                className="flex items-center gap-4 p-3 rounded-xl border border-transparent hover:border-lime-200 hover:bg-lime-50/50 cursor-pointer group transition-all"
+                                            >
+                                                <div className={`w-11 h-14 rounded-lg shadow-sm flex items-center justify-center text-white font-bold text-xs shrink-0 overflow-hidden ${['bg-blue-500', 'bg-purple-500', 'bg-emerald-500', 'bg-orange-500', 'bg-pink-500'][idx % 5]}`}>
+                                                    {book.cover ? (
+                                                        <img src={book.cover} alt="" className="w-full h-full object-cover" />
+                                                    ) : (
+                                                        <BookOpen size={18} />
+                                                    )}
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <h4 className="font-bold text-sm text-gray-800 truncate group-hover:text-lime-700">{book.title}</h4>
+                                                    <div className="flex items-center gap-2 mt-1">
+                                                        <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 bg-gray-100 px-2 py-0.5 rounded-md">{book.subject || 'General'}</span>
+                                                        <span className="text-xs text-gray-400">•</span>
+                                                        <span className="text-xs text-gray-500">{(book.chapters || []).length} chapters</span>
+                                                    </div>
+                                                </div>
+                                                <div className="text-gray-300 group-hover:text-lime-500 transition-colors">
+                                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                                                </div>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div className="text-center py-12 flex flex-col items-center justify-center h-full text-gray-400">
+                                            <BookOpen size={32} className="opacity-20 mb-3" />
+                                            <p className="font-medium text-gray-600">No books found</p>
+                                            <Link href="/library" className="flex items-center gap-2 px-4 py-2 bg-lime-50 text-lime-700 rounded-lg text-xs font-bold hover:bg-lime-100 transition-colors mt-4">
+                                                <Plus size={14} /> Add New Book
+                                            </Link>
+                                        </div>
+                                    )}
+                                </div>
+                            </>
+                        ) : (
+                            /* Step 2: Chapter Selection */
+                            <>
+                                {/* Chapter Controls */}
+                                <div className="p-4 border-b border-gray-100 bg-white flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <div className={`w-10 h-12 rounded-lg shadow-sm flex items-center justify-center text-white overflow-hidden ${selectedBookInModal.cover ? '' : 'bg-lime-500'}`}>
+                                            {selectedBookInModal.cover ? (
+                                                <img src={selectedBookInModal.cover} alt="" className="w-full h-full object-cover" />
                                             ) : (
-                                                <BookOpen size={20} />
+                                                <BookOpen size={16} />
                                             )}
                                         </div>
-                                        <div className="flex-1 min-w-0">
-                                            <h4 className={`font-bold text-sm truncate ${formData['book'] === book.title ? 'text-lime-800' : 'text-gray-800'}`}>{book.title}</h4>
-                                            <div className="flex items-center gap-2 mt-1">
-                                                <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 bg-gray-100 px-2 py-0.5 rounded-md">{book.subject || 'General'}</span>
-                                                <span className="text-xs text-gray-300">•</span>
-                                                <span className="text-xs text-gray-500 truncate">{book.author || 'Unknown Author'}</span>
-                                            </div>
+                                        <div>
+                                            <p className="text-xs text-gray-500">Selected Book</p>
+                                            <p className="font-bold text-sm text-gray-800">{selectedBookInModal.title}</p>
                                         </div>
-                                        {formData['book'] === book.title && (
-                                            <div className="w-6 h-6 bg-lime-500 rounded-full flex items-center justify-center text-white shrink-0 shadow-sm shadow-lime-200 animate-in zoom-in">
-                                                <CheckCircle size={14} />
-                                            </div>
-                                        )}
                                     </div>
-                                ))
-                            ) : (
-                                <div className="text-center py-12 flex flex-col items-center justify-center h-full text-gray-400">
-                                    <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
-                                        <BookOpen size={24} className="opacity-30" />
-                                    </div>
-                                    <p className="font-medium text-gray-600">No books found</p>
-                                    <p className="text-xs mt-1 mb-4 max-w-xs mx-auto">We couldn't find any books matching "{searchBookQuery}"</p>
 
-                                    <Link href="/library" className="flex items-center gap-2 px-4 py-2 bg-lime-50 text-lime-700 rounded-lg text-xs font-bold hover:bg-lime-100 transition-colors">
-                                        <Plus size={14} />
-                                        Add New Book
-                                    </Link>
+                                    {/* Select All Toggle */}
+                                    {(selectedBookInModal.chapters || []).length > 0 && (
+                                        <button
+                                            onClick={() => {
+                                                const allChapterIds = (selectedBookInModal.chapters || []).map((ch: any) => ch.id);
+                                                if (selectedChapters.size === allChapterIds.length) {
+                                                    setSelectedChapters(new Set());
+                                                } else {
+                                                    setSelectedChapters(new Set(allChapterIds));
+                                                }
+                                            }}
+                                            className={`text-xs font-bold px-3 py-1.5 rounded-lg transition-colors ${selectedChapters.size === (selectedBookInModal.chapters || []).length
+                                                ? 'bg-lime-100 text-lime-700'
+                                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                                }`}
+                                        >
+                                            {selectedChapters.size === (selectedBookInModal.chapters || []).length ? 'Deselect All' : 'Select All'}
+                                        </button>
+                                    )}
                                 </div>
-                            )}
-                        </div>
 
-                        <div className="p-3 bg-gray-50 border-t border-gray-100 text-center">
-                            <Link href="/library" className="text-xs font-bold text-gray-500 hover:text-lime-600 flex items-center justify-center gap-1.5 transition-colors py-1">
-                                <Plus size={14} /> Add more books to library
-                            </Link>
-                        </div>
+                                {/* Chapter List */}
+                                <div className="overflow-y-auto p-4 grid grid-cols-1 gap-2 custom-scrollbar flex-1">
+                                    {(selectedBookInModal.chapters || []).length > 0 ? (
+                                        (selectedBookInModal.chapters || []).map((chapter: any, idx: number) => (
+                                            <div
+                                                key={chapter.id}
+                                                onClick={() => {
+                                                    const newSelected = new Set(selectedChapters);
+                                                    if (newSelected.has(chapter.id)) {
+                                                        newSelected.delete(chapter.id);
+                                                    } else {
+                                                        newSelected.add(chapter.id);
+                                                    }
+                                                    setSelectedChapters(newSelected);
+                                                }}
+                                                className={`flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all ${selectedChapters.has(chapter.id)
+                                                    ? 'border-lime-400 bg-lime-50 shadow-sm'
+                                                    : 'border-gray-100 hover:border-gray-200 bg-white'
+                                                    }`}
+                                            >
+                                                {/* Checkbox */}
+                                                <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all shrink-0 ${selectedChapters.has(chapter.id)
+                                                    ? 'bg-lime-500 border-lime-500 text-white'
+                                                    : 'border-gray-300 bg-white'
+                                                    }`}>
+                                                    {selectedChapters.has(chapter.id) && <CheckCircle size={14} />}
+                                                </div>
+
+                                                {/* Chapter Info */}
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-[10px] font-bold text-lime-600 bg-lime-100 px-2 py-0.5 rounded">
+                                                            CH {idx + 1}
+                                                        </span>
+                                                        <h4 className="font-bold text-sm text-gray-800 truncate">{chapter.title}</h4>
+                                                    </div>
+                                                    <p className="text-xs text-gray-500 mt-1">{chapter.pages || 0} pages</p>
+                                                </div>
+
+                                                {/* Page Icon */}
+                                                <FileText size={16} className={selectedChapters.has(chapter.id) ? 'text-lime-500' : 'text-gray-300'} />
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div className="text-center py-12 flex flex-col items-center justify-center h-full text-gray-400">
+                                            <FileText size={32} className="opacity-20 mb-3" />
+                                            <p className="font-medium text-gray-600">No chapters in this book</p>
+                                            <p className="text-xs mt-1">Add chapters from the Library → Manage page</p>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Confirm Button */}
+                                <div className="p-4 bg-gray-50 border-t border-gray-100">
+                                    <button
+                                        onClick={() => {
+                                            // Save selection to formData
+                                            handleInputChange('book', selectedBookInModal.title);
+                                            handleInputChange('bookId', selectedBookInModal.id);
+
+                                            // Get selected chapter titles
+                                            const selectedChapterTitles = (selectedBookInModal.chapters || [])
+                                                .filter((ch: any) => selectedChapters.has(ch.id))
+                                                .map((ch: any) => ch.title);
+
+                                            handleInputChange('chapters', Array.from(selectedChapters).join(','));
+                                            handleInputChange('chapterTitles', selectedChapterTitles.join(', '));
+
+                                            // Close modal
+                                            setIsBookModalOpen(false);
+                                            setSelectedBookInModal(null);
+                                            setSelectedChapters(new Set());
+                                            setSearchBookQuery('');
+                                        }}
+                                        disabled={selectedChapters.size === 0}
+                                        className={`w-full py-3.5 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${selectedChapters.size > 0
+                                            ? 'bg-gradient-to-r from-lime-500 to-green-500 text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5'
+                                            : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                                            }`}
+                                    >
+                                        <CheckCircle size={18} />
+                                        Confirm Selection ({selectedChapters.size} chapter{selectedChapters.size !== 1 ? 's' : ''})
+                                    </button>
+                                </div>
+                            </>
+                        )}
+
+                        {/* Footer - only show in book selection step */}
+                        {!selectedBookInModal && (
+                            <div className="p-3 bg-gray-50 border-t border-gray-100 text-center">
+                                <Link href="/library" className="text-xs font-bold text-gray-500 hover:text-lime-600 flex items-center justify-center gap-1.5 transition-colors py-1">
+                                    <Plus size={14} /> Add more books to library
+                                </Link>
+                            </div>
+                        )}
                     </div>
                 </div>,
                 document.body
