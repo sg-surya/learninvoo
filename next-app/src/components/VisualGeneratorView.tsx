@@ -356,177 +356,196 @@ const VisualGeneratorView: React.FC = () => {
         );
     }
 
-    // RESULT VIEW - Premium Layout
+    // RESULT VIEW - Premium Workspace Design
     return (
-        <div className="h-full w-full flex flex-col bg-white overflow-hidden">
+        <div className="h-full w-full flex flex-col relative overflow-hidden" style={{ background: 'radial-gradient(circle at top left, #f0fdf4, #dcfce7, #f8fafc)' }}>
+            {/* Background Orbs */}
+            <div className="absolute w-[800px] h-[800px] bg-lime-200/40 rounded-full blur-[120px] top-[-20%] left-[-10%] pointer-events-none animate-pulse" style={{ animationDuration: '4s' }} />
+            <div className="absolute w-[700px] h-[700px] bg-emerald-100/50 rounded-full blur-[120px] bottom-[-10%] right-[-5%] pointer-events-none" />
+
             {/* Header */}
-            <header className="h-16 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 flex items-center justify-between shrink-0 z-50">
+            <header className="z-20 px-6 py-4 flex items-center justify-between shrink-0">
                 <div className="flex items-center gap-4">
-                    <button onClick={() => setViewState('form')} className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-xl">
+                    <button onClick={() => setViewState('form')} className="p-2 text-slate-500 hover:text-slate-700 hover:bg-white/50 rounded-xl transition-all">
                         <ArrowLeft size={20} />
                     </button>
-                    <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 bg-gradient-to-br from-lime-400 to-emerald-500 rounded-xl flex items-center justify-center shadow-md shadow-emerald-200">
-                            <ImageIcon size={18} className="text-white" />
-                        </div>
-                        <div>
-                            <h1 className="text-sm font-bold text-slate-900 leading-none">{topic}</h1>
-                            <span className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">{visualStyle} • {grade}</span>
-                        </div>
+                    <div className="w-10 h-10 bg-gradient-to-tr from-lime-400 to-emerald-500 rounded-xl flex items-center justify-center text-white shadow-lg">
+                        <Sparkles size={20} />
+                    </div>
+                    <div>
+                        <h2 className="text-sm font-bold uppercase tracking-widest text-slate-800">Workspace</h2>
+                        <p className="text-[10px] text-emerald-600 font-bold uppercase tracking-tight">Draft v1.0 • {visualStyle}</p>
                     </div>
                 </div>
-                <div className="flex items-center gap-2">
-                    <button className="flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-sm font-bold text-slate-700">
-                        <Download size={16} /> Export
+                <div className="flex items-center gap-3">
+                    <button className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/50 border border-white/80 text-xs font-semibold text-slate-600 hover:bg-white transition-all">
+                        <RefreshCw size={14} />
+                        Version History
+                        <ChevronDown size={14} />
                     </button>
-                    <button onClick={handleSave} className={`flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-bold shadow-lg transition-all ${isSaved ? 'bg-green-500 text-white' : 'bg-gradient-to-r from-lime-500 to-emerald-500 text-white shadow-emerald-200 hover:shadow-xl'}`}>
-                        {isSaved ? <CheckCircle2 size={16} /> : <Zap size={16} />}
-                        {isSaved ? 'Saved!' : 'Save'}
-                    </button>
+                    <div className="h-8 w-px bg-slate-200" />
+                    <div className="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center">
+                        <Bot size={18} />
+                    </div>
                 </div>
             </header>
 
-            <div className="flex flex-1 overflow-hidden">
-                {/* Left Sidebar - Variations */}
-                <aside className="w-56 border-r border-slate-200 bg-white shrink-0 hidden lg:flex flex-col">
-                    <div className="p-4 border-b border-slate-100">
-                        <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Variations</h3>
+            {/* Main Content */}
+            <main className="flex-1 flex overflow-hidden px-6 pb-6 gap-6">
+                {/* Left - Image Viewer */}
+                <div className="flex-1 flex flex-col gap-4 overflow-hidden">
+                    {/* Glass Image Panel */}
+                    <div
+                        className="flex-1 rounded-[32px] relative overflow-hidden flex items-center justify-center group"
+                        style={{
+                            background: 'rgba(255, 255, 255, 0.6)',
+                            backdropFilter: 'blur(24px)',
+                            border: '1px solid rgba(255, 255, 255, 0.7)',
+                            boxShadow: '0 4px 24px -1px rgba(0, 0, 0, 0.04), 0 40px 80px -20px rgba(0, 0, 0, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.5), 0 0 40px rgba(190, 242, 100, 0.1)'
+                        }}
+                    >
+                        {/* Overlay Gradient */}
+                        <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent pointer-events-none" />
+
+                        {/* Image Container */}
+                        <div className="relative w-full h-full p-6">
+                            <div className="w-full h-full rounded-2xl bg-white/40 shadow-inner flex items-center justify-center relative overflow-hidden">
+                                <img
+                                    src={generatedVisuals[selectedVisual]?.url}
+                                    alt={topic}
+                                    className="w-full h-full object-contain rounded-xl transition-transform duration-700 group-hover:scale-[1.02]"
+                                    style={{ transform: `scale(${zoom / 100})` }}
+                                />
+
+                                {/* Hover Zoom Controls */}
+                                <div className="absolute bottom-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button onClick={() => setZoom(Math.min(200, zoom + 25))} className="w-10 h-10 bg-white/90 backdrop-blur rounded-full shadow-lg flex items-center justify-center text-slate-700 hover:bg-white">
+                                        <ZoomIn size={18} />
+                                    </button>
+                                    <button onClick={() => setZoom(Math.max(50, zoom - 25))} className="w-10 h-10 bg-white/90 backdrop-blur rounded-full shadow-lg flex items-center justify-center text-slate-700 hover:bg-white">
+                                        <ZoomOut size={18} />
+                                    </button>
+                                    <button onClick={() => setZoom(100)} className="w-10 h-10 bg-white/90 backdrop-blur rounded-full shadow-lg flex items-center justify-center text-slate-700 hover:bg-white">
+                                        <RotateCcw size={18} />
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div className="flex-1 overflow-y-auto p-3 space-y-3">
-                        {generatedVisuals.map((visual, idx) => (
+
+                    {/* Bottom Actions Bar */}
+                    <div className="flex items-center justify-between gap-4 flex-wrap">
+                        {/* Download & Save Buttons */}
+                        <div className="flex items-center gap-3">
+                            <div className="flex rounded-2xl overflow-hidden shadow-sm border border-emerald-100">
+                                <button className="bg-emerald-600 text-white px-5 py-3 text-sm font-bold flex items-center gap-2 hover:bg-emerald-700 transition-all">
+                                    <Download size={18} />
+                                    Download High-Res
+                                </button>
+                                <div className="bg-emerald-700 w-px" />
+                                <select className="bg-emerald-600 text-white border-none text-xs font-bold px-3 focus:ring-0 cursor-pointer hover:bg-emerald-700">
+                                    <option>PNG</option>
+                                    <option>SVG</option>
+                                    <option>PDF</option>
+                                </select>
+                            </div>
                             <button
-                                key={visual.id}
-                                onClick={() => setSelectedVisual(idx)}
-                                className={`w-full p-2 rounded-xl cursor-pointer transition-all ${selectedVisual === idx
-                                    ? 'ring-3 ring-emerald-500 bg-white shadow-lg shadow-emerald-100'
-                                    : 'border border-transparent hover:border-slate-200 hover:bg-slate-50'
+                                onClick={handleSave}
+                                className={`px-5 py-3 border rounded-2xl text-sm font-bold flex items-center gap-2 shadow-sm transition-all ${isSaved
+                                        ? 'bg-emerald-500 text-white border-emerald-500'
+                                        : 'bg-white border-slate-200 text-slate-700 hover:border-emerald-200 hover:bg-emerald-50'
                                     }`}
                             >
-                                <div className="aspect-video rounded-lg overflow-hidden mb-2 bg-slate-100">
-                                    <img src={visual.url} alt="" className="w-full h-full object-cover" />
-                                </div>
-                                <div className="flex justify-between items-center px-1">
-                                    <span className={`text-[10px] font-bold ${selectedVisual === idx ? 'text-slate-900' : 'text-slate-500'}`}>
-                                        {String(idx + 1).padStart(2, '0')} {visual.style}
-                                    </span>
-                                    {selectedVisual === idx && <Check size={12} className="text-emerald-500" />}
-                                </div>
+                                {isSaved ? <CheckCircle2 size={18} /> : <BookOpen size={18} />}
+                                {isSaved ? 'Saved!' : 'Save to Workspace'}
                             </button>
-                        ))}
-                    </div>
-                    <div className="p-4 border-t border-slate-100">
-                        <button className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-slate-100 hover:bg-emerald-100 text-slate-700 hover:text-emerald-700 rounded-xl text-sm font-bold transition-all">
-                            <RefreshCw size={16} />
-                            Regenerate All
-                        </button>
-                    </div>
-                </aside>
-
-                {/* Main Visual Area */}
-                <main className="flex-1 bg-slate-50 flex flex-col items-center justify-center p-8 relative">
-                    {/* Zoom Controls */}
-                    <div className="absolute top-4 right-4 flex items-center gap-2 bg-white rounded-xl shadow-sm border border-slate-200 p-1">
-                        <button onClick={() => setZoom(Math.max(50, zoom - 25))} className="p-2 hover:bg-slate-100 rounded-lg text-slate-600">
-                            <ZoomOut size={18} />
-                        </button>
-                        <span className="text-xs font-bold text-slate-600 w-12 text-center">{zoom}%</span>
-                        <button onClick={() => setZoom(Math.min(200, zoom + 25))} className="p-2 hover:bg-slate-100 rounded-lg text-slate-600">
-                            <ZoomIn size={18} />
-                        </button>
-                        <div className="w-px h-6 bg-slate-200" />
-                        <button onClick={() => setZoom(100)} className="p-2 hover:bg-slate-100 rounded-lg text-slate-600">
-                            <RotateCcw size={18} />
-                        </button>
-                    </div>
-
-                    {/* Image Preview */}
-                    <div
-                        className="bg-white rounded-3xl shadow-2xl shadow-slate-200/50 p-4 overflow-hidden transition-transform duration-300"
-                        style={{ transform: `scale(${zoom / 100})` }}
-                    >
-                        <img
-                            src={generatedVisuals[selectedVisual]?.url}
-                            alt={topic}
-                            className="max-w-full max-h-[60vh] rounded-2xl object-contain"
-                        />
-                    </div>
-
-                    {/* Quick Actions */}
-                    <div className="mt-6 flex items-center gap-3">
-                        <button className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 hover:border-emerald-300 transition-all">
-                            <Brush size={16} /> Edit Colors
-                        </button>
-                        <button className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 hover:border-emerald-300 transition-all">
-                            <PenTool size={16} /> Add Labels
-                        </button>
-                        <button className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 hover:border-emerald-300 transition-all">
-                            <Frame size={16} /> Resize
-                        </button>
-                    </div>
-                </main>
-
-                {/* Right Sidebar - AI Chat */}
-                <aside className="w-80 border-l border-slate-200 bg-white flex flex-col shrink-0 hidden xl:flex">
-                    <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-                        <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center">
-                                <Zap size={16} className="text-white" />
-                            </div>
-                            <span className="font-bold text-slate-800 text-sm">AI Visual Assistant</span>
                         </div>
-                        <button className="p-1.5 rounded-lg hover:bg-slate-200 text-slate-500">
-                            <X size={18} />
-                        </button>
+
+                        {/* Style Transfer */}
+                        <div className="flex items-center gap-3 bg-white/40 backdrop-blur-md p-2 rounded-2xl border border-white/60">
+                            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-2">Style Transfer</span>
+                            <div className="flex gap-2">
+                                {generatedVisuals.map((visual, idx) => (
+                                    <button
+                                        key={visual.id}
+                                        onClick={() => setSelectedVisual(idx)}
+                                        className={`w-11 h-11 rounded-xl overflow-hidden transition-all hover:-translate-y-1 hover:shadow-lg ${selectedVisual === idx ? 'ring-2 ring-emerald-500 ring-offset-2' : 'border-2 border-transparent'
+                                            }`}
+                                    >
+                                        <img src={visual.url} alt="" className="w-full h-full object-cover" />
+                                    </button>
+                                ))}
+                                <button className="w-11 h-11 rounded-xl bg-white border-2 border-transparent flex items-center justify-center hover:bg-slate-50">
+                                    <ChevronRight size={16} className="text-slate-400" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Right Sidebar - AI Refinement */}
+                <aside
+                    className="w-[340px] rounded-[32px] flex flex-col overflow-hidden shadow-2xl shrink-0 hidden lg:flex"
+                    style={{
+                        background: 'rgba(255, 255, 255, 0.4)',
+                        backdropFilter: 'blur(16px)',
+                        borderLeft: '1px solid rgba(255, 255, 255, 0.7)'
+                    }}
+                >
+                    {/* Sidebar Header */}
+                    <div className="p-6 border-b border-white/40">
+                        <div className="flex items-center gap-3 mb-2">
+                            <Zap size={20} className="text-emerald-600" />
+                            <h3 className="font-bold text-slate-800">AI Refinement</h3>
+                        </div>
+                        <p className="text-sm text-slate-500 leading-relaxed">Modify labels, colors, or add specific details to your visual.</p>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto p-4">
-                        <div className="flex gap-3">
-                            <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
-                                <Bot size={16} className="text-emerald-700" />
+                    {/* Chat Messages */}
+                    <div className="flex-1 overflow-y-auto p-6 space-y-4">
+                        {/* User Message */}
+                        <div className="flex flex-col gap-1 items-end">
+                            <div className="bg-emerald-600 text-white text-sm p-4 rounded-2xl rounded-tr-none shadow-sm max-w-[90%]">
+                                Can you make the colors more vibrant and add labels?
                             </div>
-                            <div className="bg-slate-100 rounded-2xl rounded-tl-none p-4 text-sm text-slate-700">
-                                I've created 4 variations for your visual. Want me to refine any of them?
-                                <div className="mt-4 flex flex-col gap-2">
-                                    <button className="text-left w-full px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold hover:border-emerald-500 hover:text-emerald-700 transition-all">
-                                        "Make it more colorful"
-                                    </button>
-                                    <button className="text-left w-full px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold hover:border-emerald-500 hover:text-emerald-700 transition-all">
-                                        "Add more labels"
-                                    </button>
-                                    <button className="text-left w-full px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold hover:border-emerald-500 hover:text-emerald-700 transition-all">
-                                        "Simplify the design"
-                                    </button>
+                            <span className="text-[9px] text-slate-400 font-bold uppercase">Just now</span>
+                        </div>
+
+                        {/* AI Response */}
+                        <div className="flex flex-col gap-1 items-start">
+                            <div className="bg-white/80 border border-white p-4 rounded-2xl rounded-tl-none shadow-sm max-w-[90%] flex gap-3">
+                                <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+                                    <Bot size={12} className="text-emerald-600" />
                                 </div>
+                                <p className="text-sm text-slate-700">Of course! I'm enhancing the colors and adding descriptive labels. Version 2 will be ready in seconds.</p>
                             </div>
                         </div>
                     </div>
 
-                    <div className="p-4 border-t border-slate-100">
+                    {/* Chat Input */}
+                    <div className="p-5 bg-white/30 backdrop-blur-xl border-t border-white/50">
                         <div className="relative">
                             <textarea
                                 value={chatMessage}
                                 onChange={(e) => setChatMessage(e.target.value)}
-                                className="w-full border border-slate-200 rounded-2xl pr-12 py-3 px-4 text-sm resize-none focus:ring-emerald-500 focus:border-emerald-500"
-                                placeholder="Describe changes..."
+                                className="w-full bg-white/80 border border-slate-200 rounded-2xl p-4 pr-14 text-sm text-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none resize-none"
+                                placeholder="Describe your changes..."
                                 rows={2}
                             />
-                            <button className="absolute right-3 bottom-3 w-8 h-8 bg-slate-900 text-white rounded-xl flex items-center justify-center hover:scale-105 transition-transform">
+                            <button className="absolute bottom-4 right-4 w-9 h-9 bg-emerald-600 text-white rounded-xl flex items-center justify-center shadow-lg hover:bg-emerald-700 transition-colors">
                                 <Send size={16} />
                             </button>
                         </div>
-                        <div className="mt-3 flex items-center justify-between px-1">
-                            <div className="flex gap-2">
-                                <Mic size={18} className="text-slate-400 cursor-pointer hover:text-slate-600" />
-                                <ImagePlus size={18} className="text-slate-400 cursor-pointer hover:text-slate-600" />
-                            </div>
-                            <span className="text-[10px] text-slate-400 font-bold uppercase flex items-center gap-1">
-                                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                                Ready
-                            </span>
+
+                        {/* Quick Suggestions */}
+                        <div className="mt-3 flex flex-wrap gap-2">
+                            <button className="px-3 py-1.5 rounded-full bg-white/60 border border-slate-200 text-[10px] font-bold text-slate-500 hover:bg-white transition-all">Add Legend</button>
+                            <button className="px-3 py-1.5 rounded-full bg-white/60 border border-slate-200 text-[10px] font-bold text-slate-500 hover:bg-white transition-all">Change Palette</button>
+                            <button className="px-3 py-1.5 rounded-full bg-white/60 border border-slate-200 text-[10px] font-bold text-slate-500 hover:bg-white transition-all">More Detailed</button>
                         </div>
                     </div>
                 </aside>
-            </div>
+            </main>
         </div>
     );
 };
