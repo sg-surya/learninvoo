@@ -4,7 +4,8 @@ import React, { useState, useEffect } from 'react';
 import {
     Search, Filter, FileText, Image, Sparkles,
     BookOpen, Trash2, ExternalLink, Clock, Loader2,
-    FileQuestion, GraduationCap, Globe, ScrollText, FolderOpen
+    FileQuestion, GraduationCap, Globe, ScrollText, FolderOpen,
+    X, Copy, Download, Maximize2, CheckCircle
 } from 'lucide-react';
 import {
     getAllGeneratedContent,
@@ -21,6 +22,8 @@ const WorkspaceView: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [filterType, setFilterType] = useState<string>('all');
     const [deleting, setDeleting] = useState<string | null>(null);
+    const [selectedContent, setSelectedContent] = useState<GeneratedContent | null>(null);
+    const [copied, setCopied] = useState(false);
 
     // Load resources from IndexedDB
     useEffect(() => {
@@ -55,16 +58,16 @@ const WorkspaceView: React.FC = () => {
     };
 
     // Get icon for content type
-    const getTypeIcon = (type: GeneratedContent['type']) => {
+    const getTypeIcon = (type: string, size: number = 24) => {
         const icons: Record<string, React.ReactNode> = {
-            'lesson-plan': <GraduationCap size={24} />,
-            'quiz': <FileQuestion size={24} />,
-            'visual': <Image size={24} />,
-            'story': <ScrollText size={24} />,
-            'hyper-local': <Globe size={24} />,
-            'rubric': <FileText size={24} />,
-            'simulation': <Sparkles size={24} />,
-            'other': <FileText size={24} />,
+            'lesson-plan': <GraduationCap size={size} />,
+            'quiz': <FileQuestion size={size} />,
+            'visual': <Image size={size} />,
+            'story': <ScrollText size={size} />,
+            'hyper-local': <Globe size={size} />,
+            'rubric': <FileText size={size} />,
+            'simulation': <Sparkles size={size} />,
+            'other': <FileText size={size} />,
         };
         return icons[type] || icons['other'];
     };
@@ -92,6 +95,116 @@ const WorkspaceView: React.FC = () => {
 
     // Get unique types for filter
     const uniqueTypes = [...new Set(resources.map(r => r.type))];
+
+    // Copy content to clipboard
+    const handleCopy = async (content: string) => {
+        try {
+            await navigator.clipboard.writeText(content);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        } catch (err) {
+            console.error('Failed to copy:', err);
+        }
+    };
+
+    // Render formatted content - cleaner version
+    const renderFormattedContent = (content: string) => {
+        const lines = content.split('\n');
+        const elements: React.ReactNode[] = [];
+        let tableLines: string[] = [];
+        let inTable = false;
+
+        lines.forEach((line: string, i: number) => {
+            // Check if this is a table line
+            if (line.trim().startsWith('|') && line.trim().endsWith('|')) {
+                if (!inTable) inTable = true;
+                tableLines.push(line);
+                return;
+            } else if (inTable && tableLines.length > 0) {
+                // End of table, render it
+                elements.push(
+                    <div key={`table-${i}`} className="overflow-x-auto my-4 rounded-xl border border-gray-200">
+                        <table className="min-w-full text-sm">
+                            <tbody>
+                                {tableLines.map((tl, ti) => {
+                                    if (tl.includes('---')) return null; // Skip separator row
+                                    const cells = tl.split('|').filter(c => c.trim());
+                                    return (
+                                        <tr key={ti} className={ti === 0 ? 'bg-gray-100 font-bold' : 'border-t border-gray-100'}>
+                                            {cells.map((cell, ci) => (
+                                                <td key={ci} className="px-4 py-2 text-gray-700">{cell.trim()}</td>
+                                            ))}
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
+                );
+                tableLines = [];
+                inTable = false;
+            }
+
+            // Skip empty lines or just dashes
+            if (line.trim() === '' || line.trim() === '---') {
+                elements.push(<div key={i} className="h-2" />);
+                return;
+            }
+
+            // Headings
+            if (line.startsWith('# ')) {
+                elements.push(
+                    <h1 key={i} className="text-2xl font-bold text-gray-900 mb-4 mt-6 pb-2 border-b border-lime-200">
+                        {line.replace('# ', '')}
+                    </h1>
+                );
+            } else if (line.startsWith('## ')) {
+                elements.push(
+                    <h2 key={i} className="text-lg font-bold text-gray-800 mt-6 mb-2 flex items-center gap-2">
+                        <span className="w-1 h-5 bg-lime-500 rounded-full"></span>
+                        {line.replace('## ', '')}
+                    </h2>
+                );
+            } else if (line.startsWith('### ')) {
+                elements.push(
+                    <h3 key={i} className="text-sm font-bold text-lime-700 mt-4 mb-1 uppercase tracking-wider">
+                        {line.replace('### ', '')}
+                    </h3>
+                );
+            } else if (line.startsWith('- ') || line.startsWith('* ')) {
+                elements.push(
+                    <div key={i} className="flex items-start gap-2 ml-2 mb-1">
+                        <span className="text-lime-500 mt-1.5">•</span>
+                        <span className="text-gray-700" dangerouslySetInnerHTML={{
+                            __html: line.replace(/^[-*] /, '').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                        }} />
+                    </div>
+                );
+            } else if (line.match(/^\d+\./)) {
+                elements.push(
+                    <div key={i} className="flex items-start gap-2 ml-2 mb-1">
+                        <span className="text-lime-600 font-bold min-w-[20px]">{line.match(/^\d+/)?.[0]}.</span>
+                        <span className="text-gray-700" dangerouslySetInnerHTML={{
+                            __html: line.replace(/^\d+\.\s*/, '').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                        }} />
+                    </div>
+                );
+            } else if (line.startsWith('**') && line.endsWith('**')) {
+                elements.push(
+                    <p key={i} className="font-bold text-gray-800 mt-3 mb-1">{line.replace(/\*\*/g, '')}</p>
+                );
+            } else {
+                elements.push(
+                    <p key={i} className="text-gray-600 leading-relaxed mb-1" dangerouslySetInnerHTML={{
+                        __html: line.replace(/\*\*(.*?)\*\*/g, '<strong class="text-gray-800">$1</strong>')
+                            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                    }} />
+                );
+            }
+        });
+
+        return elements;
+    };
 
     return (
         <div className="p-8 w-full min-h-full">
@@ -166,96 +279,309 @@ const WorkspaceView: React.FC = () => {
                     )}
                 </div>
             ) : (
-                <>
-                    {/* Stats Bar */}
-                    <div className="flex gap-3 mb-6 flex-wrap">
-                        <div className="px-4 py-2 bg-white border border-gray-100 rounded-xl text-sm font-medium text-gray-600">
-                            {filteredResources.length} item{filteredResources.length !== 1 ? 's' : ''}
+                <div className="flex gap-6 h-[calc(100vh-200px)]">
+                    {/* Left Sidebar - File Tree */}
+                    <div className="w-64 flex-shrink-0 bg-white border border-gray-100 rounded-2xl p-4 overflow-y-auto shadow-sm h-full">
+                        <div className="flex items-center gap-2 px-3 py-2 mb-4">
+                            <FolderOpen size={18} className="text-lime-600" />
+                            <span className="text-gray-800 font-bold text-sm">My Assets</span>
                         </div>
-                        {filterType !== 'all' && (
-                            <button
-                                onClick={() => setFilterType('all')}
-                                className="px-4 py-2 bg-lime-50 border border-lime-200 rounded-xl text-sm font-medium text-lime-700 hover:bg-lime-100 transition-all"
-                            >
-                                Clear filter ✕
-                            </button>
-                        )}
-                    </div>
 
-                    {/* Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {filteredResources.map((res) => {
-                            const colors = getTypeColor(res.type);
+                        {/* All Items */}
+                        <button
+                            onClick={() => setFilterType('all')}
+                            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all mb-1 ${filterType === 'all'
+                                    ? 'bg-lime-50 text-lime-700 font-semibold'
+                                    : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+                                }`}
+                        >
+                            <FolderOpen size={16} className={filterType === 'all' ? 'text-lime-600' : 'text-gray-400'} />
+                            <span className="flex-1 text-sm">All Items</span>
+                            <span className={`text-xs px-2 py-0.5 rounded-full ${filterType === 'all' ? 'bg-lime-100 text-lime-700' : 'bg-gray-100 text-gray-500'}`}>{resources.length}</span>
+                        </button>
+
+                        <div className="h-px bg-gray-100 my-3" />
+
+                        {/* Folder Items by Type */}
+                        {[
+                            { type: 'lesson-plan', label: 'Lesson Plans', icon: '📚' },
+                            { type: 'quiz', label: 'Quizzes', icon: '❓' },
+                            { type: 'visual', label: 'Visual Aids', icon: '🎨' },
+                            { type: 'story', label: 'Stories', icon: '📖' },
+                            { type: 'rubric', label: 'Rubrics', icon: '📋' },
+                            { type: 'hyper-local', label: 'Hyper-Local', icon: '🌍' },
+                            { type: 'simulation', label: 'Simulations', icon: '🔬' },
+                            { type: 'other', label: 'Other', icon: '📄' },
+                        ].map(folder => {
+                            const count = resources.filter(r => r.type === folder.type).length;
+                            if (count === 0) return null;
+                            const isActive = filterType === folder.type;
                             return (
-                                <div
-                                    key={res.id}
-                                    className="bg-white border border-gray-100 rounded-3xl p-6 hover:shadow-lg hover:shadow-lime-50 transition-all group"
+                                <button
+                                    key={folder.type}
+                                    onClick={() => setFilterType(isActive ? 'all' : folder.type)}
+                                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all mb-1 ${isActive
+                                            ? 'bg-lime-50 text-lime-700 font-semibold'
+                                            : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+                                        }`}
                                 >
-                                    {/* Header */}
-                                    <div className="flex items-start justify-between mb-4">
-                                        <div className={`w-14 h-14 ${colors.bg} rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform`}>
-                                            <span className={colors.text}>{getTypeIcon(res.type)}</span>
-                                        </div>
-                                        <div className="flex items-center gap-1 text-xs text-gray-400">
-                                            <Clock size={12} />
-                                            {formatDate(res.createdAt)}
-                                        </div>
-                                    </div>
-
-                                    {/* Content */}
-                                    <h3 className="text-lg font-bold text-gray-800 mb-1 line-clamp-2">{res.title}</h3>
-                                    <p className="text-sm text-gray-400 mb-2">
-                                        {getToolDisplayName(res.toolId)}
-                                    </p>
-                                    {res.bookTitle && (
-                                        <div className="flex items-center gap-1.5 text-xs text-gray-500 mb-2">
-                                            <BookOpen size={12} />
-                                            <span className="truncate">{res.bookTitle}</span>
-                                        </div>
-                                    )}
-
-                                    {/* Preview */}
-                                    {res.contentType === 'text' && (
-                                        <p className="text-sm text-gray-500 line-clamp-3 mb-4 bg-gray-50 p-3 rounded-xl">
-                                            {res.content.substring(0, 150)}...
-                                        </p>
-                                    )}
-                                    {res.contentType === 'image' && res.imageUrl && (
-                                        <div className="mb-4 rounded-xl overflow-hidden bg-gray-100 h-32">
-                                            <img
-                                                src={res.imageUrl}
-                                                alt={res.title}
-                                                className="w-full h-full object-cover"
-                                            />
-                                        </div>
-                                    )}
-
-                                    {/* Actions */}
-                                    <div className="flex items-center justify-between pt-4 border-t border-gray-50">
-                                        <button
-                                            onClick={() => handleDelete(res.id)}
-                                            disabled={deleting === res.id}
-                                            className="text-gray-400 hover:text-red-500 transition-colors p-2 hover:bg-red-50 rounded-lg disabled:opacity-50"
-                                        >
-                                            {deleting === res.id ? (
-                                                <Loader2 size={18} className="animate-spin" />
-                                            ) : (
-                                                <Trash2 size={18} />
-                                            )}
-                                        </button>
-                                        <Link
-                                            href={`/tools/${res.toolId}`}
-                                            className="flex items-center gap-1.5 text-lime-600 text-sm font-bold hover:underline"
-                                        >
-                                            Open in Tool
-                                            <ExternalLink size={14} />
-                                        </Link>
-                                    </div>
-                                </div>
+                                    <span className="text-base">{folder.icon}</span>
+                                    <span className="flex-1 text-sm">{folder.label}</span>
+                                    <span className={`text-xs px-2 py-0.5 rounded-full ${isActive ? 'bg-lime-100 text-lime-700' : 'bg-gray-100 text-gray-500'}`}>{count}</span>
+                                </button>
                             );
                         })}
+
+                        <div className="h-px bg-gray-100 my-3" />
+
+                        {/* Search */}
+                        <div className="relative">
+                            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                            <input
+                                type="text"
+                                placeholder="Search..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="w-full bg-gray-50 border border-gray-100 rounded-xl py-2 pl-9 pr-3 text-sm text-gray-700 placeholder-gray-400 focus:ring-2 focus:ring-lime-100 focus:border-lime-200 transition-all outline-none"
+                            />
+                        </div>
                     </div>
-                </>
+
+                    {/* Right - Main Content Area */}
+                    <div className="flex-1 overflow-y-auto">
+                        {/* Current Folder Header */}
+                        <div className="flex items-center gap-3 mb-6">
+                            <span className="text-2xl">
+                                {filterType === 'all' ? '📁' :
+                                    filterType === 'lesson-plan' ? '📚' :
+                                        filterType === 'quiz' ? '❓' :
+                                            filterType === 'visual' ? '🎨' :
+                                                filterType === 'story' ? '📖' : '📄'}
+                            </span>
+                            <div>
+                                <h3 className="text-lg font-bold text-gray-800">
+                                    {filterType === 'all' ? 'All Items' :
+                                        filterType === 'lesson-plan' ? 'Lesson Plans' :
+                                            filterType === 'quiz' ? 'Quizzes' :
+                                                filterType === 'visual' ? 'Visual Aids' :
+                                                    filterType === 'story' ? 'Stories' :
+                                                        filterType.charAt(0).toUpperCase() + filterType.slice(1)}
+                                </h3>
+                                <p className="text-xs text-gray-400">{filteredResources.length} items</p>
+                            </div>
+                        </div>
+
+                        {filteredResources.length === 0 ? (
+                            <div className="flex flex-col items-center justify-center py-16 text-center">
+                                <FolderOpen size={48} className="text-gray-200 mb-4" />
+                                <p className="text-gray-400">No items in this folder</p>
+                            </div>
+                        ) : (
+                            /* Grid of Cards */
+                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                                {filteredResources.map((res) => {
+                                    const colors = getTypeColor(res.type);
+                                    return (
+                                        <div
+                                            key={res.id}
+                                            onClick={() => setSelectedContent(res)}
+                                            className="bg-white border border-gray-100 rounded-2xl overflow-hidden hover:shadow-xl hover:shadow-lime-100/40 hover:border-lime-200 transition-all duration-300 group relative cursor-pointer flex flex-col h-full"
+                                        >
+                                            {/* Type Color Bar */}
+                                            <div className={`h-1 w-full bg-gradient-to-r ${res.type === 'lesson-plan' ? 'from-lime-400 to-emerald-500' :
+                                                res.type === 'quiz' ? 'from-blue-400 to-indigo-500' :
+                                                    res.type === 'visual' ? 'from-purple-400 to-pink-500' :
+                                                        res.type === 'story' ? 'from-amber-400 to-orange-500' :
+                                                            'from-gray-400 to-gray-500'
+                                                }`} />
+
+                                            <div className="p-5 flex flex-col flex-1">
+                                                <div className="flex items-start justify-between gap-3 mb-3">
+                                                    <div className={`w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center shadow-md ${res.type === 'lesson-plan' ? 'bg-gradient-to-br from-lime-100 to-emerald-100 text-emerald-600' :
+                                                        res.type === 'quiz' ? 'bg-gradient-to-br from-blue-100 to-indigo-100 text-indigo-600' :
+                                                            res.type === 'visual' ? 'bg-gradient-to-br from-purple-100 to-pink-100 text-purple-600' :
+                                                                res.type === 'story' ? 'bg-gradient-to-br from-amber-100 to-orange-100 text-orange-600' :
+                                                                    'bg-gray-100 text-gray-600'
+                                                        }`}>
+                                                        {getTypeIcon(res.type, 20)}
+                                                    </div>
+                                                    <div className="flex items-center gap-1 text-[10px] text-gray-400 font-medium bg-gray-50 px-2 py-1 rounded-full">
+                                                        <Clock size={10} />
+                                                        {formatDate(res.createdAt)}
+                                                    </div>
+                                                </div>
+
+                                                <h3 className="text-base font-bold text-gray-800 line-clamp-1 mb-1 group-hover:text-lime-700 transition-colors">
+                                                    {res.title}
+                                                </h3>
+
+                                                <div className="flex items-center gap-2 mb-3">
+                                                    <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                                                        {getToolDisplayName(res.toolId)}
+                                                    </span>
+                                                </div>
+
+                                                {res.bookTitle && (
+                                                    <div className="flex items-center gap-1.5 text-xs text-gray-500 mb-3 bg-gray-50 p-1.5 rounded-lg truncate">
+                                                        <BookOpen size={12} className="flex-shrink-0" />
+                                                        <span className="truncate">{res.bookTitle}</span>
+                                                    </div>
+                                                )}
+
+                                                {/* Content Preview (Text) */}
+                                                {res.contentType === 'text' && (
+                                                    <p className="text-xs text-gray-500 line-clamp-3 mb-4 flex-1">
+                                                        {res.content.replace(/[#*`]/g, '').substring(0, 100)}...
+                                                    </p>
+                                                )}
+
+                                                {/* Content Preview (Image) */}
+                                                {res.contentType === 'image' && res.imageUrl && (
+                                                    <div className="mb-4 rounded-lg overflow-hidden bg-gray-100 h-24 w-full relative group/img flex-1">
+                                                        <img
+                                                            src={res.imageUrl}
+                                                            alt={res.title}
+                                                            className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
+                                                        />
+                                                    </div>
+                                                )}
+
+                                                <div className="mt-auto pt-3 border-t border-gray-100 flex items-center justify-between">
+                                                    <button
+                                                        onClick={(e) => { e.stopPropagation(); handleDelete(res.id); }}
+                                                        className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                                                        title="Delete"
+                                                    >
+                                                        {deleting === res.id ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
+                                                    </button>
+
+                                                    <button
+                                                        onClick={(e) => { e.stopPropagation(); setSelectedContent(res); }}
+                                                        className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 hover:bg-lime-50 text-gray-600 hover:text-lime-600 rounded-lg text-xs font-bold transition-colors"
+                                                    >
+                                                        <span>View</span>
+                                                        <Maximize2 size={12} />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+
+            {/* Content Preview Modal */}
+            {selectedContent && (
+                <div
+                    className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-md animate-in fade-in duration-200"
+                    onClick={() => setSelectedContent(null)}
+                >
+                    <div
+                        className="bg-white rounded-3xl w-full max-w-4xl max-h-[90vh] shadow-2xl overflow-hidden flex flex-col animate-in zoom-in-95 duration-300"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {/* Modal Header */}
+                        <div className={`p-6 border-b border-gray-100 flex items-center gap-4 bg-gradient-to-r ${selectedContent.type === 'lesson-plan' ? 'from-lime-50 to-emerald-50' :
+                            selectedContent.type === 'quiz' ? 'from-blue-50 to-indigo-50' :
+                                selectedContent.type === 'visual' ? 'from-purple-50 to-pink-50' :
+                                    selectedContent.type === 'story' ? 'from-amber-50 to-orange-50' :
+                                        'from-gray-50 to-gray-100'
+                            }`}>
+                            {/* Icon */}
+                            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg ${selectedContent.type === 'lesson-plan' ? 'bg-gradient-to-br from-lime-400 to-emerald-500' :
+                                selectedContent.type === 'quiz' ? 'bg-gradient-to-br from-blue-400 to-indigo-500' :
+                                    selectedContent.type === 'visual' ? 'bg-gradient-to-br from-purple-400 to-pink-500' :
+                                        selectedContent.type === 'story' ? 'bg-gradient-to-br from-amber-400 to-orange-500' :
+                                            'bg-gradient-to-br from-gray-400 to-gray-500'
+                                }`}>
+                                <span className="text-white">{getTypeIcon(selectedContent.type)}</span>
+                            </div>
+
+                            <div className="flex-1 min-w-0">
+                                <h2 className="text-xl font-bold text-gray-800 truncate">{selectedContent.title}</h2>
+                                <div className="flex items-center gap-2 mt-1">
+                                    <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${selectedContent.type === 'lesson-plan' ? 'bg-lime-100 text-lime-700' :
+                                        selectedContent.type === 'quiz' ? 'bg-blue-100 text-blue-700' :
+                                            selectedContent.type === 'visual' ? 'bg-purple-100 text-purple-700' :
+                                                selectedContent.type === 'story' ? 'bg-amber-100 text-amber-700' :
+                                                    'bg-gray-100 text-gray-600'
+                                        }`}>
+                                        {getToolDisplayName(selectedContent.toolId)}
+                                    </span>
+                                    {selectedContent.bookTitle && (
+                                        <>
+                                            <span className="text-gray-300">•</span>
+                                            <div className="flex items-center gap-1 text-xs text-gray-500">
+                                                <BookOpen size={12} />
+                                                {selectedContent.bookTitle}
+                                            </div>
+                                        </>
+                                    )}
+                                    <span className="text-gray-300">•</span>
+                                    <div className="flex items-center gap-1 text-xs text-gray-400">
+                                        <Clock size={12} />
+                                        {formatDate(selectedContent.createdAt)}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Actions */}
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={() => handleCopy(selectedContent.content)}
+                                    className="flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-bold text-gray-600 hover:bg-gray-50 transition-all shadow-sm"
+                                >
+                                    {copied ? (
+                                        <>
+                                            <CheckCircle size={14} className="text-green-500" />
+                                            Copied!
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Copy size={14} />
+                                            Copy
+                                        </>
+                                    )}
+                                </button>
+                                <Link
+                                    href={`/tools/${selectedContent.toolId}`}
+                                    className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-lime-500 to-emerald-500 text-white text-xs font-bold rounded-xl shadow-sm hover:shadow-md transition-all"
+                                >
+                                    <ExternalLink size={14} />
+                                    Open in Tool
+                                </Link>
+                                <button
+                                    onClick={() => setSelectedContent(null)}
+                                    className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200 hover:text-gray-800 transition-colors"
+                                >
+                                    <X size={20} />
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Modal Content */}
+                        <div className="flex-1 overflow-y-auto p-8 bg-white">
+                            {selectedContent.contentType === 'image' && selectedContent.imageUrl ? (
+                                <div className="flex items-center justify-center h-full">
+                                    <img
+                                        src={selectedContent.imageUrl}
+                                        alt={selectedContent.title}
+                                        className="max-w-full max-h-[60vh] rounded-2xl shadow-lg"
+                                    />
+                                </div>
+                            ) : (
+                                <div className="max-w-3xl mx-auto">
+                                    <div className="prose prose-lg max-w-none">
+                                        {renderFormattedContent(selectedContent.content)}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
             )}
         </div>
     );
