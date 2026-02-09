@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, History, Sparkles, BookOpen, FileText, GraduationCap, MapPin, Globe, PartyPopper, Star, Wand2, Copy, RefreshCw, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, History, Sparkles, BookOpen, FileText, GraduationCap, MapPin, Globe, PartyPopper, Star, Wand2, Copy, RefreshCw, CheckCircle2, Loader2, Hourglass } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 type ViewState = 'form' | 'generating' | 'result';
@@ -11,6 +11,31 @@ const HyperLocalView: React.FC = () => {
     const [mode, setMode] = useState<'topic' | 'book'>('topic');
     const [viewState, setViewState] = useState<ViewState>('form');
     const [generatedContent, setGeneratedContent] = useState<string>('');
+    const [loadingStage, setLoadingStage] = useState(0);
+
+    // Simulated loading stages
+    useEffect(() => {
+        if (viewState === 'generating') {
+            const stages = [
+                "Analyzing regional context...",
+                "Applying cultural nuances...",
+                "Generating local examples...",
+                "Finalizing content..."
+            ];
+
+            let currentStage = 0;
+            const interval = setInterval(() => {
+                setLoadingStage(prev => {
+                    if (prev < stages.length - 1) return prev + 1;
+                    return prev;
+                });
+            }, 800);
+
+            return () => clearInterval(interval);
+        } else {
+            setLoadingStage(0);
+        }
+    }, [viewState]);
 
     const handleGenerate = () => {
         setViewState('generating');
@@ -36,7 +61,7 @@ const HyperLocalView: React.FC = () => {
 5. **Closing**: 
    - Pledge to save 1 bucket of water daily.`);
             setViewState('result');
-        }, 3000);
+        }, 3500);
     };
 
     const handleBack = () => {
@@ -53,7 +78,7 @@ const HyperLocalView: React.FC = () => {
             </div>
 
             {/* Navbar */}
-            <nav className="relative z-10 flex items-center justify-between px-6 py-4 shrink-0">
+            <nav className={`relative z-10 flex items-center justify-between px-6 py-4 shrink-0 transition-opacity duration-500 ${viewState === 'generating' ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
                 <div className="flex items-center space-x-3">
                     <button
                         onClick={() => viewState === 'result' ? handleBack() : router.back()}
@@ -229,32 +254,69 @@ const HyperLocalView: React.FC = () => {
 
                 {/* GENERATING VIEW */}
                 {viewState === 'generating' && (
-                    <div className="flex flex-col items-center justify-center h-full w-full animate-fadeIn">
-                        <div className="relative">
-                            <div className="w-64 h-64 bg-lime-400 rounded-full blur-[100px] opacity-20 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse"></div>
-                            <div className="relative z-10 flex flex-col items-center">
-                                <div className="w-20 h-20 mb-8 relative">
-                                    <div className="absolute inset-0 bg-lime-500 rounded-full animate-ping opacity-20"></div>
-                                    <div className="absolute inset-0 border-4 border-lime-500/30 rounded-full animate-[spin_3s_linear_infinite]"></div>
-                                    <div className="absolute inset-2 border-4 border-t-lime-500 border-r-transparent border-b-transparent border-l-transparent rounded-full animate-[spin_1.5s_linear_infinite]"></div>
-                                    <div className="absolute inset-0 flex items-center justify-center">
-                                        <Sparkles className="text-lime-500 animate-pulse" size={32} />
-                                    </div>
+                    <div className="flex flex-col items-center justify-center h-full w-full animate-fadeIn absolute inset-0 z-50 bg-slate-50/90 backdrop-blur-sm">
+                        <div className="relative mb-12 transform scale-125">
+                            <div className="absolute inset-0 bg-lime-500/20 blur-[120px] rounded-full scale-150 animate-pulse"></div>
+
+                            {/* Wand Icon Animation */}
+                            <div className="relative z-10 w-64 h-64 flex items-center justify-center animate-wiggle">
+                                <Wand2 className="w-48 h-48 text-lime-500 drop-shadow-[0_0_30px_rgba(132,204,22,0.6)]" strokeWidth={1.5} />
+
+                                {/* Floating Particles */}
+                                <div className="absolute top-1/4 right-1/4 w-3 h-3 bg-lime-500 rounded-full blur-[2px] opacity-70 animate-[ping_2s_linear_infinite]"></div>
+                                <div className="absolute bottom-1/3 left-1/4 w-4 h-4 bg-lime-300 rounded-full blur-[3px] opacity-60 animate-[bounce_3s_infinite]"></div>
+                                <div className="absolute top-10 left-1/2 w-2 h-2 bg-lime-400 rounded-full blur-[2px] opacity-50 animate-pulse"></div>
+
+                                <div className="absolute -top-4 right-10 text-lime-500 animate-bounce delay-100">
+                                    <Star size={32} fill="currentColor" />
                                 </div>
-                                <h2 className="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-lime-600 to-emerald-600 mb-4 tracking-tight animate-pulse">
-                                    Brewing Local Magic...
+                                <div className="absolute bottom-6 -left-4 text-lime-400 opacity-60 animate-bounce delay-300">
+                                    <Sparkles size={28} />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="w-full max-w-md space-y-8 text-center relative z-20">
+                            <div className="space-y-4">
+                                <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900">
+                                    Crafting Your <span className="text-lime-500">Content</span>
                                 </h2>
-                                <p className="text-slate-500 text-lg font-medium animate-bounce">
-                                    Gathering cultural insights tailored just for you.
-                                </p>
+
+                                {/* Progress Bar */}
+                                <div className="relative h-3 w-64 mx-auto bg-slate-200 rounded-full overflow-hidden shadow-inner">
+                                    <div className="absolute top-0 left-0 h-full w-2/3 bg-gradient-to-r from-lime-400 to-lime-600 rounded-full animate-[progress_2s_ease-in-out_infinite] shadow-[0_0_15px_rgba(132,204,22,0.5)]"></div>
+                                </div>
                             </div>
 
-                            {/* Floating icons */}
-                            <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
-                                <Star className="absolute top-[-50px] left-[-40px] text-yellow-400 opacity-60 animate-[float_4s_ease-in-out_infinite] delay-0" fill="currentColor" size={24} />
-                                <Wand2 className="absolute bottom-[-20px] right-[-60px] text-purple-400 opacity-60 animate-[float_5s_ease-in-out_infinite] delay-1000" size={32} />
-                                <PartyPopper className="absolute top-[-30px] right-[-30px] text-pink-400 opacity-60 animate-[float_3s_ease-in-out_infinite] delay-500" size={28} />
+                            <div className="space-y-3 min-h-[80px]">
+                                <div className="flex items-center justify-center gap-3 text-slate-500 font-medium animate-fadeIn">
+                                    <Loader2 className="animate-spin text-lime-500" size={20} />
+                                    <span className="text-lg">
+                                        {loadingStage === 0 && "Analyzing regional context..."}
+                                        {loadingStage === 1 && "Applying cultural nuances..."}
+                                        {loadingStage === 2 && "Generating local examples..."}
+                                        {loadingStage === 3 && "Finalizing content..."}
+                                    </span>
+                                </div>
+                                <div className="flex flex-col gap-1 items-center">
+                                    {loadingStage > 0 && (
+                                        <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-400 opacity-60 animate-slideUp">
+                                            Region Identified
+                                        </p>
+                                    )}
+                                    {loadingStage > 1 && (
+                                        <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-400 opacity-40 animate-slideUp">
+                                            Adding Local Flavor
+                                        </p>
+                                    )}
+                                </div>
                             </div>
+                        </div>
+
+                        <div className="mt-16 bg-white/40 backdrop-blur-md px-6 py-3 rounded-2xl border border-white/30 shadow-sm">
+                            <p className="text-sm text-slate-500">
+                                This usually takes about <span className="font-bold text-slate-700">few seconds</span>...
+                            </p>
                         </div>
                     </div>
                 )}
@@ -306,8 +368,27 @@ const HyperLocalView: React.FC = () => {
                     50% { transform: translateY(-10px) rotate(5deg); }
                     100% { transform: translateY(0px) rotate(0deg); }
                 }
+                @keyframes progress {
+                    0% { transform: translateX(-100%); }
+                    50% { transform: translateX(0%); }
+                    100% { transform: translateX(100%); }
+                }
+                 @keyframes wiggle {
+                    0%, 100% { transform: rotate(-3deg); }
+                    50% { transform: rotate(3deg); }
+                }
+                @keyframes slideUp {
+                    from { opacity: 0; transform: translateY(10px); }
+                    to { opacity: 0.6; transform: translateY(0); }
+                }
                 .animate-pulse-slow {
                     animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+                }
+                .animate-wiggle {
+                    animation: wiggle 3s ease-in-out infinite;
+                }
+                 .animate-slideUp {
+                    animation: slideUp 0.5s ease-out forwards;
                 }
                 .custom-scrollbar::-webkit-scrollbar {
                     width: 6px;
