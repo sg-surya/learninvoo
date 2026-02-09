@@ -233,35 +233,125 @@ const VisualGeneratorView: React.FC = () => {
         );
     }
 
-    // GENERATING VIEW
+    // GENERATING VIEW - Premium Orbital Design
     if (viewState === 'generating') {
         return (
             <div className="h-full w-full flex items-center justify-center bg-slate-50 relative overflow-hidden">
-                {/* Orbs */}
-                <div className="absolute w-[500px] h-[500px] bg-lime-300 rounded-full blur-[100px] top-[-10%] left-[-5%] opacity-50 pointer-events-none animate-pulse" />
-                <div className="absolute w-[600px] h-[600px] bg-emerald-200 rounded-full blur-[100px] bottom-[-15%] right-[-5%] opacity-50 pointer-events-none animate-pulse" />
+                {/* Background Orbs */}
+                <div className="absolute w-[600px] h-[600px] bg-lime-200/40 rounded-full blur-[100px] top-[-10%] left-[-5%] pointer-events-none" />
+                <div className="absolute w-[700px] h-[700px] bg-emerald-100/40 rounded-full blur-[100px] bottom-[-15%] right-[-5%] pointer-events-none" />
+                <div className="absolute w-[500px] h-[500px] bg-teal-50 rounded-full blur-[100px] top-[20%] right-[10%] pointer-events-none" />
 
-                <div className="text-center z-10">
-                    <div className="relative w-32 h-32 mx-auto mb-8">
-                        <div className="absolute inset-0 bg-gradient-to-br from-lime-400 to-emerald-500 rounded-[2rem] flex items-center justify-center shadow-2xl shadow-emerald-200 animate-pulse">
-                            <Sparkles size={48} className="text-white" />
+                <main className="relative z-10 w-full flex flex-col items-center">
+                    {/* Heading */}
+                    <div className="text-center mb-12 animate-fadeIn">
+                        <h1 className="text-4xl md:text-5xl font-serif italic text-slate-900 mb-4 leading-tight" style={{ fontFamily: "'Georgia', serif" }}>
+                            Bringing your <span className="text-emerald-600">vision</span> to life...
+                        </h1>
+                        <p className="text-slate-400 font-light text-lg tracking-wide">Synthesizing multi-layered visual context</p>
+                    </div>
+
+                    {/* Central Orb Container */}
+                    <div className="relative w-[320px] h-[320px] flex items-center justify-center mb-10">
+                        {/* Orbit Ring */}
+                        <div className="absolute w-full h-full border border-emerald-500/10 rounded-full animate-spin" style={{ animationDuration: '20s' }} />
+
+                        {/* Orbiting Particles */}
+                        <div className="absolute top-[8%] left-[18%] text-emerald-600/50 text-lg font-light animate-pulse">∫</div>
+                        <div className="absolute top-[0%] left-[48%] text-emerald-600/50 animate-pulse" style={{ animationDelay: '0.2s' }}>
+                            <Sparkles size={14} />
                         </div>
-                        <div className="absolute -inset-4 bg-gradient-to-br from-lime-400 to-emerald-500 rounded-[2rem] blur-2xl opacity-30 animate-pulse" />
-                    </div>
-                    <h2 className="text-3xl font-serif italic text-slate-900 mb-3" style={{ fontFamily: "'Georgia', serif" }}>
-                        Creating your <span className="text-emerald-600">visuals</span>...
-                    </h2>
-                    <p className="text-slate-500 text-lg mb-8">AI is generating 4 unique variations</p>
-                    <div className="flex justify-center gap-3">
-                        {[0, 1, 2, 3].map((i) => (
+                        <div className="absolute top-[12%] right-[12%] text-emerald-600/50 text-lg font-light animate-pulse" style={{ animationDelay: '0.4s' }}>φ</div>
+                        <div className="absolute bottom-[18%] right-[8%] text-emerald-600/50 text-lg font-light animate-pulse" style={{ animationDelay: '0.6s' }}>π</div>
+                        <div className="absolute bottom-[0%] left-[45%] text-emerald-600/50 animate-pulse" style={{ animationDelay: '0.8s' }}>
+                            <Zap size={14} />
+                        </div>
+                        <div className="absolute bottom-[22%] left-[5%] text-emerald-600/50 text-lg font-light animate-pulse" style={{ animationDelay: '1s' }}>√</div>
+
+                        {/* Main Glass Orb */}
+                        <div
+                            className="w-[200px] h-[200px] rounded-full flex items-center justify-center relative z-20"
+                            style={{
+                                background: 'radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.2))',
+                                backdropFilter: 'blur(30px)',
+                                border: '1px solid rgba(255, 255, 255, 0.8)',
+                                boxShadow: '0 0 80px rgba(190, 242, 100, 0.6), inset 0 0 40px rgba(16, 185, 129, 0.2), 0 20px 50px rgba(0, 0, 0, 0.1)'
+                            }}
+                        >
+                            {/* Internal Glow */}
                             <div
-                                key={i}
-                                className="w-16 h-16 bg-white/50 backdrop-blur-md rounded-2xl border border-white/60 shadow-lg animate-pulse"
-                                style={{ animationDelay: `${i * 0.15}s` }}
+                                className="w-[100px] h-[100px] rounded-full animate-pulse"
+                                style={{
+                                    background: 'radial-gradient(circle, #bef264 0%, #10b981 100%)',
+                                    filter: 'blur(30px)',
+                                    opacity: 0.6
+                                }}
                             />
-                        ))}
+                            {/* Center Icon */}
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                <Sparkles size={48} className="text-emerald-600/30" />
+                            </div>
+                        </div>
                     </div>
-                </div>
+
+                    {/* Progress Section */}
+                    <div className="flex flex-col items-center space-y-5 animate-fadeIn" style={{ animationDelay: '0.3s' }}>
+                        {/* Progress Bar */}
+                        <div className="w-72 h-0.5 bg-emerald-500/10 rounded-full overflow-hidden relative">
+                            <div
+                                className="absolute left-0 top-0 h-full bg-gradient-to-r from-lime-400 to-emerald-500 rounded-full animate-progress"
+                                style={{
+                                    boxShadow: '0 0 10px #bef264',
+                                    animation: 'progressFill 2.5s ease-in-out forwards'
+                                }}
+                            />
+                        </div>
+
+                        {/* Status Steps */}
+                        <div className="flex items-center gap-6 text-[10px] uppercase tracking-[0.15em] font-bold">
+                            <div className="flex items-center gap-2 text-slate-400">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                                <span>Analyzing</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-emerald-600">
+                                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                                <span>Generating</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-slate-300">
+                                <span className="w-1.5 h-1.5 rounded-full bg-slate-300" />
+                                <span>Finalizing</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Neural Processor Badge */}
+                    <div className="mt-12 animate-fadeIn" style={{ animationDelay: '0.6s' }}>
+                        <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-white/60 text-slate-500 text-[9px] uppercase tracking-widest font-bold bg-white/30 backdrop-blur-md shadow-sm">
+                            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" style={{ boxShadow: '0 0 8px rgba(16, 185, 129, 0.5)' }} />
+                            Neural Processor Active
+                        </div>
+                    </div>
+                </main>
+
+                {/* CSS Keyframes */}
+                <style jsx>{`
+                    @keyframes fadeIn {
+                        from { opacity: 0; transform: translateY(20px); }
+                        to { opacity: 1; transform: translateY(0); }
+                    }
+                    @keyframes progressFill {
+                        0% { width: 0%; }
+                        30% { width: 30%; }
+                        60% { width: 65%; }
+                        100% { width: 100%; }
+                    }
+                    .animate-fadeIn {
+                        animation: fadeIn 1s ease-out forwards;
+                    }
+                    .animate-progress {
+                        animation: progressFill 2.5s ease-in-out forwards;
+                    }
+                `}</style>
             </div>
         );
     }
