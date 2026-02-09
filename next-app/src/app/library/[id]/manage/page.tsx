@@ -2,8 +2,13 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, Save, Trash2, Plus, Upload, FileText, CheckCircle, Book } from 'lucide-react';
+import { ArrowLeft, Save, Trash2, Plus, Upload, FileText, CheckCircle, Book, Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import { savePDF, deletePDF, fileToArrayBuffer, formatFileSize, generateId } from '@/lib/storage';
+import { pdfjs } from 'react-pdf';
+
+// Set up PDF.js worker
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 interface Resource {
     id: string;
@@ -29,6 +34,7 @@ const ManageBookPage = () => {
     // Chapter Upload State
     const [newChapterTitle, setNewChapterTitle] = useState('');
     const [selectedPDF, setSelectedPDF] = useState<File | null>(null);
+    const [isUploading, setIsUploading] = useState(false);
     const chapterInputRef = useRef<HTMLInputElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -63,8 +69,19 @@ const ManageBookPage = () => {
         }, 800);
     };
 
-    const handleDelete = () => {
+    const handleDelete = async () => {
         if (!book || !confirm('Are you sure you want to delete this book? This action cannot be undone.')) return;
+
+        // Delete all chapter PDFs from IndexedDB
+        if (book.chapters) {
+            for (const chapter of book.chapters) {
+                try {
+                    await deletePDF(chapter.id);
+                } catch (error) {
+                    console.error('Error deleting PDF:', error);
+                }
+            }
+        }
 
         const saved = localStorage.getItem('library_resources');
         if (saved) {
@@ -96,41 +113,91 @@ const ManageBookPage = () => {
             return;
         }
 
-        // Create a blob URL for the PDF (no storage quota issues)
-        const pdfBlobUrl = URL.createObjectURL(selectedPDF);
+        setIsUploading(true);
 
-        // Get chapter title (use filename if not provided)
-        const chapterTitle = newChapterTitle || selectedPDF.name.replace('.pdf', '');
+        try {
+            // Generate unique chapter ID
+            const chapterId = generateId();
 
-        const newChapter = {
-            id: Date.now().toString(),
-            title: chapterTitle,
-            pages: Math.floor(Math.random() * 50) + 5, // Will be updated when PDF loads
-            fileName: selectedPDF.name,
-            fileSize: (selectedPDF.size / 1024).toFixed(2) + ' KB',
-            pdfUrl: pdfBlobUrl // Store blob URL instead of base64
-        };
+            // Convert file to ArrayBuffer and store in IndexedDB
+            const arrayBuffer = await fileToArrayBuffer(selectedPDF);
 
-        setBook({
-            ...book,
-            chapters: [...(book.chapters || []), newChapter]
-        });
+            // Calculate page count using pdfjs
+            let pageCount = 0;
+            try {
+                // Determine document loading task
+                // We use structured clone or new array buffer because pdfjs might detach it
+                // But arrayBuffer is needed for savePDF as well.
+                const bufferCopy = arrayBuffer.slice(0);
+                const loadingTask = pdfjs.getDocument({ data: bufferCopy });
+                const pdf = await loadingTask.promise;
+                pageCount = pdf.numPages;
+            } catch (err) {
+                console.warn('Could not calculate page count:', err);
+                // Fallback to random if failed (or 0)
+                pageCount = 0;
+            }
 
-        // Reset form
-        setNewChapterTitle('');
-        setSelectedPDF(null);
-        if (fileInputRef.current) {
-            fileInputRef.current.value = '';
+            // Save PDF to IndexedDB
+            await savePDF({
+                id: chapterId,
+                bookId: book.id,
+                chapterId: chapterId,
+                fileName: selectedPDF.name,
+                fileSize: formatFileSize(selectedPDF.size),
+                data: arrayBuffer,
+                createdAt: Date.now(),
+            });
+
+            // Get chapter title (use filename if not provided)
+            const chapterTitle = newChapterTitle || selectedPDF.name.replace('.pdf', '');
+
+            const newChapter = {
+                id: chapterId,
+                title: chapterTitle,
+                pages: pageCount,
+                fileName: selectedPDF.name,
+                fileSize: formatFileSize(selectedPDF.size),
+                // No pdfUrl here - we'll load from IndexedDB when needed
+                storedInIndexedDB: true,
+            };
+
+            setBook({
+                ...book,
+                chapters: [...(book.chapters || []), newChapter]
+            });
+
+            // Reset form
+            setNewChapterTitle('');
+            setSelectedPDF(null);
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
+        } catch (error) {
+            console.error('Error uploading chapter:', error);
+            alert('Error uploading PDF. Please try again.');
+        } finally {
+            setIsUploading(false);
         }
     };
 
-    const removeChapter = (chapterId: string) => {
+    const removeChapter = async (chapterId: string) => {
         if (!book) return;
+        if (!confirm('Are you sure you want to remove this chapter?')) return;
+
+        try {
+            // Delete PDF from IndexedDB
+            await deletePDF(chapterId);
+        } catch (error) {
+            console.error('Error deleting PDF from IndexedDB:', error);
+        }
+
         setBook({
             ...book,
             chapters: (book.chapters || []).filter(c => c.id !== chapterId)
         });
     };
+
 
     if (loading) return <div className="p-10 text-center">Loading...</div>;
     if (!book) return <div className="p-10 text-center">Book not found.</div>;
@@ -362,10 +429,20 @@ const ManageBookPage = () => {
                                         {selectedPDF && (
                                             <button
                                                 type="submit"
-                                                className="w-full bg-lime-600 text-white px-5 py-3.5 rounded-xl hover:bg-lime-700 transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 font-bold text-sm"
+                                                disabled={isUploading}
+                                                className="w-full bg-lime-600 text-white px-5 py-3.5 rounded-xl hover:bg-lime-700 transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 font-bold text-sm disabled:opacity-70 disabled:cursor-not-allowed"
                                             >
-                                                <Plus size={18} />
-                                                Add Chapter to Book
+                                                {isUploading ? (
+                                                    <>
+                                                        <Loader2 size={18} className="animate-spin" />
+                                                        Saving to Library...
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <Plus size={18} />
+                                                        Add Chapter to Book
+                                                    </>
+                                                )}
                                             </button>
                                         )}
                                     </div>

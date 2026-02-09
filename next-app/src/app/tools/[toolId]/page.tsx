@@ -1,13 +1,16 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import { useParams } from 'next/navigation';
 import {
     ArrowLeft, Sparkles, Copy, RefreshCw, Wand2, Download, Send, Upload,
     FileText, Image as ImageIcon, Play, CheckCircle, BookOpen, Layers,
-    Globe, History, Languages, ScanLine, FileType, CheckSquare, Maximize2
+    Globe, History, Languages, ScanLine, FileType, CheckSquare, Maximize2,
+    Save, FolderOpen, Search, Plus
 } from 'lucide-react';
 import Link from 'next/link';
+import { saveGeneratedContent, generateId, GeneratedContent } from '@/lib/storage';
 
 // Mock Books Data for 'Book' mode
 const MOCK_BOOKS = [
@@ -204,14 +207,64 @@ const ToolPage = () => {
 
     const [isGenerating, setIsGenerating] = useState(false);
     const [generatedContent, setGeneratedContent] = useState<any>(null);
+    const [generatedId, setGeneratedId] = useState<string | null>(null);
+    const [isSaved, setIsSaved] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
     const [sourceMode, setSourceMode] = useState<'topic' | 'book'>('topic');
     const [formData, setFormData] = useState<FormDataInfo>({});
+
+    // Book selection state
+    const [books, setBooks] = useState<any[]>([]);
+    const [isBookModalOpen, setIsBookModalOpen] = useState(false);
+    const [searchBookQuery, setSearchBookQuery] = useState('');
+
+    // Load books
+    useEffect(() => {
+        const saved = localStorage.getItem('library_resources');
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    setBooks(parsed);
+                } else {
+                    setBooks(MOCK_BOOKS);
+                }
+            } catch (e) {
+                setBooks(MOCK_BOOKS);
+            }
+        } else {
+            setBooks(MOCK_BOOKS);
+        }
+    }, []);
+
+    // Filter books for modal
+    const filteredBooks = books.filter(b =>
+        b.title.toLowerCase().includes(searchBookQuery.toLowerCase()) ||
+        b.subject?.toLowerCase().includes(searchBookQuery.toLowerCase())
+    );
+
+    // Helper to map toolId to content type
+    const getContentType = (toolId: string): GeneratedContent['type'] => {
+        const mapping: Record<string, GeneratedContent['type']> = {
+            'lesson-planner': 'lesson-plan',
+            'quiz-exam-generator': 'quiz',
+            'visual-generator': 'visual',
+            'story-generator': 'story',
+            'hyper-local-content': 'hyper-local',
+            'paper-digitizer': 'other',
+            'simulation-generator': 'simulation',
+            'rubric-generator': 'rubric',
+        };
+        return mapping[toolId] || 'other';
+    };
 
     // Reset when tool changes
     useEffect(() => {
         setSourceMode('topic');
         setFormData({});
         setGeneratedContent(null);
+        setGeneratedId(null);
+        setIsSaved(false);
     }, [toolId]);
 
     // Handle form changes
@@ -221,9 +274,10 @@ const ToolPage = () => {
 
             // Auto-fetch logic for Books
             if (id === 'book' && typeof value === 'string' && sourceMode === 'book') {
-                const book = MOCK_BOOKS.find(b => b.title === value);
+                const book = books.find(b => b.title === value);
                 if (book) {
-                    newData['grade'] = book.grade; // Auto-fill grade
+                    // Try to map various grade formats or specific fields
+                    newData['grade'] = book.grade || book.level || '';
                 }
             }
             return newData;
@@ -257,11 +311,54 @@ const ToolPage = () => {
     const handleGenerate = () => {
         setIsGenerating(true);
         setGeneratedContent(null);
+        setIsSaved(false);
+        setGeneratedId(null);
+
         // Simulate AI delay
         setTimeout(() => {
             setIsGenerating(false);
             setGeneratedContent(config.dummyOutput);
+            setGeneratedId(generateId()); // Generate ID for this content
         }, 2000);
+    };
+
+    // Save to Workspace function
+    const handleSaveToWorkspace = async () => {
+        if (!generatedContent || !generatedId) return;
+
+        setIsSaving(true);
+        try {
+            // Determine title from form data or use default
+            const topic = formData.topic as string || formData.book as string || config.title;
+            const chapter = formData.chapter as string;
+            const title = chapter ? `${topic} - ${chapter}` : topic;
+
+            const contentToSave: GeneratedContent = {
+                id: generatedId,
+                type: getContentType(toolId),
+                title: title,
+                description: config.desc,
+                content: generatedContent.type === 'text'
+                    ? generatedContent.content
+                    : generatedContent.scannedText || JSON.stringify(generatedContent),
+                contentType: generatedContent.type,
+                imageUrl: generatedContent.type === 'image' ? generatedContent.content : undefined,
+                bookId: sourceMode === 'book' ? (formData.book as string) : undefined,
+                bookTitle: sourceMode === 'book' ? (formData.book as string) : undefined,
+                chapterInfo: formData.chapter as string,
+                toolId: toolId,
+                formData: formData as Record<string, any>,
+                createdAt: Date.now(),
+            };
+
+            await saveGeneratedContent(contentToSave);
+            setIsSaved(true);
+        } catch (error) {
+            console.error('Error saving to workspace:', error);
+            alert('Error saving to workspace. Please try again.');
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     return (
@@ -307,8 +404,8 @@ const ToolPage = () => {
                             <button
                                 onClick={() => setSourceMode('topic')}
                                 className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 ${sourceMode === 'topic'
-                                        ? 'bg-lime-50 text-lime-700 shadow-sm ring-1 ring-lime-200'
-                                        : 'text-gray-500 hover:bg-gray-50'
+                                    ? 'bg-lime-50 text-lime-700 shadow-sm ring-1 ring-lime-200'
+                                    : 'text-gray-500 hover:bg-gray-50'
                                     }`}
                             >
                                 <Sparkles size={16} />
@@ -317,8 +414,8 @@ const ToolPage = () => {
                             <button
                                 onClick={() => setSourceMode('book')}
                                 className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 ${sourceMode === 'book'
-                                        ? 'bg-lime-50 text-lime-700 shadow-sm ring-1 ring-lime-200'
-                                        : 'text-gray-500 hover:bg-gray-50'
+                                    ? 'bg-lime-50 text-lime-700 shadow-sm ring-1 ring-lime-200'
+                                    : 'text-gray-500 hover:bg-gray-50'
                                     }`}
                             >
                                 <BookOpen size={16} />
@@ -368,17 +465,15 @@ const ToolPage = () => {
                                         </div>
                                     ) : input.type === 'book-select' ? (
                                         <div className="relative">
-                                            <select
-                                                className="w-full bg-gray-100 border-transparent hover:border-gray-300 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-lime-500/20 focus:border-lime-500 focus:bg-white appearance-none transition-all font-medium text-gray-900 cursor-pointer"
-                                                value={formData[input.id] as string || ''}
-                                                onChange={(e) => handleInputChange(input.id, e.target.value)}
+                                            <div
+                                                onClick={() => setIsBookModalOpen(true)}
+                                                className="w-full bg-gray-100 border-transparent hover:border-gray-300 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-lime-500/20 focus:border-lime-500 focus:bg-white transition-all font-medium cursor-pointer flex items-center justify-between group-hover:bg-white group-hover:shadow-sm"
                                             >
-                                                <option value="" disabled>Select your book source</option>
-                                                {MOCK_BOOKS.map((book) => (
-                                                    <option key={book.id} value={book.title}>{book.title}</option>
-                                                ))}
-                                            </select>
-                                            <BookOpen size={16} className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500" />
+                                                <span className={formData[input.id] ? 'text-gray-900' : 'text-gray-400'}>
+                                                    {formData[input.id] ? (formData[input.id] as string) : input.placeholder}
+                                                </span>
+                                                <BookOpen size={16} className="text-gray-500" />
+                                            </div>
                                         </div>
                                     ) : input.type === 'file' ? (
                                         <div className="border-2 border-dashed border-gray-300 hover:border-lime-500 rounded-2xl p-8 flex flex-col items-center justify-center text-center transition-all cursor-pointer bg-white hover:bg-lime-50/10 group/file">
@@ -491,7 +586,9 @@ const ToolPage = () => {
                                     </div>
                                     <div>
                                         <h3 className="font-bold text-gray-800 text-sm leading-tight">Generation Complete</h3>
-                                        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Ready for review</p>
+                                        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+                                            {isSaved ? 'Saved to Workspace' : 'Ready for review'}
+                                        </p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-2">
@@ -499,9 +596,34 @@ const ToolPage = () => {
                                         <Copy size={16} />
                                         Copy
                                     </button>
-                                    <button className="flex items-center gap-2 px-3 py-2 bg-lime-50 hover:bg-lime-100 hover:text-lime-800 border border-lime-200 text-lime-700 rounded-xl text-xs font-bold transition-all shadow-sm">
+                                    <button className="flex items-center gap-2 px-3 py-2 bg-white hover:bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-gray-600 transition-all shadow-sm">
                                         <Download size={16} />
                                         Export
+                                    </button>
+                                    <button
+                                        onClick={handleSaveToWorkspace}
+                                        disabled={isSaving || isSaved}
+                                        className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold transition-all shadow-sm ${isSaved
+                                            ? 'bg-emerald-100 text-emerald-700 border border-emerald-200 cursor-default'
+                                            : 'bg-gradient-to-r from-lime-600 to-emerald-600 text-white hover:shadow-md disabled:opacity-70'
+                                            }`}
+                                    >
+                                        {isSaving ? (
+                                            <>
+                                                <RefreshCw size={16} className="animate-spin" />
+                                                Saving...
+                                            </>
+                                        ) : isSaved ? (
+                                            <>
+                                                <CheckCircle size={16} />
+                                                Saved to Workspace
+                                            </>
+                                        ) : (
+                                            <>
+                                                <FolderOpen size={16} />
+                                                Save to Workspace
+                                            </>
+                                        )}
                                     </button>
                                 </div>
                             </div>
@@ -573,6 +695,102 @@ const ToolPage = () => {
                     )}
                 </div>
             </main>
+
+            {/* Book Selection Modal - Portal */}
+            {isBookModalOpen && typeof document !== 'undefined' && ReactDOM.createPortal(
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-lg animate-in fade-in duration-200">
+                    <div className="bg-white rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh] animate-in zoom-in-95 duration-200 border border-gray-100">
+                        {/* Modal Header */}
+                        <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+                            <div>
+                                <h3 className="text-lg font-bold text-gray-800">Select a Source Book</h3>
+                                <p className="text-xs text-gray-500 mt-1">Choose a book from your library to use as context</p>
+                            </div>
+                            <button
+                                onClick={() => setIsBookModalOpen(false)}
+                                className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200 hover:text-gray-800 transition-colors"
+                            >
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                            </button>
+                        </div>
+
+                        {/* Search Bar */}
+                        <div className="p-4 border-b border-gray-100 bg-white sticky top-0 z-10">
+                            <div className="relative">
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                                <input
+                                    type="text"
+                                    placeholder="Search library..."
+                                    value={searchBookQuery}
+                                    onChange={(e) => setSearchBookQuery(e.target.value)}
+                                    className="w-full bg-gray-50 border-none rounded-xl py-3 pl-10 pr-4 text-sm focus:ring-2 focus:ring-lime-200 transition-all"
+                                    autoFocus
+                                />
+                            </div>
+                        </div>
+
+                        {/* Book List */}
+                        <div className="overflow-y-auto p-4 grid grid-cols-1 gap-3 custom-scrollbar flex-1">
+                            {filteredBooks.length > 0 ? (
+                                filteredBooks.map((book, idx) => (
+                                    <div
+                                        key={idx}
+                                        onClick={() => {
+                                            handleInputChange('book', book.title);
+                                            setIsBookModalOpen(false);
+                                        }}
+                                        className={`flex items-center gap-4 p-3 rounded-xl border cursor-pointer group transition-all ${formData['book'] === book.title
+                                            ? 'bg-lime-50 border-lime-200 shadow-sm'
+                                            : 'bg-white hover:bg-gray-50 border-transparent hover:border-gray-200'
+                                            }`}
+                                    >
+                                        <div className={`w-12 h-16 rounded-lg shadow-sm flex items-center justify-center text-white font-bold text-xs shrink-0 overflow-hidden ${['bg-blue-500', 'bg-purple-500', 'bg-emerald-500', 'bg-orange-500', 'bg-pink-500'][idx % 5]}`}>
+                                            {book.cover ? (
+                                                <img src={book.cover} alt="" className="w-full h-full object-cover" />
+                                            ) : (
+                                                <BookOpen size={20} />
+                                            )}
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <h4 className={`font-bold text-sm truncate ${formData['book'] === book.title ? 'text-lime-800' : 'text-gray-800'}`}>{book.title}</h4>
+                                            <div className="flex items-center gap-2 mt-1">
+                                                <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 bg-gray-100 px-2 py-0.5 rounded-md">{book.subject || 'General'}</span>
+                                                <span className="text-xs text-gray-300">•</span>
+                                                <span className="text-xs text-gray-500 truncate">{book.author || 'Unknown Author'}</span>
+                                            </div>
+                                        </div>
+                                        {formData['book'] === book.title && (
+                                            <div className="w-6 h-6 bg-lime-500 rounded-full flex items-center justify-center text-white shrink-0 shadow-sm shadow-lime-200 animate-in zoom-in">
+                                                <CheckCircle size={14} />
+                                            </div>
+                                        )}
+                                    </div>
+                                ))
+                            ) : (
+                                <div className="text-center py-12 flex flex-col items-center justify-center h-full text-gray-400">
+                                    <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+                                        <BookOpen size={24} className="opacity-30" />
+                                    </div>
+                                    <p className="font-medium text-gray-600">No books found</p>
+                                    <p className="text-xs mt-1 mb-4 max-w-xs mx-auto">We couldn't find any books matching "{searchBookQuery}"</p>
+
+                                    <Link href="/library" className="flex items-center gap-2 px-4 py-2 bg-lime-50 text-lime-700 rounded-lg text-xs font-bold hover:bg-lime-100 transition-colors">
+                                        <Plus size={14} />
+                                        Add New Book
+                                    </Link>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="p-3 bg-gray-50 border-t border-gray-100 text-center">
+                            <Link href="/library" className="text-xs font-bold text-gray-500 hover:text-lime-600 flex items-center justify-center gap-1.5 transition-colors py-1">
+                                <Plus size={14} /> Add more books to library
+                            </Link>
+                        </div>
+                    </div>
+                </div>,
+                document.body
+            )}
         </div>
     );
 };

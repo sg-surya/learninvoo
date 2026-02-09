@@ -3,17 +3,21 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, ChevronLeft, ChevronRight, BookOpen, FileText, ZoomIn, ZoomOut, Maximize2 } from 'lucide-react';
+import { ArrowLeft, ChevronLeft, ChevronRight, BookOpen, FileText, ZoomIn, ZoomOut, Maximize2, Loader2 } from 'lucide-react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
+import { getPDF, arrayBufferToBlobUrl } from '@/lib/storage';
 
 // Set up PDF.js worker
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 interface Chapter {
+    id: string;
     title: string;
     pages: number;
+    storedInIndexedDB?: boolean;
+    pdfUrl?: string;
 }
 
 interface Resource {
@@ -28,9 +32,12 @@ const ChapterReaderPage = () => {
     const router = useRouter();
     const [book, setBook] = useState<Resource | null>(null);
     const [loading, setLoading] = useState(true);
+    const [loadingPdf, setLoadingPdf] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [zoom, setZoom] = useState(100);
     const [numPages, setNumPages] = useState<number | null>(null);
+    const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+    const [pdfError, setPdfError] = useState<string | null>(null);
 
     const chapterIndex = parseInt(params.chapterId as string);
 
@@ -45,6 +52,53 @@ const ChapterReaderPage = () => {
         }
         setLoading(false);
     }, [params.id]);
+
+    // Load PDF from IndexedDB when chapter changes
+    useEffect(() => {
+        const loadPdfFromStorage = async () => {
+            if (!book || !book.chapters || !book.chapters[chapterIndex]) return;
+
+            const chapter = book.chapters[chapterIndex];
+            setLoadingPdf(true);
+            setPdfError(null);
+            setPdfUrl(null);
+            setCurrentPage(1);
+            setNumPages(null);
+
+            try {
+                // Check if PDF is stored in IndexedDB
+                if (chapter.storedInIndexedDB) {
+                    const storedPdf = await getPDF(chapter.id);
+                    if (storedPdf) {
+                        const blobUrl = arrayBufferToBlobUrl(storedPdf.data);
+                        setPdfUrl(blobUrl);
+                    } else {
+                        setPdfError('PDF not found in storage. Please re-upload the chapter.');
+                    }
+                } else if (chapter.pdfUrl) {
+                    // Legacy: use the old pdfUrl if available (blob URL - won't work after refresh)
+                    setPdfUrl(chapter.pdfUrl);
+                } else {
+                    // Fallback to sample PDF for demo
+                    setPdfUrl('https://pdfobject.com/pdf/sample.pdf');
+                }
+            } catch (error) {
+                console.error('Error loading PDF:', error);
+                setPdfError('Error loading PDF. Please try again.');
+            } finally {
+                setLoadingPdf(false);
+            }
+        };
+
+        loadPdfFromStorage();
+
+        // Cleanup blob URLs when component unmounts or chapter changes
+        return () => {
+            if (pdfUrl && pdfUrl.startsWith('blob:')) {
+                URL.revokeObjectURL(pdfUrl);
+            }
+        };
+    }, [book, chapterIndex]);
 
     // Keyboard navigation
     useEffect(() => {
@@ -68,9 +122,6 @@ const ChapterReaderPage = () => {
     const currentChapter = book.chapters[chapterIndex];
     const hasNextChapter = chapterIndex < book.chapters.length - 1;
     const hasPrevChapter = chapterIndex > 0;
-
-    // Use uploaded PDF if available, otherwise use sample
-    const pdfUrl = (currentChapter as any).pdfUrl || 'https://pdfobject.com/pdf/sample.pdf';
 
     return (
         <div className="h-screen flex flex-col bg-gray-50 font-sans">
@@ -204,38 +255,57 @@ const ChapterReaderPage = () => {
 
                     {/* PDF Canvas */}
                     <div className="flex-1 overflow-auto bg-gray-100 flex items-start justify-center p-8 custom-scrollbar">
-                        <Document
-                            file={pdfUrl}
-                            onLoadSuccess={({ numPages }) => setNumPages(numPages)}
-                            loading={
-                                <div className="flex flex-col items-center justify-center p-12">
-                                    <div className="w-16 h-16 border-4 border-lime-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-                                    <p className="text-gray-600 font-medium">Loading PDF...</p>
-                                </div>
-                            }
-                            error={
-                                <div className="flex flex-col items-center justify-center p-12 bg-white rounded-lg shadow-lg border border-gray-200">
-                                    <BookOpen size={64} className="text-gray-300 mb-4" />
-                                    <h3 className="text-xl font-bold text-gray-800 mb-2">PDF Not Available</h3>
-                                    <p className="text-gray-600 text-sm mb-4">
-                                        Unable to load the PDF file for this chapter.
-                                    </p>
-                                    <p className="text-gray-500 text-xs max-w-md text-center">
-                                        Please make sure the PDF file is uploaded correctly in the Manage Book page.
-                                    </p>
-                                </div>
-                            }
-                            className="flex justify-center"
-                        >
-                            <div style={{ transform: `scale(${zoom / 100})`, transformOrigin: 'top center', transition: 'transform 0.2s' }}>
-                                <Page
-                                    pageNumber={currentPage}
-                                    renderTextLayer={true}
-                                    renderAnnotationLayer={true}
-                                    className="shadow-2xl rounded-lg overflow-hidden"
-                                />
+                        {loadingPdf ? (
+                            <div className="flex flex-col items-center justify-center p-12">
+                                <Loader2 size={48} className="text-lime-500 animate-spin mb-4" />
+                                <p className="text-gray-600 font-medium">Loading PDF from storage...</p>
                             </div>
-                        </Document>
+                        ) : pdfError ? (
+                            <div className="flex flex-col items-center justify-center p-12 bg-white rounded-lg shadow-lg border border-gray-200">
+                                <BookOpen size={64} className="text-gray-300 mb-4" />
+                                <h3 className="text-xl font-bold text-gray-800 mb-2">PDF Not Available</h3>
+                                <p className="text-gray-600 text-sm mb-4">{pdfError}</p>
+                                <Link
+                                    href={`/library/${book.id}/manage`}
+                                    className="px-4 py-2 bg-lime-600 text-white rounded-lg font-medium hover:bg-lime-700 transition-colors"
+                                >
+                                    Go to Manage Book
+                                </Link>
+                            </div>
+                        ) : pdfUrl ? (
+                            <Document
+                                file={pdfUrl}
+                                onLoadSuccess={({ numPages }) => setNumPages(numPages)}
+                                loading={
+                                    <div className="flex flex-col items-center justify-center p-12">
+                                        <div className="w-16 h-16 border-4 border-lime-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                                        <p className="text-gray-600 font-medium">Loading PDF...</p>
+                                    </div>
+                                }
+                                error={
+                                    <div className="flex flex-col items-center justify-center p-12 bg-white rounded-lg shadow-lg border border-gray-200">
+                                        <BookOpen size={64} className="text-gray-300 mb-4" />
+                                        <h3 className="text-xl font-bold text-gray-800 mb-2">PDF Not Available</h3>
+                                        <p className="text-gray-600 text-sm mb-4">
+                                            Unable to load the PDF file for this chapter.
+                                        </p>
+                                        <p className="text-gray-500 text-xs max-w-md text-center">
+                                            Please make sure the PDF file is uploaded correctly in the Manage Book page.
+                                        </p>
+                                    </div>
+                                }
+                                className="flex justify-center"
+                            >
+                                <div style={{ transform: `scale(${zoom / 100})`, transformOrigin: 'top center', transition: 'transform 0.2s' }}>
+                                    <Page
+                                        pageNumber={currentPage}
+                                        renderTextLayer={true}
+                                        renderAnnotationLayer={true}
+                                        className="shadow-2xl rounded-lg overflow-hidden"
+                                    />
+                                </div>
+                            </Document>
+                        ) : null}
                     </div>
 
                     {/* Quick Navigation Footer */}
