@@ -483,45 +483,7 @@ const HyperLocalView: React.FC = () => {
 
             </main>
 
-            <style jsx>{`
-                @keyframes float {
-                    0% { transform: translateY(0px) rotate(0deg); }
-                    50% { transform: translateY(-10px) rotate(5deg); }
-                    100% { transform: translateY(0px) rotate(0deg); }
-                }
-                @keyframes progress {
-                    0% { transform: translateX(-100%); }
-                    50% { transform: translateX(0%); }
-                    100% { transform: translateX(100%); }
-                }
-                 @keyframes wiggle {
-                    0%, 100% { transform: rotate(-3deg); }
-                    50% { transform: rotate(3deg); }
-                }
-                @keyframes slideUp {
-                    from { opacity: 0; transform: translateY(10px); }
-                    to { opacity: 0.6; transform: translateY(0); }
-                }
-                .animate-pulse-slow {
-                    animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-                }
-                .animate-wiggle {
-                    animation: wiggle 3s ease-in-out infinite;
-                }
-                 .animate-slideUp {
-                    animation: slideUp 0.5s ease-out forwards;
-                }
-                .custom-scrollbar::-webkit-scrollbar {
-                    width: 6px;
-                }
-                .custom-scrollbar::-webkit-scrollbar-track {
-                    background: transparent;
-                }
-                .custom-scrollbar::-webkit-scrollbar-thumb {
-                    background-color: #cbd5e1;
-                    border-radius: 20px;
-                }
-            `}</style>
+
         </div>
     );
 };
