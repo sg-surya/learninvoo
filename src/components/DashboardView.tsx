@@ -66,6 +66,13 @@ const DashboardView: React.FC = () => {
     const completionPercentage = calculateCompletion();
     const isProfileIncomplete = completionPercentage < 100;
 
+    const getTimeBasedGreeting = () => {
+        const hour = new Date().getHours();
+        if (hour < 12) return "Good Morning";
+        if (hour < 17) return "Good Afternoon";
+        return "Good Evening";
+    };
+
     // Animation variants
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -84,25 +91,34 @@ const DashboardView: React.FC = () => {
 
     return (
         <motion.div
-            className="p-6 w-full min-h-screen bg-[#f8fafc] text-slate-800"
+            className="p-8 w-full min-h-screen bg-white text-slate-800 relative"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
         >
+            {/* background patterns */}
+            <div className="fixed inset-0 pointer-events-none opacity-40 -z-50">
+                <div className="absolute top-[-10%] right-[-5%] w-[40rem] h-[40rem] bg-lime-50 rounded-full blur-[100px]"></div>
+                <div className="absolute bottom-[-10%] left-[-5%] w-[30rem] h-[30rem] bg-sky-50 rounded-full blur-[100px]"></div>
+                <div className="absolute inset-0 bg-grid-pro scale-150 opacity-20"></div>
+            </div>
+
             {/* 1. Header (Morning Brief) */}
-            <header className="mb-8 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-                <div>
-                    <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
-                        Good Morning, <span className="text-lime-600">{user?.fullName || 'Educator'}!</span>
+            <header className="mb-10 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+                <div className="space-y-1.5">
+                    <h1 className="text-4xl font-black text-slate-950 tracking-tighter uppercase italic font-display leading-[0.9]">
+                        {getTimeBasedGreeting()}, <span className="text-lime-500">{user?.fullName || 'Educator'}!</span>
                     </h1>
-                    <p className="text-slate-500 mt-2 font-medium flex items-center gap-2">
-                        <span className="inline-block w-2 H-2 rounded-full bg-lime-500 animate-pulse"></span>
-                        You have <span className="font-bold text-slate-700">5 Classes</span> today (2 Free Periods).
+                    <p className="text-slate-400 text-[9px] font-black uppercase tracking-[0.25em] flex items-center gap-2">
+                        <span className="inline-block w-2 h-2 rounded-full bg-lime-500 animate-pulse"></span>
+                        Status Update: <span className="text-slate-900">5 Classes Scheduled</span> for your session.
                     </p>
                 </div>
-                <div className="bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-200 text-xs font-bold text-slate-600 flex items-center gap-2">
-                    <Calendar size={16} className="text-lime-600" />
-                    <span>10 Feb 2026</span>
+                <div className="flex items-center gap-3">
+                    <div className="bg-white/50 backdrop-blur-md px-6 py-3 rounded-2xl shadow-sm border border-slate-100 text-[10px] font-black uppercase tracking-widest text-slate-600 flex items-center gap-3">
+                        <Calendar size={14} className="text-lime-600" />
+                        <span>11 FEB 2026</span>
+                    </div>
                 </div>
             </header>
 
@@ -201,54 +217,53 @@ const DashboardView: React.FC = () => {
                 {/* LEFT/MAIN COLUMN (2/3 width) */}
                 <div className="xl:col-span-2 space-y-8">
 
-                    {/* 2. Top Section - "Right Now" (Current Class) */}
                     <motion.section variants={itemVariants}>
-                        <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-lg font-bold flex items-center gap-2">
-                                <Clock className="text-lime-600" size={20} />
-                                Right Now
-                                <span className="px-2 py-0.5 bg-red-100 text-red-600 text-[10px] font-bold uppercase rounded-full animate-pulse">Live</span>
+                        <div className="flex items-center justify-between mb-6">
+                            <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] flex items-center gap-2">
+                                <Clock className="text-lime-500" size={14} />
+                                Temporal Awareness <span className="text-slate-200">/</span> Right Now
+                                <span className="px-2 py-0.5 bg-red-100 text-red-600 text-[8px] font-black uppercase rounded-full animate-pulse ml-2">Live Sync</span>
                             </h2>
                         </div>
 
-                        <div className="bg-white rounded-[2rem] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-slate-100 relative overflow-hidden group">
+                        <div className="bg-white/70 backdrop-blur-xl rounded-[2.5rem] p-8 shadow-[0_20px_60px_rgba(0,0,0,0.03)] border border-white/80 relative overflow-hidden group">
                             {/* Decorative Background Blob */}
-                            <div className="absolute top-0 right-0 w-64 h-64 bg-lime-50 rounded-full blur-[80px] -z-0 opacity-50 group-hover:opacity-80 transition-opacity"></div>
+                            <div className="absolute top-0 right-0 w-80 h-80 bg-lime-100/30 rounded-full blur-[100px] -z-0 opacity-50 group-hover:opacity-100 transition-all duration-700"></div>
 
-                            <div className="relative z-10 flex flex-col md:flex-row gap-6 md:items-center justify-between">
-                                <div className="space-y-4">
+                            <div className="relative z-10 flex flex-col lg:flex-row gap-8 lg:items-center justify-between">
+                                <div className="space-y-6 flex-1">
                                     <div>
-                                        <div className="flex items-center gap-3 mb-1">
-                                            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 bg-slate-100 px-2 py-1 rounded-md">Period 3 • 10:30 AM - 11:15 AM</span>
-                                            <span className="text-[10px] font-bold text-lime-600 flex items-center gap-1">
-                                                <MapPin size={10} /> Room 302
+                                        <div className="flex flex-wrap items-center gap-3 mb-3">
+                                            <span className="text-[9px] font-black uppercase tracking-[0.2em] text-lime-700 bg-lime-50 px-3 py-1.5 rounded-full border border-lime-100/50">Period 3 • 10:30 AM - 11:15 AM</span>
+                                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 rounded-full">
+                                                <MapPin size={10} className="text-lime-500" /> Neural Hub Room 302
                                             </span>
                                         </div>
-                                        <h3 className="text-3xl font-extrabold text-slate-800">Class 9-B <span className="text-slate-400 font-light">|</span> Mathematics</h3>
-                                        <div className="flex items-center gap-2 text-slate-600 mt-2">
-                                            <BookOpen size={16} className="text-lime-600" />
-                                            <span className="font-semibold text-sm">Topic: Quadratic Equations (Exercise 4.2)</span>
+                                        <h3 className="text-3xl font-black text-slate-950 tracking-tighter uppercase italic font-display">Class 9-B <span className="text-lime-500 font-light">⁕</span> Mathematics</h3>
+                                        <div className="flex items-center gap-2 text-slate-500 mt-2 font-bold text-[10px] uppercase tracking-widest italic opacity-80">
+                                            <BookOpen size={14} className="text-lime-500" />
+                                            Active Pedagogy: Quadratic Equations (Ex 4.2)
                                         </div>
                                     </div>
 
-                                    <div className="flex flex-wrap gap-3">
-                                        <button className="flex items-center gap-2 px-5 py-2.5 bg-lime-500 hover:bg-lime-600 text-white font-bold rounded-xl shadow-lg shadow-lime-200 transition-all active:scale-95">
-                                            <FileText size={18} />
-                                            View Lesson Plan
+                                    <div className="flex flex-wrap gap-4 pt-2">
+                                        <button className="flex items-center gap-3 px-8 py-4 bg-lime-600 hover:bg-lime-700 text-white font-black uppercase text-[10px] tracking-widest rounded-2xl shadow-xl shadow-lime-600/20 transition-all active:scale-95 group">
+                                            <FileText size={18} className="group-hover:rotate-6 transition-transform" />
+                                            Initialize Plan
                                         </button>
-                                        <button className="flex items-center gap-2 px-5 py-2.5 bg-white border border-slate-200 text-slate-700 font-bold rounded-xl hover:bg-slate-50 transition-all active:scale-95">
-                                            <UserCheck size={18} className="text-slate-500" />
-                                            Take Attendance
+                                        <button className="flex items-center gap-3 px-8 py-4 bg-white border border-slate-100 text-slate-950 font-black uppercase text-[10px] tracking-widest rounded-2xl hover:bg-slate-50 transition-all active:scale-95 shadow-sm">
+                                            <UserCheck size={18} className="text-slate-400" />
+                                            Log Presence
                                         </button>
                                     </div>
                                 </div>
 
-                                <div className="hidden md:block w-px h-32 bg-slate-100"></div>
+                                <div className="hidden lg:block w-px h-32 bg-slate-100"></div>
 
-                                <div className="flex-shrink-0 bg-slate-50/50 p-4 rounded-2xl border border-slate-100/50 text-center w-full md:w-auto">
-                                    <div className="text-xs text-slate-500 font-bold uppercase mb-2">Class Strength</div>
-                                    <div className="text-3xl font-black text-slate-800">42<span className="text-lg text-slate-400 font-medium">/45</span></div>
-                                    <div className="text-[10px] text-lime-600 font-bold bg-lime-100 px-2 py-0.5 rounded-full inline-block mt-1">93% Present</div>
+                                <div className="flex-shrink-0 bg-slate-50/50 backdrop-blur-sm p-6 rounded-[2rem] border border-white shadow-sm text-center w-full lg:w-48">
+                                    <div className="text-[9px] text-slate-400 font-black uppercase tracking-[0.2em] mb-2">Neural Linkage</div>
+                                    <div className="text-4xl font-black text-slate-950 tracking-tighter">42<span className="text-lg text-slate-300 font-light italic">/45</span></div>
+                                    <div className="text-[9px] text-lime-600 font-black uppercase tracking-widest bg-lime-50 px-3 py-1 rounded-full inline-block mt-3 border border-lime-100/50">93% Synchronized</div>
                                 </div>
                             </div>
                         </div>
@@ -256,20 +271,20 @@ const DashboardView: React.FC = () => {
 
                     {/* 3. Middle Section - Quick Actions Grid */}
                     <motion.section variants={itemVariants}>
-                        <h2 className="text-lg font-bold mb-4 text-slate-800">Quick Actions</h2>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-6">Pedagogical Accelerators</h2>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                             {[
-                                { label: 'Create Homework', icon: BookOpen, color: 'bg-blue-50 text-blue-600', sub: 'Generate via AI' },
-                                { label: 'Question Paper', icon: FileCheck, color: 'bg-purple-50 text-purple-600', sub: 'CBSE Pattern' },
-                                { label: 'Send Remark', icon: MessageCircle, color: 'bg-orange-50 text-orange-600', sub: 'To Parents' },
-                                { label: 'Student Logs', icon: AlertCircle, color: 'bg-pink-50 text-pink-600', sub: 'Discipline' }
+                                { label: 'Create Homework', icon: BookOpen, color: 'bg-lime-50 text-lime-600 shadow-lime-500/5', sub: 'Neural Gen v2' },
+                                { label: 'Question Paper', icon: FileCheck, color: 'bg-sky-50 text-sky-600 shadow-sky-500/5', sub: 'CBSE Optimized' },
+                                { label: 'Send Remark', icon: MessageCircle, color: 'bg-amber-50 text-amber-600 shadow-amber-500/5', sub: 'Guardian Uplink' },
+                                { label: 'Student Logs', icon: AlertCircle, color: 'bg-rose-50 text-rose-600 shadow-rose-500/5', sub: 'Integrity Scan' }
                             ].map((action, i) => (
-                                <button key={i} className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all text-left group">
-                                    <div className={`w-12 h-12 ${action.color} rounded-2xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
-                                        <action.icon size={24} />
+                                <button key={i} className="bg-white/80 backdrop-blur-sm p-6 rounded-[2rem] border border-slate-50 shadow-sm hover:shadow-xl hover:shadow-slate-200/50 hover:-translate-y-2 transition-all text-left group">
+                                    <div className={`w-14 h-14 ${action.color} rounded-[1.25rem] flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-3 shadow-lg transition-all duration-500`}>
+                                        <action.icon size={26} />
                                     </div>
-                                    <h4 className="font-bold text-slate-800 text-sm">{action.label}</h4>
-                                    <p className="text-[10px] text-slate-400 font-medium mt-0.5">{action.sub}</p>
+                                    <h4 className="font-black text-slate-950 text-xs uppercase tracking-tight leading-tight mb-1">{action.label}</h4>
+                                    <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest opacity-60">{action.sub}</p>
                                 </button>
                             ))}
                         </div>

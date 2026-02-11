@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import { useToast } from '@/components/Toast';
 
 const EditProfilePage = () => {
     const router = useRouter();
@@ -39,7 +40,7 @@ const EditProfilePage = () => {
     const [canChangeUsername, setCanChangeUsername] = useState(true);
     const [daysUntilNextChange, setDaysUntilNextChange] = useState(0);
     const [isSaving, setIsSaving] = useState(false);
-    const [saveSuccess, setSaveSuccess] = useState(false);
+    const { showToast } = useToast();
 
     useEffect(() => {
         const storedUser = localStorage.getItem('learnivo_current_user');
@@ -98,12 +99,11 @@ const EditProfilePage = () => {
             localStorage.setItem('learnivo_current_user', JSON.stringify(updatedUser));
 
             setIsSaving(false);
-            setSaveSuccess(true);
+            showToast('Profile configuration synchronized successfully', 'success');
 
             setTimeout(() => {
-                setSaveSuccess(false);
                 router.push('/profile');
-            }, 1500);
+            }, 1000);
         }
     };
 
@@ -366,22 +366,7 @@ const EditProfilePage = () => {
                     </section>
                 </form>
 
-                {/* Success Toast */}
-                <AnimatePresence>
-                    {saveSuccess && (
-                        <motion.div
-                            initial={{ opacity: 0, y: 50 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.95 }}
-                            className="fixed bottom-10 left-1/2 -translate-x-1/2 bg-slate-950 text-white px-8 py-4 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.3)] z-[100] flex items-center gap-3 border border-white/10"
-                        >
-                            <div className="w-6 h-6 rounded-full bg-lime-500 flex items-center justify-center">
-                                <ShieldCheck size={14} className="text-slate-950" />
-                            </div>
-                            <span className="text-[10px] font-black uppercase tracking-[0.2em]">Synchronization Successful</span>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
+
             </main>
         </div>
     );

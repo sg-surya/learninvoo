@@ -104,6 +104,38 @@ button:active {
   transform: scale(0.98);
 }
 
+/* Glassmorphism Tokens */
+.glass-panel {
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+}
+
+/* Skeleton Standard */
+.skeleton-pro {
+  background-color: #f1f5f9;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  border-radius: 2.5rem;
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: .5;
+  }
+}
+
+/* Global Icon Weight Fix */
+.lucide {
+  stroke-width: 1.5;
+}
+
 @keyframes subtle-bounce {
 
   0%,

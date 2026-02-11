@@ -17,7 +17,11 @@ import {
     LogOut,
     Settings,
     User,
-    ChevronDown
+    ChevronDown,
+    Users,
+    CreditCard,
+    Zap,
+    Info
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -141,16 +145,20 @@ const Header: React.FC = () => {
                     <AnimatePresence>
                         {isDropdownOpen && (
                             <motion.div
-                                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                initial={{ opacity: 0, y: 15, scale: 0.95 }}
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
-                                exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                transition={{ duration: 0.2, ease: "easeOut" }}
-                                className="absolute right-0 mt-3 w-56 bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] border border-slate-100 p-1.5 overflow-hidden"
+                                exit={{ opacity: 0, y: 15, scale: 0.95 }}
+                                transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                                className="absolute right-0 mt-4 w-64 bg-white rounded-[1.8rem] shadow-[0_20px_50px_rgba(0,0,0,0.12)] border border-slate-100 p-1.5 overflow-hidden z-[100]"
                             >
-                                {/* User Info Header */}
-                                <div className="px-3 py-3 mb-1.5 bg-slate-50/50 rounded-xl">
-                                    <div className="flex items-center gap-2.5 mb-1">
-                                        <div className="w-9 h-9 rounded-full border-2 border-white shadow-sm overflow-hidden bg-white shrink-0">
+                                {/* User Info Header - Now Clickable Link */}
+                                <Link
+                                    href="/profile"
+                                    onClick={() => setIsDropdownOpen(false)}
+                                    className="block px-3 py-2.5 mb-1 bg-slate-50/50 rounded-[1.2rem] border border-slate-100/50 transition-all hover:bg-lime-50/50 group/card"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-9 h-9 rounded-xl border-2 border-white shadow-sm overflow-hidden bg-white shrink-0 group-hover/card:scale-105 transition-transform">
                                             {user?.profileImage ? (
                                                 <img
                                                     src={user.profileImage}
@@ -165,45 +173,58 @@ const Header: React.FC = () => {
                                                 />
                                             )}
                                         </div>
-                                        <div className="flex-1 min-w-0 overflow-hidden">
-                                            <h4 className="text-[13px] font-black text-slate-800 truncate">{user?.fullName || 'Educator'}</h4>
-                                            <p className="text-[9px] text-slate-400 font-bold uppercase tracking-wider truncate">{user?.role || 'Teacher'}</p>
+                                        <div className="flex-1 min-w-0">
+                                            <h4 className="text-[12px] font-black text-slate-950 truncate font-display italic uppercase tracking-tight group-hover/card:text-lime-600 transition-colors leading-tight">{user?.fullName || 'Educator'}</h4>
+                                            <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-tight">@{user?.username || 'user'}</p>
                                         </div>
                                     </div>
-                                    <div className="mt-1.5 pt-1.5 border-t border-slate-100">
-                                        <p className="text-[9px] font-medium text-slate-400 truncate">{user?.email}</p>
-                                    </div>
-                                </div>
+                                </Link>
 
                                 {/* Menu Items */}
                                 <div className="space-y-0.5">
-                                    <Link href="/profile" className="w-full flex items-center gap-2.5 px-2.5 py-1.5 text-[13px] font-bold text-slate-600 hover:bg-slate-50 hover:text-lime-600 rounded-lg transition-colors group">
-                                        <div className="w-7 h-7 flex items-center justify-center bg-slate-100 rounded-lg group-hover:bg-lime-50 transition-colors shrink-0">
-                                            <User size={14} />
+                                    <button className="w-full flex items-center justify-between px-3 py-2 text-[13px] font-bold text-slate-700 hover:bg-slate-50 rounded-xl transition-all group">
+                                        <div className="flex items-center gap-3">
+                                            <Users size={16} className="text-slate-400 group-hover:text-lime-600 transition-colors" />
+                                            <span>Community</span>
                                         </div>
-                                        My Hub Profile
-                                    </Link>
-                                    <button className="w-full flex items-center gap-2.5 px-2.5 py-1.5 text-[13px] font-bold text-slate-600 hover:bg-slate-50 rounded-lg transition-colors group">
-                                        <div className="w-7 h-7 flex items-center justify-center bg-slate-100 rounded-lg transition-colors shrink-0">
-                                            <Settings size={14} />
-                                        </div>
-                                        Platform Prefs
                                     </button>
-                                    <div className="h-px bg-slate-100 my-1.5 mx-1.5"></div>
+
+                                    <button className="w-full flex items-center justify-between px-3 py-2 text-[13px] font-bold text-slate-700 hover:bg-slate-50 rounded-xl transition-all group">
+                                        <div className="flex items-center gap-3">
+                                            <CreditCard size={16} className="text-slate-400 group-hover:text-lime-600 transition-colors" />
+                                            <span>Subscription</span>
+                                        </div>
+                                        <div className="flex items-center gap-1.5 px-2 py-0.5 bg-fuchsia-100 text-fuchsia-600 rounded-md text-[8px] font-black uppercase italic tracking-tighter">
+                                            <Zap size={9} fill="currentColor" />
+                                            PRO
+                                        </div>
+                                    </button>
+
+                                    <button className="w-full flex items-center justify-between px-3 py-2 text-[13px] font-bold text-slate-700 hover:bg-slate-50 rounded-xl transition-all group">
+                                        <div className="flex items-center gap-3">
+                                            <Settings size={16} className="text-slate-400 group-hover:text-lime-600 transition-colors" />
+                                            <span>Settings</span>
+                                        </div>
+                                    </button>
+
+                                    <div className="h-px bg-slate-100 my-1 mx-3"></div>
+
+                                    <button className="w-full flex items-center justify-between px-3 py-2 text-[13px] font-bold text-slate-700 hover:bg-slate-50 rounded-xl transition-all group">
+                                        <div className="flex items-center gap-3">
+                                            <Info size={16} className="text-slate-400 group-hover:text-lime-600 transition-colors" />
+                                            <span>Help center</span>
+                                        </div>
+                                    </button>
+
                                     <button
                                         onClick={handleLogout}
-                                        className="w-full flex items-center gap-2.5 px-2.5 py-1.5 text-[13px] font-bold text-red-500 hover:bg-red-50 rounded-lg transition-colors group"
+                                        className="w-full flex items-center justify-between px-3 py-2 text-[13px] font-bold text-slate-700 hover:bg-red-50 hover:text-red-500 rounded-xl transition-all group"
                                     >
-                                        <div className="w-7 h-7 flex items-center justify-center bg-red-50 rounded-lg group-hover:bg-red-100 transition-colors shrink-0">
-                                            <LogOut size={14} />
+                                        <div className="flex items-center gap-3">
+                                            <LogOut size={16} className="text-slate-400 group-hover:text-red-500 transition-colors" />
+                                            <span>Sign out</span>
                                         </div>
-                                        Sign Out Portal
                                     </button>
-                                </div>
-
-                                {/* Bottom Tag */}
-                                <div className="mt-1.5 px-2 py-1.5 text-center border-t border-slate-50">
-                                    <span className="text-[8px] font-black text-slate-300 uppercase tracking-[0.2em]">Learnivo Secure Session</span>
                                 </div>
                             </motion.div>
                         )}
