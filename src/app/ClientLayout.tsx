@@ -36,9 +36,9 @@ export default function ClientLayout({
         localStorage.setItem('learnivo_sidebar_collapsed', JSON.stringify(isSidebarCollapsed));
     }, [isSidebarCollapsed]);
 
-    const isLandingPage = pathname === '/';
+    const isPublicPage = pathname === '/' || pathname === '/login' || pathname === '/register';
 
-    if (isLandingPage) {
+    if (isPublicPage) {
         return (
             <div className="min-h-screen bg-white text-slate-900 overflow-x-hidden">
                 {children}
