@@ -32,8 +32,8 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="min-h-screen w-full bg-slate-950 p-[10px]">
-            <div className="min-h-[calc(100vh-20px)] w-full flex overflow-hidden font-sans selection:bg-lime-500 selection:text-white rounded-[10px] bg-white">
+        <div className="h-screen w-full bg-slate-950 p-[10px] overflow-hidden">
+            <div className="h-full w-full flex overflow-y-auto overflow-x-hidden font-sans selection:bg-lime-600 selection:text-white rounded-[10px] bg-white shadow-2xl">
 
                 {/* 🟢 LEFT SIDE: Registration Form Side */}
                 <div className="w-full lg:w-[60%] bg-white p-8 md:p-16 lg:px-24 flex flex-col relative overflow-hidden">
