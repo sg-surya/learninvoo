@@ -195,6 +195,53 @@ const TOOLS_CONFIG: Record<string, ToolConfigItem> = {
             content: 'Digitized content will appear here after processing...',
             scannedText: "## Chapter 1: The Cell\n\nThe cell is the basic structural and functional unit of life forms. Every cell consists of a cytoplasm enclosed within a membrane, which contains many biomolecules such as proteins and nucleic acids.\n\n### Key Concepts:\n- **Prokaryotes vs Eukaryotes**: Differences in nucleus structure.\n- **Organelles**: Mitochondria, Ribosomes, etc.\n\n[Diagram: Animal Cell Structure detected]\n\n### Equation:\n$$ E = mc^2 $$"
         }
+    },
+    'simulation-generator': {
+        title: 'Simulation Generator',
+        desc: 'Create interactive simulations and virtual experiments for complex concepts.',
+        type: 'simulation',
+        hasSourceToggle: true,
+        inputs: {
+            topic: [
+                { id: 'topic', type: 'text', label: 'Topic', placeholder: 'e.g., Electric Circuits' },
+                { id: 'grade', type: 'select', label: 'Grade Level', options: ['Middle School', 'High School', 'University'] },
+                { id: 'variables', type: 'text', label: 'Key Variables', placeholder: 'e.g., Voltage, Current, Resistance' },
+                { id: 'objectives', type: 'textarea', label: 'Learning Goals', placeholder: 'What should students explore?' }
+            ],
+            book: [
+                { id: 'book', type: 'book-select', label: 'Book / Source', placeholder: 'Select a book...' },
+                { id: 'chapter', type: 'text', label: 'Chapter / Unit', placeholder: 'e.g., Chapter 12' },
+                { id: 'grade', type: 'text', label: 'Grade Level (Auto-fetched)', readOnly: true },
+                { id: 'objectives', type: 'textarea', label: 'Learning Goals', placeholder: 'What should students explore?' }
+            ]
+        },
+        dummyOutput: {
+            type: 'text',
+            content: `## Simulation: Ohm's Law Virtual Lab\n\n**Concept:** Exploring the relationship between Voltage, Current, and Resistance.\n\n### 🎮 Interactive Elements:\n- **Slider 1:** Voltage (0V - 12V)\n- **Slider 2:** Resistance (1Ω - 100Ω)\n- **Visual:** A real-time graph showing the linear relationship.\n- **Animation:** Speed of electrons flowing in a wire.\n\n### 📋 Activity Steps:\n1. Set Resistance to a constant 10Ω.\n2. Increase Voltage from 0V to 10V in steps of 2V.\n3. Record the Current readings from the virtual ammeter.\n4. Observe how the brightness of the virtual bulb changes.`
+        }
+    },
+    'rubric-generator': {
+        title: 'Rubric Generator',
+        desc: 'Design detailed and fair grading rubrics for any assignment or project.',
+        type: 'generation',
+        hasSourceToggle: true,
+        inputs: {
+            topic: [
+                { id: 'topic', type: 'text', label: 'Assignment Title', placeholder: 'e.g., Science Fair Project' },
+                { id: 'grade', type: 'select', label: 'Grade Level', options: ['Elementary', 'Middle School', 'High School'] },
+                { id: 'criteria', type: 'textarea', label: 'Key Criteria', placeholder: 'e.g., Research, Presentation, Creativity, Accuracy' },
+                { id: 'pts', type: 'select', label: 'Points Scale', options: ['4-Point Scale', '5-Point Scale', 'Percentage'] }
+            ],
+            book: [
+                { id: 'book', type: 'book-select', label: 'Book / Source', placeholder: 'Select a book...' },
+                { id: 'chapter', type: 'text', label: 'Chapter / Unit', placeholder: 'e.g., Project at end of unit' },
+                { id: 'criteria', type: 'textarea', label: 'Key Criteria', placeholder: 'e.g., Following chapter concepts, accuracy' }
+            ]
+        },
+        dummyOutput: {
+            type: 'text',
+            content: `## Rubric: Science Fair Project\n\n| Criteria | Excellent (4) | Good (3) | Satisfactory (2) | Needs Improvement (1) |\n|----------|---------------|----------|------------------|-----------------------|\n| **Research** | In-depth research with multiple sources | Good research with 2+ sources | Basic research | Minimal research |\n| **Methodology** | Scientific method followed perfectly | Clear steps followed | Some steps missing | Unclear method |\n| **Presentation** | Exceptional visual & verbal delivery | Clear & organized | Hard to follow at times | Disorganized |\n| **Innovation** | Highly creative approach | Original idea | Standard approach | Lacks originality |`
+        }
     }
 };
 

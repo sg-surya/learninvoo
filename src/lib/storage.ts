@@ -120,7 +120,7 @@ export function arrayBufferToBlobUrl(buffer: ArrayBuffer, type: string = 'applic
 
 export interface GeneratedContent {
     id: string;
-    type: 'lesson-plan' | 'quiz' | 'visual' | 'story' | 'hyper-local' | 'rubric' | 'simulation' | 'other';
+    type: 'lesson-plan' | 'quiz' | 'visual' | 'story' | 'hyper-local' | 'rubric' | 'simulation' | 'digitized' | 'other';
     title: string;
     description?: string;
     content: string;
@@ -344,6 +344,7 @@ export function getTypeColor(type: GeneratedContent['type']): { bg: string; text
         'hyper-local': { bg: 'bg-rose-100', text: 'text-rose-600' },
         'rubric': { bg: 'bg-cyan-100', text: 'text-cyan-600' },
         'simulation': { bg: 'bg-emerald-100', text: 'text-emerald-600' },
+        'digitized': { bg: 'bg-slate-100', text: 'text-slate-600' },
         'other': { bg: 'bg-gray-100', text: 'text-gray-600' },
     };
     return colors[type] || colors['other'];

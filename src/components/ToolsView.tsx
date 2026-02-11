@@ -1,8 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, Search, BookOpen, CheckSquare, Image as ImageIcon, Feather, MapPin, Scan, Brain, Sparkles, Wand2, Calculator, MessageSquare, ArrowRight, Layout, Library, Gamepad2, ClipboardList } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { getAllGeneratedContent } from '@/lib/storage';
 
 const TOOLS = [
     { label: 'Lesson Planner', desc: 'Generate comprehensive weekly lesson plans.', icon: BookOpen, color: 'text-lime-600', bg: 'bg-lime-50' },
@@ -17,6 +18,33 @@ const TOOLS = [
 
 const ToolsView: React.FC = () => {
     const router = useRouter();
+    const [stats, setStats] = useState({ topics: 0, assets: 0, thisWeek: 0 });
+
+    useEffect(() => {
+        async function loadStats() {
+            try {
+                // Fetch generated assets from IndexedDB
+                const generated = await getAllGeneratedContent();
+
+                // Fetch books/topics from localStorage
+                const libraryStr = localStorage.getItem('library_resources');
+                const library = libraryStr ? JSON.parse(libraryStr) : [];
+
+                const now = Date.now();
+                const oneWeekAgo = now - 7 * 24 * 60 * 60 * 1000;
+                const thisWeekCount = generated.filter(item => item.createdAt > oneWeekAgo).length;
+
+                setStats({
+                    topics: library.length,
+                    assets: generated.length,
+                    thisWeek: thisWeekCount
+                });
+            } catch (error) {
+                console.error("Failed to load tools stats:", error);
+            }
+        }
+        loadStats();
+    }, []);
 
     return (
         <div className="p-8 w-full bg-gray-50/50 min-h-screen">
@@ -47,7 +75,7 @@ const ToolsView: React.FC = () => {
                             <BookOpen size={14} className="text-lime-500" />
                             Total Topics
                         </p>
-                        <h3 className="text-4xl font-extrabold text-gray-900">2</h3>
+                        <h3 className="text-4xl font-extrabold text-gray-900">{stats.topics}</h3>
                     </div>
                 </div>
                 <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
@@ -57,7 +85,7 @@ const ToolsView: React.FC = () => {
                             <Layout size={14} className="text-sky-500" />
                             Total Assets
                         </p>
-                        <h3 className="text-4xl font-extrabold text-gray-900">3557</h3>
+                        <h3 className="text-4xl font-extrabold text-gray-900">{stats.assets}</h3>
                     </div>
                 </div>
                 <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
@@ -67,7 +95,7 @@ const ToolsView: React.FC = () => {
                             <Sparkles size={14} className="text-purple-500" />
                             This Week
                         </p>
-                        <h3 className="text-4xl font-extrabold text-gray-900">0</h3>
+                        <h3 className="text-4xl font-extrabold text-gray-900">{stats.thisWeek}</h3>
                     </div>
                 </div>
             </div>
