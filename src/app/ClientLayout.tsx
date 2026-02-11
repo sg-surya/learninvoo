@@ -36,7 +36,11 @@ export default function ClientLayout({
         localStorage.setItem('learnivo_sidebar_collapsed', JSON.stringify(isSidebarCollapsed));
     }, [isSidebarCollapsed]);
 
-    const isPublicPage = pathname === '/' || pathname === '/login' || pathname === '/register';
+    const isPublicPage = pathname === '/' ||
+        pathname === '/login' ||
+        pathname === '/register' ||
+        pathname === '/for-teachers' ||
+        pathname === '/for-students';
 
     if (isPublicPage) {
         return (
