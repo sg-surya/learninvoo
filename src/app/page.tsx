@@ -79,7 +79,7 @@ const LandingPage = () => {
     <div className="h-screen w-full bg-slate-950 p-[10px] overflow-hidden selection:bg-lime-500 selection:text-white">
       <div
         ref={scrollContainerRef}
-        className="h-full w-full bg-white rounded-[10px] overflow-y-auto overflow-x-hidden relative text-slate-900 font-sans shadow-2xl"
+        className="h-full w-full bg-white rounded-b-[10px] overflow-y-auto overflow-x-hidden relative text-slate-900 font-sans shadow-2xl"
       >
 
         {/* Scroll Progress Bar */}
@@ -92,10 +92,6 @@ const LandingPage = () => {
 
         {/* SHARED HEADER SYSTEM */}
         <header className="sticky top-0 left-0 right-0 z-[999] overflow-hidden">
-          {/* Top Banner */}
-          <div className={`bg-slate-950 text-white flex items-center justify-center text-[10px] font-bold uppercase tracking-[0.3em] px-4 transition-all duration-300 ${scrolled ? 'h-0 opacity-0' : 'h-10 opacity-100'}`}>
-            The Future of Indian <span className="text-lime-400 ml-1">Education (NEP 2020)</span>
-          </div>
 
           {/* Navbar */}
           <nav className={`w-full flex items-center px-6 md:px-12 lg:px-20 border-b transition-all duration-300 ${scrolled ? 'h-16 shadow-lg' : 'h-20'} bg-white/95 backdrop-blur-md border-slate-100`}>
