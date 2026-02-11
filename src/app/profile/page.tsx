@@ -18,7 +18,9 @@ import {
     CheckCircle2,
     Star,
     Zap,
-    BookOpen
+    BookOpen,
+    School,
+    GraduationCap
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
@@ -69,11 +71,19 @@ const ProfilePage = () => {
                     <div className="px-8 -mt-16 relative z-10 flex flex-col md:flex-row items-end gap-6">
                         <div className="relative group">
                             <div className="w-36 h-36 rounded-[2.5rem] border-4 border-white shadow-2xl overflow-hidden bg-white">
-                                <img
-                                    src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.fullName}`}
-                                    alt={user.fullName}
-                                    className="w-full h-full object-cover"
-                                />
+                                {user.profileImage ? (
+                                    <img
+                                        src={user.profileImage}
+                                        alt={user.fullName}
+                                        className="w-full h-full object-cover"
+                                    />
+                                ) : (
+                                    <img
+                                        src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.fullName}`}
+                                        alt={user.fullName}
+                                        className="w-full h-full object-cover"
+                                    />
+                                )}
                             </div>
                             <button className="absolute bottom-2 right-2 w-10 h-10 bg-white rounded-2xl shadow-lg border border-slate-100 flex items-center justify-center text-slate-400 hover:text-lime-600 transition-all opacity-0 group-hover:opacity-100">
                                 <Camera size={18} />
@@ -94,7 +104,7 @@ const ProfilePage = () => {
                                 </div>
                                 <div className="w-1 h-1 bg-slate-200 rounded-full"></div>
                                 <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider">
-                                    <MapPin size={14} className="text-slate-300" /> New Delhi, IN
+                                    <MapPin size={14} className="text-slate-300" /> {user.location || 'Location Not Set'}
                                 </div>
                             </div>
                         </div>
@@ -111,9 +121,37 @@ const ProfilePage = () => {
                                 <User size={14} className="text-lime-500" /> About Identity
                             </h3>
                             <p className="text-sm font-medium text-slate-500 leading-relaxed italic">
-                                Dedicated {user.role} passionate about leveraging AI to bridge the gap between complex pedagogy and student understanding. Mastering {user.role === 'teacher' ? 'classrooms' : 'knowledge'} since {new Date(user.createdAt).getFullYear()}.
+                                {user.bio || `Initial identity established. Complete your professional narrative to unlock advanced AI networking features.`}
                             </p>
-                            <div className="pt-4 space-y-3">
+                            <div className="pt-4 space-y-4">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-lg bg-lime-50 text-lime-600 flex items-center justify-center border border-lime-100/50">
+                                        <School size={14} />
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none">Institute</span>
+                                        <span className="text-xs font-bold text-slate-600 truncate max-w-[150px]">{user.school || 'Not Specified'}</span>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center border border-sky-100/50">
+                                        <GraduationCap size={14} />
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none">Grade / Class</span>
+                                        <span className="text-xs font-bold text-slate-600">{user.class || 'Not Specified'}</span>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-lg bg-slate-50 text-slate-600 flex items-center justify-center border border-slate-100/50">
+                                        <BookOpen size={14} />
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none">Subjects</span>
+                                        <span className="text-xs font-bold text-slate-600 truncate max-w-[150px]">{user.subjects || 'Not Specified'}</span>
+                                    </div>
+                                </div>
+                                <div className="h-px bg-slate-50 my-2"></div>
                                 <div className="flex items-center gap-3">
                                     <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400">
                                         <Mail size={14} />

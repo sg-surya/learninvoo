@@ -14,7 +14,10 @@ import {
     Camera,
     Lock,
     Globe,
-    Info
+    Info,
+    School,
+    GraduationCap,
+    BookOpen
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
@@ -27,8 +30,14 @@ const EditProfilePage = () => {
         username: '',
         email: '',
         bio: '',
-        location: 'New Delhi, IN'
+        location: '',
+        school: '',
+        class: '',
+        subjects: '',
+        profileImage: ''
     });
+    const [canChangeUsername, setCanChangeUsername] = useState(true);
+    const [daysUntilNextChange, setDaysUntilNextChange] = useState(0);
     const [isSaving, setIsSaving] = useState(false);
     const [saveSuccess, setSaveSuccess] = useState(false);
 
@@ -41,9 +50,25 @@ const EditProfilePage = () => {
                 fullName: parsedUser.fullName || '',
                 username: parsedUser.username || '',
                 email: parsedUser.email || '',
-                bio: parsedUser.bio || `Dedicated educator passionate about leveraging AI to bridge the gap between complex pedagogy and student understanding.`,
-                location: parsedUser.location || 'New Delhi, IN'
+                bio: parsedUser.bio || '',
+                location: parsedUser.location || '',
+                school: parsedUser.school || '',
+                class: parsedUser.class || '',
+                subjects: parsedUser.subjects || '',
+                profileImage: parsedUser.profileImage || ''
             });
+
+            // Check username change restriction
+            if (parsedUser.lastUsernameChange) {
+                const lastChange = new Date(parsedUser.lastUsernameChange).getTime();
+                const now = new Date().getTime();
+                const diffDays = Math.floor((now - lastChange) / (1000 * 60 * 60 * 24));
+
+                if (diffDays < 30) {
+                    setCanChangeUsername(false);
+                    setDaysUntilNextChange(30 - diffDays);
+                }
+            }
         } else {
             router.push('/login');
         }
@@ -60,7 +85,13 @@ const EditProfilePage = () => {
         const userIndex = users.findIndex((u: any) => u.email === user.email);
 
         if (userIndex !== -1) {
-            const updatedUser = { ...users[userIndex], ...formData };
+            const updatedUser = {
+                ...users[userIndex],
+                ...formData,
+                lastUsernameChange: formData.username !== user.username
+                    ? new Date().toISOString()
+                    : users[userIndex].lastUsernameChange || new Date().toISOString()
+            };
             users[userIndex] = updatedUser;
 
             localStorage.setItem('learnivo_users', JSON.stringify(users));
@@ -73,6 +104,21 @@ const EditProfilePage = () => {
                 setSaveSuccess(false);
                 router.push('/profile');
             }, 1500);
+        }
+    };
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            if (file.size > 2 * 1024 * 1024) { // 2MB limit for localStorage
+                alert("File size too large. Please select an image under 2MB.");
+                return;
+            }
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setFormData(prev => ({ ...prev, profileImage: reader.result as string }));
+            };
+            reader.readAsDataURL(file);
         }
     };
 
@@ -118,25 +164,48 @@ const EditProfilePage = () => {
                     <section className="flex flex-col md:flex-row items-center gap-8 p-8 bg-slate-50 border border-slate-100 rounded-[2.5rem]">
                         <div className="relative group">
                             <div className="w-32 h-32 rounded-[2rem] border-4 border-white shadow-2xl overflow-hidden bg-white">
-                                <img
-                                    src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${formData.fullName}`}
-                                    alt="Avatar"
-                                    className="w-full h-full object-cover"
-                                />
+                                {formData.profileImage ? (
+                                    <img
+                                        src={formData.profileImage}
+                                        alt="Profile"
+                                        className="w-full h-full object-cover"
+                                    />
+                                ) : (
+                                    <img
+                                        src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${formData.fullName}`}
+                                        alt="Avatar"
+                                        className="w-full h-full object-cover"
+                                    />
+                                )}
                             </div>
-                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-[2rem] cursor-pointer">
+                            <label className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-[2rem] cursor-pointer">
                                 <Camera className="text-white" size={24} />
-                            </div>
+                                <input
+                                    type="file"
+                                    className="hidden"
+                                    accept="image/*"
+                                    onChange={handleImageChange}
+                                />
+                            </label>
                         </div>
                         <div className="flex-1 space-y-2">
                             <h3 className="text-sm font-black text-slate-950 uppercase tracking-tight">Identity Visual</h3>
                             <p className="text-xs text-slate-500 font-medium leading-relaxed">
-                                Your avatar is automatically generated based on your name. Soon you'll be able to upload custom identity files.
+                                Upload a custom identity file or use the autogenerated avatar based on your name.
                             </p>
-                            <div className="pt-2">
+                            <div className="pt-2 flex flex-wrap gap-2">
                                 <span className="inline-flex items-center gap-2 px-3 py-1 bg-white border border-slate-200 rounded-full text-[9px] font-black text-slate-400 uppercase tracking-widest">
                                     <ShieldCheck size={12} className="text-lime-500" /> End-to-End Encrypted
                                 </span>
+                                {formData.profileImage && (
+                                    <button
+                                        type="button"
+                                        onClick={() => setFormData(prev => ({ ...prev, profileImage: '' }))}
+                                        className="inline-flex items-center gap-2 px-3 py-1 bg-red-50 text-red-500 border border-red-100 rounded-full text-[9px] font-black uppercase tracking-widest hover:bg-red-100 transition-colors"
+                                    >
+                                        Remove Photo
+                                    </button>
+                                )}
                             </div>
                         </div>
                     </section>
@@ -163,22 +232,76 @@ const EditProfilePage = () => {
 
                             <div className="space-y-2">
                                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 ml-1">Unique Alias (Username)</label>
-                                <div className="relative">
+                                <div className={`relative ${!canChangeUsername ? 'opacity-60 cursor-not-allowed' : ''}`}>
                                     <AtIcon size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
                                     <input
                                         type="text"
                                         value={formData.username}
-                                        onChange={(e) => setFormData({ ...formData, username: e.target.value.toLowerCase() })}
-                                        className="w-full pl-12 pr-5 h-12 bg-white border border-slate-100 rounded-2xl focus:outline-none focus:border-lime-500 transition-all font-bold text-sm shadow-sm"
+                                        onChange={(e) => canChangeUsername && setFormData({ ...formData, username: e.target.value.toLowerCase() })}
+                                        disabled={!canChangeUsername}
+                                        className={`w-full pl-12 pr-5 h-12 bg-white border border-slate-100 rounded-2xl focus:outline-none focus:border-lime-500 transition-all font-bold text-sm shadow-sm ${!canChangeUsername ? 'cursor-not-allowed' : ''}`}
                                         placeholder="username"
                                         required
                                     />
                                 </div>
+                                {!canChangeUsername && (
+                                    <p className="text-[8px] font-bold text-amber-600 uppercase tracking-widest ml-1 flex items-center gap-1">
+                                        <Info size={10} /> Locked for {daysUntilNextChange} more days
+                                    </p>
+                                )}
                             </div>
                         </div>
 
                         <div className="space-y-6">
-                            <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-4">Location & Access</h3>
+                            <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-4">Institutional Presence</h3>
+
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 ml-1">School / Institute</label>
+                                <div className="relative">
+                                    <School size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                                    <input
+                                        type="text"
+                                        value={formData.school}
+                                        onChange={(e) => setFormData({ ...formData, school: e.target.value })}
+                                        className="w-full pl-12 pr-5 h-12 bg-white border border-slate-100 rounded-2xl focus:outline-none focus:border-lime-500 transition-all font-bold text-sm shadow-sm"
+                                        placeholder="Name of your Institute"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 ml-1">Current Class / Grade</label>
+                                <div className="relative">
+                                    <GraduationCap size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                                    <input
+                                        type="text"
+                                        value={formData.class}
+                                        onChange={(e) => setFormData({ ...formData, class: e.target.value })}
+                                        className="w-full pl-12 pr-5 h-12 bg-white border border-slate-100 rounded-2xl focus:outline-none focus:border-lime-500 transition-all font-bold text-sm shadow-sm"
+                                        placeholder="e.g. Grade 10-C"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section className="grid md:grid-cols-2 gap-8">
+                        <div className="space-y-6">
+                            <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-4">Location & Subjects</h3>
+
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 ml-1">Subjects Portfolio</label>
+                                <div className="relative">
+                                    <BookOpen size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                                    <input
+                                        type="text"
+                                        value={formData.subjects}
+                                        onChange={(e) => setFormData({ ...formData, subjects: e.target.value })}
+                                        className="w-full pl-12 pr-5 h-12 bg-white border border-slate-100 rounded-2xl focus:outline-none focus:border-lime-500 transition-all font-bold text-sm shadow-sm"
+                                        placeholder="Subjects separated by commas"
+                                    />
+                                </div>
+                            </div>
 
                             <div className="space-y-2">
                                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 ml-1">Geo-Location</label>
@@ -193,7 +316,10 @@ const EditProfilePage = () => {
                                     />
                                 </div>
                             </div>
+                        </div>
 
+                        <div className="space-y-6">
+                            <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-4">Account Metadata</h3>
                             <div className="space-y-2 opacity-50 cursor-not-allowed">
                                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 ml-1">Registered Neural Email</label>
                                 <div className="relative">
@@ -206,7 +332,7 @@ const EditProfilePage = () => {
                                         placeholder="email@address.com"
                                     />
                                 </div>
-                                <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest ml-1">Email cannot be changed for security</p>
+                                <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest ml-1">Primary key cannot be modified</p>
                             </div>
                         </div>
                     </section>

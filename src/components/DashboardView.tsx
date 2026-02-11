@@ -17,10 +17,15 @@ import {
     TrendingUp,
     FileCheck,
     GraduationCap,
-    Send
+    Send,
+    UserCircle,
+    Zap as ZapIcon,
+    Sparkles
 } from 'lucide-react';
+import Link from 'next/link';
 
 import { useRouter } from 'next/navigation';
+import { AnimatePresence } from 'framer-motion';
 
 const DashboardView: React.FC = () => {
     const router = useRouter();
@@ -31,10 +36,35 @@ const DashboardView: React.FC = () => {
         if (storedUser) {
             setUser(JSON.parse(storedUser));
         } else {
-            // Redirect to login if no user found
             router.push('/login');
         }
     }, [router]);
+
+    const calculateCompletion = () => {
+        if (!user) return 0;
+        const fields = [
+            { key: 'fullName', weight: 10 },
+            { key: 'username', weight: 10 },
+            { key: 'email', weight: 10 },
+            { key: 'bio', weight: 15 },
+            { key: 'location', weight: 10 },
+            { key: 'school', weight: 15 },
+            { key: 'class', weight: 10 },
+            { key: 'subjects', weight: 10 },
+            { key: 'profileImage', weight: 10 },
+        ];
+
+        let score = 0;
+        fields.forEach(field => {
+            if (user[field.key] && user[field.key].toString().trim() !== '') {
+                score += field.weight;
+            }
+        });
+        return score;
+    };
+
+    const completionPercentage = calculateCompletion();
+    const isProfileIncomplete = completionPercentage < 100;
 
     // Animation variants
     const containerVariants = {
@@ -70,13 +100,102 @@ const DashboardView: React.FC = () => {
                         You have <span className="font-bold text-slate-700">5 Classes</span> today (2 Free Periods).
                     </p>
                 </div>
-                <div className="flex items-center gap-3">
-                    <div className="bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-200 text-xs font-bold text-slate-600 flex items-center gap-2">
-                        <Calendar size={16} className="text-lime-600" />
-                        <span>10 Feb 2026</span>
-                    </div>
+                <div className="bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-200 text-xs font-bold text-slate-600 flex items-center gap-2">
+                    <Calendar size={16} className="text-lime-600" />
+                    <span>10 Feb 2026</span>
                 </div>
             </header>
+
+            {/* Profile Completion Nudge Card */}
+            <AnimatePresence>
+                {isProfileIncomplete && (
+                    <motion.div
+                        initial={{ opacity: 0, height: 0, marginBottom: 0 }}
+                        animate={{ opacity: 1, height: 'auto', marginBottom: 32 }}
+                        exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+                        className="overflow-hidden"
+                    >
+                        <div className="relative group p-1 rounded-[2.5rem] bg-gradient-to-r from-lime-500 via-emerald-500 to-sky-500">
+                            <div className="bg-white rounded-[2.3rem] p-6 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+                                {/* Decorative elements */}
+                                <div className="absolute top-0 right-0 w-64 h-64 bg-lime-50 rounded-full blur-[80px] -z-0 opacity-40"></div>
+                                <div className="absolute bottom-0 left-0 w-48 h-48 bg-sky-50 rounded-full blur-[60px] -z-0 opacity-40"></div>
+
+                                <div className="flex flex-col md:flex-row items-center gap-6 relative z-10 w-full md:w-auto">
+                                    <div className="relative">
+                                        <div className="w-24 h-24 rounded-full border-4 border-slate-50 flex items-center justify-center bg-slate-50 relative overflow-hidden">
+                                            <svg className="w-full h-full transform -rotate-90">
+                                                <circle
+                                                    cx="48"
+                                                    cy="48"
+                                                    r="42"
+                                                    stroke="currentColor"
+                                                    strokeWidth="8"
+                                                    fill="transparent"
+                                                    className="text-slate-100"
+                                                />
+                                                <motion.circle
+                                                    initial={{ strokeDasharray: "0, 264" }}
+                                                    animate={{ strokeDasharray: `${(completionPercentage / 100) * 264}, 264` }}
+                                                    transition={{ duration: 1.5, ease: "easeOut" }}
+                                                    cx="48"
+                                                    cy="48"
+                                                    r="42"
+                                                    stroke="currentColor"
+                                                    strokeWidth="8"
+                                                    strokeLinecap="round"
+                                                    fill="transparent"
+                                                    className="text-lime-500"
+                                                />
+                                            </svg>
+                                            <div className="absolute inset-0 flex flex-col items-center justify-center">
+                                                <span className="text-xl font-black text-slate-900">{completionPercentage}%</span>
+                                                <span className="text-[7px] font-black text-slate-400 uppercase tracking-widest">Complete</span>
+                                            </div>
+                                        </div>
+                                        <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center text-lime-600 border border-lime-50">
+                                            <Sparkles size={16} />
+                                        </div>
+                                    </div>
+
+                                    <div className="text-center md:text-left space-y-1">
+                                        <h2 className="text-2xl font-black text-slate-900 tracking-tight uppercase italic leading-none">
+                                            Claim your <span className="text-lime-600">Digital Identity.</span>
+                                        </h2>
+                                        <p className="text-slate-500 text-sm font-medium">
+                                            Your professional profile is <span className="text-slate-900 font-bold text-lg">{completionPercentage}% complete</span>. Finish the setup to unlock premium AI tools & rewards.
+                                        </p>
+                                        <div className="flex flex-wrap justify-center md:justify-start gap-4 pt-2">
+                                            <div className="flex items-center gap-2">
+                                                <div className={`w-1.5 h-1.5 rounded-full ${user?.profileImage ? 'bg-lime-500' : 'bg-slate-200'}`}></div>
+                                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Media</span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <div className={`w-1.5 h-1.5 rounded-full ${user?.bio ? 'bg-lime-500' : 'bg-slate-200'}`}></div>
+                                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Biography</span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <div className={`w-1.5 h-1.5 rounded-full ${user?.school ? 'bg-lime-500' : 'bg-slate-200'}`}></div>
+                                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Institute</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <Link href="/profile/edit" className="relative z-10 w-full md:w-auto">
+                                    <motion.button
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        className="w-full md:w-auto px-8 py-4 bg-slate-950 text-white rounded-2xl font-black uppercase text-[10px] tracking-[0.2em] shadow-2xl shadow-slate-950/20 flex items-center justify-center gap-3 hover:bg-slate-800 transition-all"
+                                    >
+                                        Complete Profile <ArrowRight size={16} className="text-lime-400" />
+                                    </motion.button>
+                                </Link>
+                            </div>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
                 {/* LEFT/MAIN COLUMN (2/3 width) */}

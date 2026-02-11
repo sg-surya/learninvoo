@@ -120,12 +120,20 @@ const Header: React.FC = () => {
                         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                         className="ml-1 px-2 py-1 flex items-center gap-2 bg-white rounded-full border border-gray-100 shadow-[0_1px_6px_rgba(0,0,0,0.06)] cursor-pointer transition-all"
                     >
-                        <div className="w-7 h-7 rounded-full overflow-hidden border border-slate-100">
-                            <img
-                                src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.fullName || 'User'}`}
-                                alt="User"
-                                className="w-full h-full object-cover"
-                            />
+                        <div className="w-7 h-7 rounded-full overflow-hidden border border-slate-100 bg-white">
+                            {user?.profileImage ? (
+                                <img
+                                    src={user.profileImage}
+                                    alt="User"
+                                    className="w-full h-full object-cover"
+                                />
+                            ) : (
+                                <img
+                                    src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.fullName || 'User'}`}
+                                    alt="User"
+                                    className="w-full h-full object-cover"
+                                />
+                            )}
                         </div>
                         <ChevronDown size={14} className={`text-slate-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
                     </motion.div>
@@ -143,11 +151,19 @@ const Header: React.FC = () => {
                                 <div className="px-3 py-3 mb-1.5 bg-slate-50/50 rounded-xl">
                                     <div className="flex items-center gap-2.5 mb-1">
                                         <div className="w-9 h-9 rounded-full border-2 border-white shadow-sm overflow-hidden bg-white shrink-0">
-                                            <img
-                                                src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.fullName || 'User'}`}
-                                                alt="User"
-                                                className="w-full h-full object-cover"
-                                            />
+                                            {user?.profileImage ? (
+                                                <img
+                                                    src={user.profileImage}
+                                                    alt="User"
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            ) : (
+                                                <img
+                                                    src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.fullName || 'User'}`}
+                                                    alt="User"
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            )}
                                         </div>
                                         <div className="flex-1 min-w-0 overflow-hidden">
                                             <h4 className="text-[13px] font-black text-slate-800 truncate">{user?.fullName || 'Educator'}</h4>

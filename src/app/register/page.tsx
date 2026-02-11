@@ -37,7 +37,18 @@ export default function RegisterPage() {
     const [isUsernameManuallyEdited, setIsUsernameManuallyEdited] = useState(false);
 
     const generateUsername = (name: string) => {
-        return name.toLowerCase().replace(/\s+/g, '.').replace(/[^a-z0-9.]/g, '') + Math.floor(100 + Math.random() * 900);
+        const base = name.toLowerCase().replace(/\s+/g, '.').replace(/[^a-z0-9.]/g, '');
+        if (!base) return '';
+
+        const users = JSON.parse(localStorage.getItem('learnivo_users') || '[]');
+        let username = base;
+        let counter = 1;
+
+        while (users.some((u: any) => u.username === username)) {
+            username = `${base}${counter}`;
+            counter++;
+        }
+        return username;
     };
 
     const handleNameChange = (name: string) => {
@@ -255,38 +266,6 @@ export default function RegisterPage() {
                                                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                                                     className="w-full px-5 h-12 bg-slate-50 border border-slate-100 rounded focus:outline-none focus:border-lime-500 transition-all font-bold text-sm"
                                                     required
-                                                />
-                                            </div>
-
-                                            {/* New Additional Fields */}
-                                            <div className="space-y-2">
-                                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">School / Institute</label>
-                                                <input
-                                                    type="text"
-                                                    placeholder="Delhi Public School"
-                                                    value={formData.school}
-                                                    onChange={(e) => setFormData({ ...formData, school: e.target.value })}
-                                                    className="w-full px-5 h-12 bg-slate-50 border border-slate-100 rounded focus:outline-none focus:border-lime-500 transition-all font-bold text-sm"
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Class / Grade</label>
-                                                <input
-                                                    type="text"
-                                                    placeholder="Grade 10, Section C"
-                                                    value={formData.class}
-                                                    onChange={(e) => setFormData({ ...formData, class: e.target.value })}
-                                                    className="w-full px-5 h-12 bg-slate-50 border border-slate-100 rounded focus:outline-none focus:border-lime-500 transition-all font-bold text-sm"
-                                                />
-                                            </div>
-                                            <div className="space-y-2 sm:col-span-2">
-                                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Subjects of Interest</label>
-                                                <input
-                                                    type="text"
-                                                    placeholder="Mathematics, Physics, AI"
-                                                    value={formData.subjects}
-                                                    onChange={(e) => setFormData({ ...formData, subjects: e.target.value })}
-                                                    className="w-full px-5 h-12 bg-slate-50 border border-slate-100 rounded focus:outline-none focus:border-lime-500 transition-all font-bold text-sm"
                                                 />
                                             </div>
 
