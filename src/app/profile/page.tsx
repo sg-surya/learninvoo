@@ -50,9 +50,11 @@ const ProfilePage = () => {
                     <button className="p-2 text-slate-400 hover:text-lime-600 transition-colors">
                         <Share2 size={18} />
                     </button>
-                    <button className="flex items-center gap-2 px-4 py-2 bg-slate-950 text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg hover:bg-slate-800 transition-all">
-                        <Edit3 size={14} /> Edit Profile
-                    </button>
+                    <Link href="/profile/edit">
+                        <button className="flex items-center gap-2 px-4 py-2 bg-slate-950 text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg hover:bg-slate-800 transition-all">
+                            <Edit3 size={14} /> Edit Profile
+                        </button>
+                    </Link>
                 </div>
             </nav>
 

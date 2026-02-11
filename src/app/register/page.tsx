@@ -29,8 +29,23 @@ export default function RegisterPage() {
         fullName: '',
         email: '',
         username: '',
-        password: ''
+        password: '',
+        school: '',
+        class: '',
+        subjects: ''
     });
+    const [isUsernameManuallyEdited, setIsUsernameManuallyEdited] = useState(false);
+
+    const generateUsername = (name: string) => {
+        return name.toLowerCase().replace(/\s+/g, '.').replace(/[^a-z0-9.]/g, '') + Math.floor(100 + Math.random() * 900);
+    };
+
+    const handleNameChange = (name: string) => {
+        setFormData(prev => {
+            const newUsername = !isUsernameManuallyEdited ? generateUsername(name) : prev.username;
+            return { ...prev, fullName: name, username: newUsername };
+        });
+    };
 
     React.useEffect(() => {
         if (localStorage.getItem('learnivo_current_user')) {
@@ -72,7 +87,13 @@ export default function RegisterPage() {
             return;
         }
 
-        const newUser = { ...formData, role, id: Date.now(), createdAt: new Date().toISOString() };
+        const newUser = {
+            ...formData,
+            role,
+            id: Date.now(),
+            createdAt: new Date().toISOString(),
+            lastUsernameChange: new Date().toISOString() // Set initial timestamp
+        };
         users.push(newUser);
         localStorage.setItem('learnivo_users', JSON.stringify(users));
         localStorage.setItem('learnivo_current_user', JSON.stringify(newUser));
@@ -191,7 +212,7 @@ export default function RegisterPage() {
                                                     type="text"
                                                     placeholder="Rahul Kumar"
                                                     value={formData.fullName}
-                                                    onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                                                    onChange={(e) => handleNameChange(e.target.value)}
                                                     className="w-full px-5 h-12 bg-slate-50 border border-slate-100 rounded focus:outline-none focus:border-lime-500 transition-all font-bold text-sm"
                                                     required
                                                 />
@@ -215,7 +236,10 @@ export default function RegisterPage() {
                                                         type="text"
                                                         placeholder="rahul.ai"
                                                         value={formData.username}
-                                                        onChange={(e) => setFormData({ ...formData, username: e.target.value.toLowerCase() })}
+                                                        onChange={(e) => {
+                                                            setIsUsernameManuallyEdited(true);
+                                                            setFormData({ ...formData, username: e.target.value.toLowerCase() });
+                                                        }}
                                                         className="w-full pl-10 pr-5 h-12 bg-slate-50 border border-slate-100 rounded focus:outline-none focus:border-lime-500 transition-all font-bold text-sm"
                                                         required
                                                     />
@@ -231,6 +255,38 @@ export default function RegisterPage() {
                                                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                                                     className="w-full px-5 h-12 bg-slate-50 border border-slate-100 rounded focus:outline-none focus:border-lime-500 transition-all font-bold text-sm"
                                                     required
+                                                />
+                                            </div>
+
+                                            {/* New Additional Fields */}
+                                            <div className="space-y-2">
+                                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">School / Institute</label>
+                                                <input
+                                                    type="text"
+                                                    placeholder="Delhi Public School"
+                                                    value={formData.school}
+                                                    onChange={(e) => setFormData({ ...formData, school: e.target.value })}
+                                                    className="w-full px-5 h-12 bg-slate-50 border border-slate-100 rounded focus:outline-none focus:border-lime-500 transition-all font-bold text-sm"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Class / Grade</label>
+                                                <input
+                                                    type="text"
+                                                    placeholder="Grade 10, Section C"
+                                                    value={formData.class}
+                                                    onChange={(e) => setFormData({ ...formData, class: e.target.value })}
+                                                    className="w-full px-5 h-12 bg-slate-50 border border-slate-100 rounded focus:outline-none focus:border-lime-500 transition-all font-bold text-sm"
+                                                />
+                                            </div>
+                                            <div className="space-y-2 sm:col-span-2">
+                                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Subjects of Interest</label>
+                                                <input
+                                                    type="text"
+                                                    placeholder="Mathematics, Physics, AI"
+                                                    value={formData.subjects}
+                                                    onChange={(e) => setFormData({ ...formData, subjects: e.target.value })}
+                                                    className="w-full px-5 h-12 bg-slate-50 border border-slate-100 rounded focus:outline-none focus:border-lime-500 transition-all font-bold text-sm"
                                                 />
                                             </div>
 
