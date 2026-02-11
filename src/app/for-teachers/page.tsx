@@ -40,10 +40,10 @@ const ForTeachersPage = () => {
     ];
 
     return (
-        <div className="h-screen w-full bg-slate-950 p-[10px] overflow-hidden selection:bg-lime-600 selection:text-white">
+        <div className="h-screen w-full bg-slate-950 px-[10px] pb-[10px] overflow-hidden selection:bg-lime-600 selection:text-white">
             <div
                 ref={scrollContainerRef}
-                className="h-full w-full bg-white rounded-b-[10px] overflow-y-auto overflow-x-hidden relative text-slate-900 font-sans shadow-2xl"
+                className="h-full w-full bg-white rounded-b-[10px] rounded-t-none overflow-y-auto overflow-x-hidden relative text-slate-900 font-sans shadow-2xl"
             >
 
                 {/* HEADER SYSTEM */}

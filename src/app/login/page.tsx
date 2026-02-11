@@ -8,8 +8,8 @@ import { BookOpen, Mail, Lock, ArrowRight, LayoutGrid } from 'lucide-react';
 
 export default function LoginPage() {
     return (
-        <div className="h-screen w-full bg-slate-950 p-[10px] overflow-hidden">
-            <div className="h-full w-full flex overflow-y-auto overflow-x-hidden font-sans selection:bg-lime-600 selection:text-white rounded-[10px] bg-white shadow-2xl">
+        <div className="h-screen w-full bg-slate-950 px-[10px] pb-[10px] overflow-hidden">
+            <div className="h-full w-full flex overflow-y-auto overflow-x-hidden font-sans selection:bg-lime-600 selection:text-white rounded-b-[10px] rounded-t-none bg-white shadow-2xl">
 
                 {/* 🟢 LEFT SIDE: Login Form */}
                 <div className="w-full lg:w-[60%] bg-white flex flex-col relative overflow-hidden">
@@ -27,7 +27,7 @@ export default function LoginPage() {
                     <div className="absolute -top-20 -left-20 w-64 h-64 bg-lime-50 rounded-full opacity-50 pointer-events-none"></div>
                     <div className="absolute -bottom-20 -left-10 w-48 h-48 bg-lime-50 rounded-full opacity-50 pointer-events-none"></div>
 
-                    <div className="flex-1 flex flex-col justify-center px-12 md:px-16 lg:px-24 py-12 relative z-10">
+                    <div className="flex-1 flex flex-col justify-center items-center px-12 md:px-16 lg:px-24 py-12 relative z-10">
                         <div className="max-w-md w-full">
                             <h1 className="text-6xl font-black text-slate-950 uppercase tracking-tighter leading-[0.9] mb-4">Sign <br /> <span className="text-lime-500">In</span></h1>
                             <p className="text-slate-400 text-[10px] font-bold uppercase tracking-[0.3em] mb-12">Access your personalized teaching workshop.</p>
@@ -123,8 +123,8 @@ export default function LoginPage() {
                         </motion.div>
 
                         <div className="space-y-4">
-                            <h2 className="text-6xl font-black text-white uppercase tracking-tighter leading-[0.9] drop-shadow-2xl">
-                                Smart <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-white/40 italic">Educator</span> <br /> Hub
+                            <h2 className="text-5xl xl:text-6xl font-black text-white uppercase tracking-tight leading-[0.9] drop-shadow-2xl">
+                                Smart <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-white/40 italic pr-1">Educator</span> <br /> Hub
                             </h2>
                             <p className="text-white/70 max-w-[280px] text-[10px] font-medium uppercase tracking-[0.2em] leading-relaxed mx-auto italic">
                                 Orchestrate your classroom with Bharat's most advanced AI-Native interface.
