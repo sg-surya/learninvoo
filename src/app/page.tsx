@@ -37,6 +37,8 @@ const LandingPage = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [showDemoResult, setShowDemoResult] = useState(false);
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
+  const [pricingTab, setPricingTab] = useState<'teachers' | 'students'>('teachers');
   const scrollContainerRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -341,10 +343,47 @@ const LandingPage = () => {
         </section>
 
         {/* Expanded Pricing Section */}
-        <section className="py-32 px-6 md:px-12 lg:px-20 w-full space-y-20">
-          <div className="text-center space-y-6 max-w-5xl mx-auto">
+        <section className="py-32 px-6 md:px-12 lg:px-20 w-full space-y-16">
+          <div className="text-center space-y-8 max-w-5xl mx-auto">
             <h2 className="text-5xl md:text-8xl font-black uppercase tracking-tighter leading-none">Simple <br /> <span className="text-lime-500">Infrastructure.</span></h2>
             <p className="text-xl text-slate-500 font-medium uppercase tracking-tighter">Choose the plan that fits your classroom or institution.</p>
+
+            {/* Toggles and Tabs */}
+            <div className="flex flex-col items-center gap-10 pt-8">
+              {/* Type Switcher */}
+              <div className="flex p-1.5 bg-slate-100 rounded-2xl w-fit">
+                <button
+                  onClick={() => setPricingTab('teachers')}
+                  className={`px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${pricingTab === 'teachers' ? 'bg-white shadow-xl text-slate-950' : 'text-slate-400 hover:text-slate-600'}`}
+                >
+                  For Teachers
+                </button>
+                <button
+                  onClick={() => setPricingTab('students')}
+                  className={`px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${pricingTab === 'students' ? 'bg-white shadow-xl text-slate-950' : 'text-slate-400 hover:text-slate-600'}`}
+                >
+                  For Students
+                </button>
+              </div>
+
+              {/* Billing Toggle */}
+              <div className="flex items-center gap-4">
+                <span className={`text-[10px] font-black uppercase tracking-widest ${billingCycle === 'monthly' ? 'text-slate-900' : 'text-slate-300'}`}>Monthly</span>
+                <button
+                  onClick={() => setBillingCycle(billingCycle === 'monthly' ? 'annual' : 'monthly')}
+                  className="w-14 h-7 bg-slate-950 rounded-full relative p-1 transition-colors"
+                >
+                  <motion.div
+                    animate={{ x: billingCycle === 'monthly' ? 0 : 28 }}
+                    className="w-5 h-5 bg-lime-500 rounded-full shadow-lg shadow-lime-500/50"
+                  />
+                </button>
+                <div className="flex items-center gap-2">
+                  <span className={`text-[10px] font-black uppercase tracking-widest ${billingCycle === 'annual' ? 'text-slate-900' : 'text-slate-300'}`}>Annual</span>
+                  <span className="bg-lime-500/10 text-lime-600 px-2 py-1 rounded-full text-[8px] font-black uppercase tracking-wider">Save 20%</span>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 w-full">
@@ -352,35 +391,54 @@ const LandingPage = () => {
             <div className="p-10 bg-white border border-slate-100 rounded-xl shadow-sm space-y-10 flex flex-col justify-between hover:border-slate-300 transition-all">
               <div className="space-y-6">
                 <div className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Basic Tier</div>
-                <div className="text-6xl font-black tracking-tighter">₹0<span className="text-xl font-medium text-slate-300 ml-2">FREE</span></div>
+                <div className="text-6xl font-black tracking-tighter">₹0<span className="text-xl font-medium text-slate-300 ml-2 uppercase italic">FREE</span></div>
                 <div className="space-y-4 pt-6 border-t border-slate-50">
-                  {[
+                  {(pricingTab === 'teachers' ? [
                     "5 Lesson Plans / Mo",
                     "Basic AI Tutor Support",
                     "NCERT Content Access",
                     "English & Hindi support",
                     "Standard PDF Exports"
-                  ].map(item => <div key={item} className="flex gap-3 text-xs font-semibold uppercase tracking-tight text-slate-500"><Check size={14} className="text-slate-200" /> {item}</div>)}
+                  ] : [
+                    "3 AI Doubt Solves / Day",
+                    "Public Study Groups",
+                    "Standard Note Templates",
+                    "English & Hindi support",
+                    "Mobile App Access"
+                  ]).map(item => <div key={item} className="flex gap-3 text-xs font-semibold uppercase tracking-tight text-slate-500"><Check size={14} className="text-slate-200" /> {item}</div>)}
                 </div>
               </div>
-              <button className="w-full h-14 bg-slate-100 text-slate-400 font-bold uppercase text-[10px] tracking-widest rounded hover:bg-slate-200 hover:text-slate-600 transition-colors">Activate Free Account</button>
+              <button className="w-full h-14 bg-slate-100 text-slate-400 font-bold uppercase text-[10px] tracking-widest rounded hover:bg-slate-200 transition-colors">Initialize Personal</button>
             </div>
 
             {/* Pro Tier */}
             <div className="p-10 bg-slate-950 text-white rounded-xl shadow-2xl space-y-10 border-t-8 border-lime-500 flex flex-col justify-between relative">
               <div className="absolute top-4 right-4 bg-lime-500 text-slate-950 text-[8px] font-black px-2 py-1 rounded">MOST POPULAR</div>
               <div className="space-y-6">
-                <div className="text-[10px] font-black uppercase tracking-[0.3em] text-lime-400">Pro Educator</div>
-                <div className="text-6xl font-black tracking-tighter">₹499<span className="text-xl font-medium text-white/30 ml-2">/MO</span></div>
+                <div className="text-[10px] font-black uppercase tracking-[0.3em] text-lime-400">{pricingTab === 'teachers' ? 'Pro Educator' : 'Premium Student'}</div>
+                <div className="relative">
+                  <div className="text-6xl font-black tracking-tighter">
+                    ₹{pricingTab === 'teachers' ? (billingCycle === 'monthly' ? '499' : '399') : (billingCycle === 'monthly' ? '199' : '159')}
+                    <span className="text-xl font-medium text-white/30 ml-2">/MO</span>
+                  </div>
+                  {billingCycle === 'annual' && <div className="text-[9px] font-black text-lime-400 uppercase tracking-widest mt-1">Billed Yearly</div>}
+                </div>
                 <div className="space-y-4 pt-6 border-t border-white/10">
-                  {[
+                  {(pricingTab === 'teachers' ? [
                     "Unlimited Lesson Plans",
                     "Priority Vasu AI Assistant",
                     "All 22+ Indian Languages",
                     "Board-ready Mock Exams",
                     "Neural Performance Analytics",
                     "Custom Rubrics & Grading"
-                  ].map(item => <div key={item} className="flex gap-3 text-xs font-semibold uppercase tracking-tight text-white/70"><Check size={14} className="text-lime-500" /> {item}</div>)}
+                  ] : [
+                    "Unlimited Doubts with Vasu",
+                    "Personalized Learning Path",
+                    "Exam Simulation Hub",
+                    "Regional Language Tutor",
+                    "Ad-Free Clean Interface",
+                    "Study Analytics Tracker"
+                  ]).map(item => <div key={item} className="flex gap-3 text-xs font-semibold uppercase tracking-tight text-white/70"><Check size={14} className="text-lime-500" /> {item}</div>)}
                 </div>
               </div>
               <motion.button whileTap={{ scale: 0.95 }} className="w-full h-14 bg-lime-500 text-slate-950 font-black uppercase text-[10px] tracking-widest rounded shadow-xl">Go Pro Experience</motion.button>
@@ -389,20 +447,27 @@ const LandingPage = () => {
             {/* Institutional Tier */}
             <div className="p-10 bg-white border border-slate-100 rounded-xl shadow-sm space-y-10 flex flex-col justify-between hover:border-slate-300 transition-all">
               <div className="space-y-6">
-                <div className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">School Hub</div>
+                <div className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">{pricingTab === 'teachers' ? 'School Hub' : 'District/Group'}</div>
                 <div className="text-6xl font-black tracking-tighter">Custom</div>
                 <div className="space-y-4 pt-6 border-t border-slate-50">
-                  {[
+                  {(pricingTab === 'teachers' ? [
                     "Unlimited Teacher Seats",
                     "Central School Analytics",
                     "API & ERP Integration",
                     "Custom AI Model Fine-tuning",
                     "Dedicated Account Manager",
                     "On-site Teacher Training"
-                  ].map(item => <div key={item} className="flex gap-3 text-xs font-semibold uppercase tracking-tight text-slate-500"><Check size={14} className="text-slate-200" /> {item}</div>)}
+                  ] : [
+                    "School-wide Deployment",
+                    "Admin Monitoring Desk",
+                    "Custom Curriculum Lock",
+                    "White-labeled Student App",
+                    "Bulk License Savings",
+                    "SLA Performance Guarantee"
+                  ]).map(item => <div key={item} className="flex gap-3 text-xs font-semibold uppercase tracking-tight text-slate-500"><Check size={14} className="text-slate-200" /> {item}</div>)}
                 </div>
               </div>
-              <button className="w-full h-14 bg-slate-950 text-white font-bold uppercase text-[10px] tracking-widest rounded hover:bg-slate-800 transition-colors">Request Institutional Quote</button>
+              <button className="w-full h-14 bg-slate-950 text-white font-bold uppercase text-[10px] tracking-widest rounded hover:bg-slate-800 transition-colors">{pricingTab === 'teachers' ? 'Request Quote' : 'Contact Sales'}</button>
             </div>
           </div>
         </section>
