@@ -30,7 +30,11 @@ const Header: React.FC = () => {
     const router = useRouter();
     const [user, setUser] = useState<any>(null);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const notificationRef = useRef<HTMLDivElement>(null);
+    const searchRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const storedUser = localStorage.getItem('learnivo_current_user');
@@ -38,10 +42,15 @@ const Header: React.FC = () => {
             setUser(JSON.parse(storedUser));
         }
 
-        // Close dropdown when clicking outside
         const handleClickOutside = (event: MouseEvent) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
                 setIsDropdownOpen(false);
+            }
+            if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
+                setIsNotificationOpen(false);
+            }
+            if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+                setIsSearchOpen(false);
             }
         };
         document.addEventListener('mousedown', handleClickOutside);
@@ -64,6 +73,12 @@ const Header: React.FC = () => {
         { href: '/classes', label: 'Classes', icon: GraduationCap },
     ];
 
+    const notifications = [
+        { id: 1, title: 'New Lesson Plan', desc: 'Photosynthesis plan is ready.', time: '2m ago', icon: Wand2, color: 'text-lime-600', bg: 'bg-lime-50' },
+        { id: 2, title: 'Class Started', desc: 'Grade 10 Biology has begun.', time: '15m ago', icon: GraduationCap, color: 'text-sky-600', bg: 'bg-sky-50' },
+        { id: 3, title: 'Assignment Due', desc: 'Quiz #4 submissions closing soon.', time: '1h ago', icon: FileText, color: 'text-orange-600', bg: 'bg-orange-50' },
+    ];
+
     const isActive = (href: string) => {
         if (href === '/' && pathname === '/') return true;
         if (href !== '/' && pathname.startsWith(href)) return true;
@@ -72,6 +87,49 @@ const Header: React.FC = () => {
 
     return (
         <header className="w-full px-10 py-4 flex items-center justify-between bg-transparent z-50">
+            {/* Search Modal Overlay */}
+            <AnimatePresence>
+                {isSearchOpen && (
+                    <div className="fixed inset-0 z-[100] flex items-start justify-center pt-32 px-4">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setIsSearchOpen(false)}
+                            className="absolute inset-0 bg-slate-950/20 backdrop-blur-md"
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95, y: -20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: -20 }}
+                            className="relative w-full max-w-2xl bg-white/80 backdrop-blur-2xl rounded-[2.5rem] shadow-[0_40px_100px_rgba(0,0,0,0.2)] border border-white p-2 overflow-hidden"
+                            ref={searchRef}
+                        >
+                            <div className="relative flex items-center p-4">
+                                <Search className="absolute left-8 text-slate-400" size={20} />
+                                <input
+                                    autoFocus
+                                    type="text"
+                                    placeholder="Search tools, books, or students..."
+                                    className="w-full bg-slate-50 border-none focus:ring-0 rounded-2xl pl-14 pr-6 py-4 text-lg font-bold text-slate-800 placeholder:text-slate-400 placeholder:font-medium"
+                                />
+                            </div>
+                            <div className="px-6 py-4 pb-8">
+                                <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 ml-2">Recent Searches</h3>
+                                <div className="space-y-1">
+                                    {['Lesson Planner for Grade 10', 'Chemistry Quiz', 'Student Reports'].map((item, i) => (
+                                        <button key={i} className="w-full flex items-center gap-3 px-4 py-3 hover:bg-lime-50 rounded-xl transition-all group text-left">
+                                            <Clock size={16} className="text-slate-300 group-hover:text-lime-500" />
+                                            <span className="text-sm font-bold text-slate-600 group-hover:text-slate-900">{item}</span>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
+
             {/* Brand Spacer */}
             <div className="flex-1"></div>
 
@@ -108,13 +166,58 @@ const Header: React.FC = () => {
 
             {/* Compact Action Icons Section */}
             <div className="flex-1 flex items-center gap-2.5 justify-end">
-                <button className="w-9 h-9 flex items-center justify-center bg-white rounded-full shadow-[0_1px_4px_rgba(0,0,0,0.02)] border border-gray-100/50 text-[#6c727f] hover:text-lime-600 hover:shadow-sm transition-all">
+                <button
+                    onClick={() => setIsSearchOpen(true)}
+                    className="w-9 h-9 flex items-center justify-center bg-white rounded-full shadow-[0_1px_4px_rgba(0,0,0,0.02)] border border-gray-100/50 text-[#6c727f] hover:text-lime-600 hover:shadow-sm transition-all"
+                >
                     <Search size={16} />
                 </button>
-                <button className="w-9 h-9 flex items-center justify-center bg-white rounded-full shadow-[0_1px_4px_rgba(0,0,0,0.02)] border border-gray-100/50 text-[#6c727f] hover:text-lime-600 hover:shadow-sm transition-all relative">
-                    <Bell size={16} />
-                    <span className="absolute top-[8px] right-[8px] w-1.5 h-1.5 bg-[#ef4444] rounded-full border border-white"></span>
-                </button>
+
+                <div className="relative" ref={notificationRef}>
+                    <button
+                        onClick={() => setIsNotificationOpen(!isNotificationOpen)}
+                        className={`w-9 h-9 flex items-center justify-center bg-white rounded-full shadow-[0_1px_4px_rgba(0,0,0,0.02)] border border-gray-100/50 text-[#6c727f] hover:text-lime-600 hover:shadow-sm transition-all relative ${isNotificationOpen ? 'text-lime-600 bg-lime-50' : ''}`}
+                    >
+                        <Bell size={16} />
+                        <span className="absolute top-[8px] right-[8px] w-1.5 h-1.5 bg-[#ef4444] rounded-full border border-white"></span>
+                    </button>
+
+                    <AnimatePresence>
+                        {isNotificationOpen && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 15, scale: 0.95 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                exit={{ opacity: 0, y: 15, scale: 0.95 }}
+                                transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                                className="absolute right-0 mt-4 w-80 bg-white/95 backdrop-blur-xl rounded-[2rem] shadow-[0_25px_60px_rgba(0,0,0,0.1)] border border-slate-100 p-2 overflow-hidden z-[110]"
+                            >
+                                <div className="p-4 flex items-center justify-between border-b border-slate-50">
+                                    <h3 className="text-sm font-black text-slate-800 uppercase tracking-tight">Notifications</h3>
+                                    <span className="px-2 py-0.5 bg-lime-100 text-lime-700 rounded-lg text-[10px] font-black tracking-widest uppercase">3 NEW</span>
+                                </div>
+                                <div className="py-2">
+                                    {notifications.map((notif) => (
+                                        <div key={notif.id} className="px-3 py-3 hover:bg-slate-50/80 transition-all cursor-pointer rounded-2xl flex gap-3 group">
+                                            <div className={`w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center ${notif.bg} ${notif.color} group-hover:scale-110 transition-transform`}>
+                                                <notif.icon size={18} />
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <div className="flex justify-between items-start mb-0.5">
+                                                    <h4 className="text-xs font-bold text-slate-900 truncate">{notif.title}</h4>
+                                                    <span className="text-[9px] font-bold text-slate-400 shrink-0">{notif.time}</span>
+                                                </div>
+                                                <p className="text-[11px] text-slate-500 leading-tight line-clamp-2">{notif.desc}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                                <button className="w-full py-3.5 bg-slate-50 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] hover:bg-lime-50 hover:text-lime-600 transition-all rounded-b-[1.8rem]">
+                                    Clear all alerts
+                                </button>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </div>
 
                 {/* Profile Section with Dropdown */}
                 <div className="relative" ref={dropdownRef}>
