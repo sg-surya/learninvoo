@@ -26,6 +26,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { getAllGeneratedContent, getTypeColor, GeneratedContent } from '@/lib/storage';
+import SettingsModal from './SettingsModal';
 
 const Header: React.FC = () => {
     const pathname = usePathname();
@@ -34,6 +35,7 @@ const Header: React.FC = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isNotificationOpen, setIsNotificationOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [notifications, setNotifications] = useState<any[]>([]);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const notificationRef = useRef<HTMLDivElement>(null);
@@ -435,7 +437,13 @@ const Header: React.FC = () => {
                                         </div>
                                     </button>
 
-                                    <button className="w-full flex items-center justify-between px-3 py-2 text-[13px] font-bold text-slate-700 hover:bg-slate-50 rounded-xl transition-all group">
+                                    <button
+                                        onClick={() => {
+                                            setIsDropdownOpen(false);
+                                            setIsSettingsOpen(true);
+                                        }}
+                                        className="w-full flex items-center justify-between px-3 py-2 text-[13px] font-bold text-slate-700 hover:bg-slate-50 rounded-xl transition-all group"
+                                    >
                                         <div className="flex items-center gap-3">
                                             <Settings size={16} className="text-slate-400 group-hover:text-lime-600 transition-colors" />
                                             <span>Settings</span>
@@ -466,6 +474,13 @@ const Header: React.FC = () => {
                     </AnimatePresence>
                 </div>
             </div>
+
+            {/* Settings Modal */}
+            <SettingsModal
+                isOpen={isSettingsOpen}
+                onClose={() => setIsSettingsOpen(false)}
+                user={user}
+            />
         </header>
     );
 };
