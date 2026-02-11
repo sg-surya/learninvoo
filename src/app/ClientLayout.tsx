@@ -77,8 +77,8 @@ export default function ClientLayout({
 
                     {/* Main Content Card */}
                     <main className="flex-1 mx-[10px] mb-[10px] bg-white rounded-[2.5rem] shadow-[16px_16px_40px_-5px_rgba(0,0,0,0.1)] border border-white/40 relative z-10 flex flex-col overflow-hidden">
+                        <Breadcrumbs />
                         <div ref={scrollRef} className="flex-1 overflow-y-auto custom-scrollbar">
-                            <Breadcrumbs />
                             {children}
                         </div>
                     </main>

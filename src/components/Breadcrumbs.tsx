@@ -12,7 +12,7 @@ const Breadcrumbs = () => {
     if (pathname === '/dashboard') return null;
 
     return (
-        <nav className="flex items-center gap-1.5 px-8 pt-6 pb-2">
+        <nav className="flex items-center gap-1.5 px-8 pt-6 pb-4 bg-white sticky top-0 z-20 border-b border-gray-50/50">
             <Link
                 href="/dashboard"
                 className="flex items-center gap-1.5 text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-lime-600 transition-colors group"
