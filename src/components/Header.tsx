@@ -21,7 +21,7 @@ const Header: React.FC = () => {
     const pathname = usePathname();
 
     const navItems = [
-        { href: '/', label: 'Dashboard', icon: LayoutDashboard },
+        { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
         { href: '/tools', label: 'Tools', icon: Wand2 },
         { href: '/library', label: 'Library', icon: LibraryIcon },
         { href: '/workspace', label: 'Workspace', icon: Briefcase },

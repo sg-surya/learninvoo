@@ -36,6 +36,16 @@ export default function ClientLayout({
         localStorage.setItem('learnivo_sidebar_collapsed', JSON.stringify(isSidebarCollapsed));
     }, [isSidebarCollapsed]);
 
+    const isLandingPage = pathname === '/';
+
+    if (isLandingPage) {
+        return (
+            <div className="min-h-screen bg-white text-slate-900 overflow-x-hidden">
+                {children}
+            </div>
+        );
+    }
+
     return (
         <div className="h-screen w-screen relative overflow-hidden bg-[#f9fbf2] flex">
             {/* Muted Background Blobs - Very Subtle */}

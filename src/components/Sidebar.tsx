@@ -15,7 +15,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
     const pathname = usePathname();
 
     const navItems = [
-        { href: '/', label: 'Dashboard', icon: LayoutDashboard },
+        { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
         { href: '/tools', label: 'Tools', icon: Wand2 },
         { href: '/classes', label: 'Classes', icon: GraduationCap },
         { href: '/reports', label: 'Report', icon: PieChart },
