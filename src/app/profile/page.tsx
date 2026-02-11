@@ -20,14 +20,24 @@ import {
     Zap,
     BookOpen,
     School,
-    GraduationCap
+    GraduationCap,
+    Users,
+    Clock,
+    Heart,
+    FileText,
+    ArrowRight,
+    MessageCircle,
+    Eye,
+    ThumbsUp,
+    MoreHorizontal
 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 
 const ProfilePage = () => {
     const router = useRouter();
     const [user, setUser] = useState<any>(null);
+    const [activeTab, setActiveTab] = useState('CLASSES');
 
     useEffect(() => {
         const storedUser = localStorage.getItem('learnivo_current_user');
@@ -40,216 +50,208 @@ const ProfilePage = () => {
 
     if (!user) return null;
 
+    const tabs = [
+        { name: 'CLASSES', count: 12 },
+        { name: 'RESOURCES', count: 45 },
+        { name: 'BADGES', count: 8 },
+        { name: 'ABOUT', count: null }
+    ];
+
+    const classes = [
+        {
+            title: 'Mathematics Hub - 9B',
+            category: 'Trigonometry & Algebra',
+            image: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=800&auto=format&fit=crop&q=60',
+            likes: '1.2k',
+            views: '8.4k',
+            tags: ['MATH', '9B']
+        },
+        {
+            title: 'Physics Lab - Grade 10',
+            category: 'Quantum Mechanics Intro',
+            image: 'https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?w=800&auto=format&fit=crop&q=60',
+            likes: '850',
+            views: '4.2k',
+            tags: ['PHY']
+        },
+        {
+            title: 'Digital Literacy 101',
+            category: 'Computer Science',
+            image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&auto=format&fit=crop&q=60',
+            likes: '2.4k',
+            views: '12k',
+            tags: ['CS', 'IT']
+        }
+    ];
+
     return (
-        <div className="min-h-screen bg-slate-50 font-sans selection:bg-lime-500 selection:text-white pb-20">
-            {/* Top Navigation Bar */}
-            <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100 px-6 py-4 flex items-center justify-between">
-                <Link href="/dashboard" className="flex items-center gap-2 group text-slate-400 hover:text-slate-900 transition-colors">
-                    <ChevronLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
-                    <span className="text-[10px] font-black uppercase tracking-widest">Back to Hub</span>
-                </Link>
-                <div className="flex items-center gap-4">
-                    <button className="p-2 text-slate-400 hover:text-lime-600 transition-colors">
-                        <Share2 size={18} />
-                    </button>
-                    <Link href="/profile/edit">
-                        <button className="flex items-center gap-2 px-4 py-2 bg-slate-950 text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg hover:bg-slate-800 transition-all">
-                            <Edit3 size={14} /> Edit Profile
+        <div className="min-h-screen bg-white font-sans selection:bg-lime-500 selection:text-white pb-20">
+            {/* Dynamic Illustrative Banner */}
+            <div className="h-[320px] w-full bg-[#f8faff] relative overflow-hidden flex items-center justify-center">
+                {/* Premium Abstract Background */}
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_#eef2ff_0%,_transparent_50%),radial-gradient(circle_at_bottom_left,_#fff1f2_0%,_transparent_50%)]"></div>
+                <div className="absolute inset-0 bg-grid-slate-100/[0.5] [mask-image:linear-gradient(to_bottom,white,transparent)]"></div>
+
+                {/* Floating Meta Badges */}
+                <div className="relative z-0 flex flex-col items-center gap-3 mb-12">
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="px-6 py-2.5 bg-white/60 backdrop-blur-2xl border border-white rounded-[1.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex items-center gap-3 group hover:scale-105 transition-transform"
+                    >
+                        <div className="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-500 flex items-center justify-center">
+                            <School size={16} />
+                        </div>
+                        <div className="flex flex-col">
+                            <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Academic Hub</span>
+                            <span className="text-xs font-black text-gray-800 uppercase italic tracking-tighter">{user?.school || 'Modern Excellence Academy'}</span>
+                        </div>
+                    </motion.div>
+
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.1 }}
+                        className="px-5 py-2 bg-slate-950/5 backdrop-blur-md border border-slate-950/5 rounded-2xl flex items-center gap-3 group hover:scale-105 transition-transform"
+                    >
+                        <div className="w-6 h-6 rounded-lg bg-white/80 text-gray-600 flex items-center justify-center">
+                            <GraduationCap size={13} />
+                        </div>
+                        <span className="text-[10px] font-black text-gray-600 uppercase tracking-[0.2em]">{user?.class || 'Grade 10-B'} • {user?.subjects || 'Science & Math'}</span>
+                    </motion.div>
+                </div>
+
+                {/* Decorative floating icons */}
+                <motion.div animate={{ y: [0, -10, 0] }} transition={{ duration: 4, repeat: Infinity }} className="absolute top-10 left-[15%] opacity-20"><BookOpen size={40} className="text-indigo-300" /></motion.div>
+                <motion.div animate={{ y: [0, 10, 0] }} transition={{ duration: 5, repeat: Infinity }} className="absolute bottom-20 right-[15%] opacity-20"><Award size={40} className="text-rose-300" /></motion.div>
+            </div>
+
+            <main className="max-w-[1400px] mx-auto px-12">
+                {/* Profile Header Block - Adjusted Overlap */}
+                <div className="flex flex-col md:flex-row items-center gap-12 -mt-32 relative z-10 pb-12 border-b border-gray-100/60">
+                    {/* Large Rounded Profile Image - Matched to Screenshot */}
+                    <div className="relative shrink-0">
+                        <div className="w-[210px] h-[210px] rounded-[3.5rem] border-[8px] border-white shadow-[0_20px_50px_rgba(0,0,0,0.08)] overflow-hidden bg-white">
+                            {user.profileImage ? (
+                                <img src={user.profileImage} alt={user.fullName} className="w-full h-full object-cover" />
+                            ) : (
+                                <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.fullName}`} alt={user.fullName} className="w-full h-full object-cover" />
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Name and Stats Bar */}
+                    <div className="flex-1 flex flex-col md:flex-row md:items-center justify-between gap-8 pt-8 md:pt-4">
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-4">
+                                <h1 className="text-[42px] font-black text-gray-950 tracking-tighter font-display leading-none">{user.fullName}</h1>
+                                <div className="flex items-center gap-1.5 px-3 py-1 bg-[#6366f1] text-white rounded-lg text-[10px] font-black italic tracking-tighter shadow-lg shadow-indigo-500/20 uppercase">
+                                    PRO <Zap size={10} fill="currentColor" />
+                                </div>
+                            </div>
+
+                            <div className="space-y-1">
+                                <p className="text-sm font-bold text-gray-700">Senior Educator & Content Designer</p>
+                                <p className="text-xs font-medium text-gray-400">based in {user.location || 'New Delhi, India'}</p>
+                            </div>
+
+                            <div className="flex items-center gap-3 pt-3">
+                                <Link href="/profile/edit" className="px-10 py-3.5 bg-slate-950 text-white rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-xl active:scale-95">
+                                    Edit Profile
+                                </Link>
+                                <button className="px-8 py-3.5 bg-white border border-gray-200 text-gray-800 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-gray-50 transition-all shadow-sm active:scale-95 flex items-center gap-2">
+                                    <MessageCircle size={14} className="text-gray-400" /> Get in touch
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Right Side Stats & Badges */}
+                        <div className="flex flex-col items-center md:items-end gap-10">
+                            <div className="flex items-center gap-3">
+                                <div className="w-9 h-9 rounded-full bg-[#ff4d00] text-white text-[11px] font-black flex items-center justify-center shadow-lg shadow-orange-600/20">26</div>
+                                <div className="w-9 h-9 rounded-full bg-[#4f46e5] text-white text-[11px] font-black flex items-center justify-center shadow-lg shadow-indigo-600/20">6</div>
+                                <div className="w-9 h-9 rounded-full bg-[#0f172a] text-white text-[11px] font-black flex items-center justify-center shadow-lg shadow-gray-950/20">12</div>
+                            </div>
+
+                            <div className="flex items-center gap-12">
+                                <div className="text-center md:text-right">
+                                    <p className="text-[10px] font-black text-gray-300 uppercase tracking-[0.2em] mb-2 leading-none">STUDENTS</p>
+                                    <p className="text-3xl font-black text-gray-950 tracking-tighter leading-none">12,450</p>
+                                </div>
+                                <div className="text-center md:text-right">
+                                    <p className="text-[10px] font-black text-gray-300 uppercase tracking-[0.2em] mb-2 leading-none">RESOURCES</p>
+                                    <p className="text-3xl font-black text-gray-950 tracking-tighter leading-none">132</p>
+                                </div>
+                                <div className="text-center md:text-right">
+                                    <p className="text-[10px] font-black text-gray-300 uppercase tracking-[0.2em] mb-2 leading-none">LIKES</p>
+                                    <p className="text-3xl font-black text-gray-950 tracking-tighter leading-none">548</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Tabs Section - Matched to Screenshot */}
+                <div className="flex items-center gap-10 py-10 sticky top-0 bg-white/95 backdrop-blur-md z-20">
+                    {tabs.map((tab) => (
+                        <button
+                            key={tab.name}
+                            onClick={() => setActiveTab(tab.name)}
+                            className={`flex items-center gap-2 py-2 relative transition-colors ${activeTab === tab.name ? 'text-gray-950' : 'text-gray-400 hover:text-gray-600'
+                                }`}
+                        >
+                            <span className="text-xs font-black tracking-[0.1em] uppercase">
+                                {tab.name}
+                                {tab.count !== null && <span className="text-[10px] ml-1.5 opacity-40 font-bold">{tab.count}</span>}
+                            </span>
+                            {activeTab === tab.name && (
+                                <motion.div
+                                    layoutId="activeTabUnderline"
+                                    className="absolute bottom-0 left-0 right-0 h-1 bg-gray-950 rounded-full"
+                                />
+                            )}
                         </button>
-                    </Link>
-                </div>
-            </nav>
-
-            <main className="max-w-6xl mx-auto px-6 pt-12">
-                {/* Header Profile Section */}
-                <div className="relative mb-12">
-                    {/* Cover Image Placeholder */}
-                    <div className="h-48 w-full bg-gradient-to-r from-lime-500 via-lime-600 to-emerald-700 rounded-3xl overflow-hidden relative">
-                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white/10 to-transparent"></div>
-                    </div>
-
-                    <div className="px-8 -mt-16 relative z-10 flex flex-col md:flex-row items-end gap-6">
-                        <div className="relative group">
-                            <div className="w-36 h-36 rounded-[2.5rem] border-4 border-white shadow-2xl overflow-hidden bg-white">
-                                {user.profileImage ? (
-                                    <img
-                                        src={user.profileImage}
-                                        alt={user.fullName}
-                                        className="w-full h-full object-cover"
-                                    />
-                                ) : (
-                                    <img
-                                        src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.fullName}`}
-                                        alt={user.fullName}
-                                        className="w-full h-full object-cover"
-                                    />
-                                )}
-                            </div>
-                            <button className="absolute bottom-2 right-2 w-10 h-10 bg-white rounded-2xl shadow-lg border border-slate-100 flex items-center justify-center text-slate-400 hover:text-lime-600 transition-all opacity-0 group-hover:opacity-100">
-                                <Camera size={18} />
-                            </button>
-                        </div>
-
-                        <div className="flex-1 pb-2">
-                            <div className="flex items-center gap-3 mb-1">
-                                <h1 className="text-4xl font-black text-slate-950 tracking-tighter uppercase italic">{user.fullName}</h1>
-                                <CheckCircle2 className="text-lime-500 fill-lime-50" size={20} />
-                                <div className="px-3 py-1 bg-lime-100 text-lime-700 text-[9px] font-black uppercase tracking-widest rounded-full">
-                                    {user.role}
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-4 text-slate-400">
-                                <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider">
-                                    <AtSign size={14} className="text-slate-300" /> {user.username || 'username'}
-                                </div>
-                                <div className="w-1 h-1 bg-slate-200 rounded-full"></div>
-                                <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider">
-                                    <MapPin size={14} className="text-slate-300" /> {user.location || 'Location Not Set'}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    ))}
                 </div>
 
-                {/* Main Content Grid */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Left Column: Info Cards */}
-                    <div className="space-y-6">
-                        {/* bio */}
-                        <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-4">
-                            <h3 className="text-xs font-black text-slate-950 uppercase tracking-[0.2em] flex items-center gap-2">
-                                <User size={14} className="text-lime-500" /> About Identity
-                            </h3>
-                            <p className="text-sm font-medium text-slate-500 leading-relaxed italic">
-                                {user.bio || `Initial identity established. Complete your professional narrative to unlock advanced AI networking features.`}
-                            </p>
-                            <div className="pt-4 space-y-4">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-lime-50 text-lime-600 flex items-center justify-center border border-lime-100/50">
-                                        <School size={14} />
-                                    </div>
-                                    <div className="flex flex-col">
-                                        <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none">Institute</span>
-                                        <span className="text-xs font-bold text-slate-600 truncate max-w-[150px]">{user.school || 'Not Specified'}</span>
-                                    </div>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center border border-sky-100/50">
-                                        <GraduationCap size={14} />
-                                    </div>
-                                    <div className="flex flex-col">
-                                        <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none">Grade / Class</span>
-                                        <span className="text-xs font-bold text-slate-600">{user.class || 'Not Specified'}</span>
-                                    </div>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-slate-50 text-slate-600 flex items-center justify-center border border-slate-100/50">
-                                        <BookOpen size={14} />
-                                    </div>
-                                    <div className="flex flex-col">
-                                        <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none">Subjects</span>
-                                        <span className="text-xs font-bold text-slate-600 truncate max-w-[150px]">{user.subjects || 'Not Specified'}</span>
-                                    </div>
-                                </div>
-                                <div className="h-px bg-slate-50 my-2"></div>
-                                <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400">
-                                        <Mail size={14} />
-                                    </div>
-                                    <span className="text-xs font-bold text-slate-600">{user.email}</span>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400">
-                                        <Calendar size={14} />
-                                    </div>
-                                    <span className="text-xs font-bold text-slate-600">Joined {new Date(user.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Achievements */}
-                        <div className="bg-slate-950 p-6 rounded-3xl space-y-6 overflow-hidden relative">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-lime-500/10 rounded-full -mr-10 -mt-10 blur-3xl"></div>
-                            <h3 className="text-xs font-black text-white uppercase tracking-[0.2em] flex items-center gap-2 relative z-10">
-                                <Award size={14} className="text-lime-400" /> Milestone Hub
-                            </h3>
-                            <div className="grid grid-cols-2 gap-4 relative z-10">
-                                <div className="bg-white/5 border border-white/10 p-4 rounded-2xl text-center backdrop-blur-sm">
-                                    <div className="text-2xl font-black text-lime-400 mb-1">12</div>
-                                    <div className="text-[8px] font-bold text-white/50 uppercase tracking-widest leading-none">AI Tools mastered</div>
-                                </div>
-                                <div className="bg-white/5 border border-white/10 p-4 rounded-2xl text-center backdrop-blur-sm">
-                                    <div className="text-2xl font-black text-sky-400 mb-1">98%</div>
-                                    <div className="text-[8px] font-bold text-white/50 uppercase tracking-widest leading-none">Hub rating</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Middle/Right Column: Activity Hub */}
-                    <div className="lg:col-span-2 space-y-6">
-                        {/* Status Cards */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                            <motion.div whileHover={{ y: -5 }} className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-4 group">
-                                <div className="w-12 h-12 rounded-2xl bg-lime-50 text-lime-600 flex items-center justify-center border border-lime-100 group-hover:bg-lime-600 group-hover:text-white transition-all">
-                                    <Zap size={24} />
-                                </div>
-                                <div>
-                                    <div className="text-lg font-black text-slate-950 uppercase tracking-tight">Vasu Score</div>
-                                    <div className="text-xs font-bold text-lime-600 uppercase tracking-widest">Top 5% Globally</div>
-                                </div>
-                            </motion.div>
-                            <motion.div whileHover={{ y: -5 }} className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-4 group">
-                                <div className="w-12 h-12 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center border border-sky-100 group-hover:bg-sky-600 group-hover:text-white transition-all">
-                                    <Star size={24} />
-                                </div>
-                                <div>
-                                    <div className="text-lg font-black text-slate-950 uppercase tracking-tight">Member Tier</div>
-                                    <div className="text-xs font-bold text-sky-600 uppercase tracking-widest">Platinum Badge</div>
-                                </div>
-                            </motion.div>
-                        </div>
-
-                        {/* Recent Activity */}
-                        <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
-                            <div className="px-8 py-6 border-b border-slate-50 flex items-center justify-between">
-                                <h3 className="text-xs font-black text-slate-950 uppercase tracking-[0.2em] flex items-center gap-2">
-                                    <BookOpen size={14} className="text-lime-500" /> Intelligence Feed
-                                </h3>
-                                <button className="text-[9px] font-black uppercase tracking-widest text-slate-400 hover:text-lime-600">View All Trace</button>
-                            </div>
-                            <div className="divide-y divide-slate-50">
-                                {[1, 2, 3].map((i) => (
-                                    <div key={i} className="px-8 py-6 hover:bg-slate-50 transition-colors flex items-start justify-between group">
-                                        <div className="flex gap-4">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-lime-500 mt-1.5"></div>
-                                            <div>
-                                                <h4 className="text-sm font-bold text-slate-950 uppercase tracking-tight mb-1 group-hover:text-lime-600 transition-colors">
-                                                    {i === 1 ? 'Initialized Hyper Local Lesson Plan' : i === 2 ? 'Mastered Bloom\'s Taxonomy Tool' : 'Generated NCERT Assessment'}
-                                                </h4>
-                                                <p className="text-xs text-slate-400 font-medium">Recorded via {user.fullName}'s Secure Hub • {i * 2}h ago</p>
+                {/* Grid Content */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 pt-4">
+                    <AnimatePresence mode="wait">
+                        {activeTab === 'CLASSES' && classes.map((item, i) => (
+                            <motion.div
+                                key={item.title}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: i * 0.1 }}
+                                className="group cursor-pointer"
+                            >
+                                <div className="aspect-[1.4/1] rounded-[2.8rem] overflow-hidden mb-5 relative border border-gray-100">
+                                    <img src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
+                                    <div className="absolute top-5 right-5 flex gap-2">
+                                        {item.tags.map(tag => (
+                                            <div key={tag} className="px-3 py-1 bg-white/95 backdrop-blur-md text-[10px] font-black rounded-lg shadow-sm tracking-tighter uppercase">
+                                                {tag}
                                             </div>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div className="flex items-start justify-between px-2">
+                                    <div className="space-y-1">
+                                        <h3 className="text-[15px] font-black text-gray-950 group-hover:text-lime-600 transition-colors leading-tight">{item.title}</h3>
+                                        <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest">{item.category}</p>
+                                    </div>
+                                    <div className="flex items-center gap-4">
+                                        <div className="flex items-center gap-1.5 text-[11px] font-black text-gray-400">
+                                            <Heart size={14} className="group-hover:text-red-500 transition-colors" /> {item.likes}
                                         </div>
-                                        <div className="px-3 py-1 bg-slate-100 rounded text-[8px] font-black uppercase tracking-widest text-slate-400">
-                                            Success
+                                        <div className="flex items-center gap-1.5 text-[11px] font-black text-gray-400">
+                                            <Eye size={14} className="group-hover:text-indigo-500 transition-colors" /> {item.views}
                                         </div>
                                     </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Integration Badges */}
-                        <div className="bg-lime-50 p-6 rounded-3xl border border-lime-100">
-                            <div className="flex items-center gap-6 opacity-40 grayscale group hover:grayscale-0 hover:opacity-100 transition-all duration-700 overflow-x-auto pb-2 scrollbar-hide">
-                                <span className="text-[10px] font-black uppercase tracking-[0.3em] shrink-0">Official Verified</span>
-                                <div className="h-4 w-px bg-lime-200 shrink-0"></div>
-                                <span className="text-xs font-black tracking-tighter shrink-0 italic">NEP 2020</span>
-                                <span className="text-xs font-black tracking-tighter shrink-0 italic">NCERT</span>
-                                <span className="text-xs font-black tracking-tighter shrink-0 italic">CBSE ALIGNED</span>
-                                <span className="text-xs font-black tracking-tighter shrink-0 italic">VASU AI-NATIVE</span>
-                            </div>
-                        </div>
-                    </div>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </AnimatePresence>
                 </div>
             </main>
         </div>
