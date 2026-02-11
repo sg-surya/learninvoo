@@ -39,7 +39,15 @@ const LandingPage = () => {
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
   const [pricingTab, setPricingTab] = useState<'teachers' | 'students'>('teachers');
+  const [user, setUser] = useState<any>(null);
   const scrollContainerRef = React.useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('learnivo_current_user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
 
   useEffect(() => {
     const container = scrollContainerRef.current;
@@ -115,8 +123,27 @@ const LandingPage = () => {
               </div>
 
               <div className="flex items-center gap-4">
-                <Link href="/login" className="hidden sm:block text-[10px] font-bold uppercase tracking-widest px-2">Sign In</Link>
-                <motion.button whileTap={{ scale: 0.95 }} className="px-5 py-2.5 bg-slate-950 text-white text-[10px] font-bold rounded uppercase tracking-widest shadow-xl">Get Started</motion.button>
+                {user ? (
+                  <div className="flex items-center gap-4">
+                    <Link href="/dashboard" className="hidden sm:flex items-center gap-2 px-5 py-2.5 bg-slate-950 text-white text-[10px] font-bold rounded hover:bg-slate-800 transition-all uppercase tracking-widest shadow-lg">
+                      Go to Dashboard <ArrowRight size={14} />
+                    </Link>
+                    <div className="w-10 h-10 rounded-full border border-slate-200 overflow-hidden shadow-sm">
+                      <img
+                        src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.fullName}`}
+                        alt={user.fullName}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <Link href="/login" className="hidden sm:block text-[10px] font-bold uppercase tracking-widest px-2 text-slate-500 hover:text-slate-950">Sign In</Link>
+                    <Link href="/register">
+                      <motion.button whileTap={{ scale: 0.95 }} className="px-5 py-2.5 bg-slate-950 text-white text-[10px] font-bold rounded uppercase tracking-widest shadow-xl hover:bg-slate-800 transition-all">Get Started</motion.button>
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           </nav>
@@ -143,9 +170,11 @@ const LandingPage = () => {
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-                  <motion.button whileTap={{ scale: 0.95 }} className="px-8 h-16 bg-slate-950 text-white font-black rounded text-[12px] uppercase tracking-widest shadow-2xl flex items-center gap-2 group">
-                    Get Started Free <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                  </motion.button>
+                  <Link href={user ? "/dashboard" : "/register"}>
+                    <motion.button whileTap={{ scale: 0.95 }} className="px-8 h-16 bg-slate-950 text-white font-black rounded text-[12px] uppercase tracking-widest shadow-2xl flex items-center gap-2 group whitespace-nowrap">
+                      {user ? "Open My Dashboard" : "Get Started Free"} <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                    </motion.button>
+                  </Link>
                   <div className="flex items-center gap-3 px-6 h-16 bg-white border border-slate-100 rounded text-[12px] font-bold uppercase tracking-widest text-slate-500">
                     <PlayCircle size={18} /> Watch Platform in Action
                   </div>

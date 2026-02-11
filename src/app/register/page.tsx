@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState } from 'react';
@@ -17,12 +16,52 @@ import {
     Activity,
     Sparkles
 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 type Role = 'teacher' | 'student' | null;
 
 export default function RegisterPage() {
+    const router = useRouter();
     const [step, setStep] = useState(1);
     const [role, setRole] = useState<Role>(null);
+    const [formData, setFormData] = useState({
+        fullName: '',
+        email: '',
+        password: ''
+    });
+
+    React.useEffect(() => {
+        if (localStorage.getItem('learnivo_current_user')) {
+            router.push('/dashboard');
+        }
+    }, [router]);
+
+    const handleRegister = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        // Basic validation
+        if (!formData.fullName || !formData.email || !formData.password || !role) {
+            alert('Please fill all fields');
+            return;
+        }
+
+        // Save to LocalStorage
+        const users = JSON.parse(localStorage.getItem('learnivo_users') || '[]');
+        const newUser = { ...formData, role, id: Date.now() };
+
+        // Check if user already exists
+        if (users.find((u: any) => u.email === formData.email)) {
+            alert('User already exists');
+            return;
+        }
+
+        users.push(newUser);
+        localStorage.setItem('learnivo_users', JSON.stringify(users));
+        localStorage.setItem('learnivo_current_user', JSON.stringify(newUser));
+
+        // Redirect to Dashboard
+        router.push('/dashboard');
+    };
 
     const containerVariants = {
         hidden: { opacity: 0, x: 20 },
@@ -130,22 +169,43 @@ export default function RegisterPage() {
                                             <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.2em]">Finalize your digital identity for {role}.</p>
                                         </div>
 
-                                        <form className="grid gap-6 sm:grid-cols-2" onSubmit={(e) => e.preventDefault()}>
+                                        <form className="grid gap-6 sm:grid-cols-2" onSubmit={handleRegister}>
                                             <div className="space-y-2">
                                                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Full Name</label>
-                                                <input type="text" placeholder="Rahul Kumar" className="w-full px-5 h-12 bg-slate-50 border border-slate-100 rounded focus:outline-none focus:border-lime-500 transition-all font-bold text-sm" />
+                                                <input
+                                                    type="text"
+                                                    placeholder="Rahul Kumar"
+                                                    value={formData.fullName}
+                                                    onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                                                    className="w-full px-5 h-12 bg-slate-50 border border-slate-100 rounded focus:outline-none focus:border-lime-500 transition-all font-bold text-sm"
+                                                    required
+                                                />
                                             </div>
                                             <div className="space-y-2">
                                                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Work Email</label>
-                                                <input type="email" placeholder="rahul@school.com" className="w-full px-5 h-12 bg-slate-50 border border-slate-100 rounded focus:outline-none focus:border-lime-500 transition-all font-bold text-sm" />
+                                                <input
+                                                    type="email"
+                                                    placeholder="rahul@school.com"
+                                                    value={formData.email}
+                                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                                    className="w-full px-5 h-12 bg-slate-50 border border-slate-100 rounded focus:outline-none focus:border-lime-500 transition-all font-bold text-sm"
+                                                    required
+                                                />
                                             </div>
                                             <div className="space-y-2 sm:col-span-2">
                                                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Set Access Key</label>
-                                                <input type="password" placeholder="••••••••" className="w-full px-5 h-12 bg-slate-50 border border-slate-100 rounded focus:outline-none focus:border-lime-500 transition-all font-bold text-sm" />
+                                                <input
+                                                    type="password"
+                                                    placeholder="••••••••"
+                                                    value={formData.password}
+                                                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                                    className="w-full px-5 h-12 bg-slate-50 border border-slate-100 rounded focus:outline-none focus:border-lime-500 transition-all font-bold text-sm"
+                                                    required
+                                                />
                                             </div>
 
                                             <div className="sm:col-span-2 pt-6">
-                                                <button className="h-12 px-12 bg-lime-600 text-white font-black uppercase text-[10px] tracking-widest rounded shadow-xl shadow-lime-600/20 hover:bg-lime-700 transition-all flex items-center justify-center gap-2">
+                                                <button type="submit" className="h-12 px-12 bg-lime-600 text-white font-black uppercase text-[10px] tracking-widest rounded shadow-xl shadow-lime-600/20 hover:bg-lime-700 transition-all flex items-center justify-center gap-2">
                                                     Register Identity <ArrowRight size={14} />
                                                 </button>
                                             </div>

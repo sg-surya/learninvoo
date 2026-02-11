@@ -1,12 +1,36 @@
-
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { BookOpen, Mail, Lock, ArrowRight, LayoutGrid } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
+    const router = useRouter();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    React.useEffect(() => {
+        if (localStorage.getItem('learnivo_current_user')) {
+            router.push('/dashboard');
+        }
+    }, [router]);
+
+    const handleLogin = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        const users = JSON.parse(localStorage.getItem('learnivo_users') || '[]');
+        const user = users.find((u: any) => u.email === email && u.password === password);
+
+        if (user) {
+            localStorage.setItem('learnivo_current_user', JSON.stringify(user));
+            router.push('/dashboard');
+        } else {
+            alert('Invalid email or password');
+        }
+    };
+
     return (
         <div className="h-screen w-full bg-slate-950 px-[10px] pb-[10px] overflow-hidden">
             <div className="h-full w-full flex overflow-y-auto overflow-x-hidden font-sans selection:bg-lime-600 selection:text-white rounded-b-[10px] rounded-t-none bg-white shadow-2xl">
@@ -32,13 +56,16 @@ export default function LoginPage() {
                             <h1 className="text-6xl font-black text-slate-950 uppercase tracking-tighter leading-[0.9] mb-4">Sign <br /> <span className="text-lime-500">In</span></h1>
                             <p className="text-slate-400 text-[10px] font-bold uppercase tracking-[0.3em] mb-12">Access your personalized teaching workshop.</p>
 
-                            <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+                            <form className="space-y-6" onSubmit={handleLogin}>
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Email Address</label>
                                     <input
                                         type="email"
                                         placeholder="name@school.com"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
                                         className="w-full px-5 h-12 bg-slate-50 border border-slate-100 rounded focus:outline-none focus:border-lime-500 transition-all font-bold text-sm text-slate-800"
+                                        required
                                     />
                                 </div>
 
@@ -49,7 +76,10 @@ export default function LoginPage() {
                                     <input
                                         type="password"
                                         placeholder="••••••••"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
                                         className="w-full px-5 h-12 bg-slate-50 border border-slate-100 rounded focus:outline-none focus:border-lime-500 transition-all font-bold text-sm text-slate-800"
+                                        required
                                     />
                                 </div>
 
@@ -64,6 +94,7 @@ export default function LoginPage() {
                                 <div className="pt-6 flex flex-col sm:flex-row items-center gap-6">
                                     <motion.button
                                         whileTap={{ scale: 0.95 }}
+                                        type="submit"
                                         className="h-12 px-10 bg-lime-600 text-white font-black uppercase text-[10px] tracking-widest rounded shadow-xl shadow-lime-600/20 hover:bg-lime-700 transition-all"
                                     >
                                         Sign In Now

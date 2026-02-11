@@ -20,8 +20,16 @@ import {
 
 const ForTeachersPage = () => {
     const [scrolled, setScrolled] = useState(false);
+    const [user, setUser] = useState<any>(null);
 
     const scrollContainerRef = React.useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const storedUser = localStorage.getItem('learnivo_current_user');
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+        }
+    }, []);
 
     useEffect(() => {
         const container = scrollContainerRef.current;
@@ -61,8 +69,27 @@ const ForTeachersPage = () => {
                                 <Link href="/for-students" className="text-[10px] font-bold text-slate-500 hover:text-slate-950 uppercase tracking-widest transition-colors">For Students</Link>
                             </div>
                             <div className="flex items-center gap-4">
-                                <Link href="/login" className="text-[10px] font-bold text-slate-500 hover:text-slate-950 uppercase tracking-widest">Sign In</Link>
-                                <motion.button whileTap={{ scale: 0.95 }} className="px-5 py-2.5 bg-slate-950 text-white text-[10px] font-bold rounded hover:bg-slate-800 transition-all uppercase tracking-widest shadow-lg">Start Free</motion.button>
+                                {user ? (
+                                    <div className="flex items-center gap-4">
+                                        <Link href="/dashboard" className="hidden sm:flex items-center gap-2 px-5 py-2.5 bg-slate-950 text-white text-[10px] font-bold rounded hover:bg-slate-800 transition-all uppercase tracking-widest shadow-lg">
+                                            Go to Dashboard <ArrowRight size={14} />
+                                        </Link>
+                                        <div className="w-10 h-10 rounded-full border border-slate-200 overflow-hidden shadow-sm">
+                                            <img
+                                                src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.fullName}`}
+                                                alt={user.fullName}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <Link href="/login" className="text-[10px] font-bold text-slate-500 hover:text-slate-950 uppercase tracking-widest">Sign In</Link>
+                                        <Link href="/register">
+                                            <motion.button whileTap={{ scale: 0.95 }} className="px-5 py-2.5 bg-slate-950 text-white text-[10px] font-bold rounded hover:bg-slate-800 transition-all uppercase tracking-widest shadow-lg">Start Free</motion.button>
+                                        </Link>
+                                    </>
+                                )}
                             </div>
                         </div>
                     </nav>

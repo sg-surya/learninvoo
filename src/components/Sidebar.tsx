@@ -13,6 +13,19 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
     const pathname = usePathname();
+    const [user, setUser] = React.useState<any>(null);
+
+    React.useEffect(() => {
+        const storedUser = localStorage.getItem('learnivo_current_user');
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+        }
+    }, []);
+
+    const handleLogout = () => {
+        localStorage.removeItem('learnivo_current_user');
+        window.location.href = '/login';
+    };
 
     const navItems = [
         { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -157,8 +170,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
                     >
                         <div className={`${isCollapsed ? 'w-10 h-10' : 'w-14 h-14'} transition-all rounded-full border-2 border-white shadow-sm p-0.5 overflow-hidden bg-white`}>
                             <img
-                                src="https://picsum.photos/seed/jane-profile/200/200"
-                                alt="Jane Cooper"
+                                src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.fullName || 'Jane'}`}
+                                alt={user?.fullName || 'User'}
                                 className="w-full h-full object-cover rounded-full"
                             />
                         </div>
@@ -172,8 +185,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
                                 exit={{ opacity: 0, height: 0 }}
                                 className="mt-3 overflow-hidden"
                             >
-                                <h4 className="text-sm font-bold text-gray-800 leading-tight">Jane Cooper</h4>
-                                <p className="text-[10px] text-gray-400 font-medium mt-0.5">jane.c02@gmail.com</p>
+                                <h4 className="text-sm font-bold text-gray-800 leading-tight">{user?.fullName || 'Jane Cooper'}</h4>
+                                <p className="text-[10px] text-gray-400 font-medium mt-0.5">{user?.email || 'jane.c02@gmail.com'}</p>
                             </motion.div>
                         )}
                     </AnimatePresence>
@@ -196,6 +209,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
 
                     {/* Logout Button */}
                     <motion.button
+                        onClick={handleLogout}
                         whileHover={{ scale: 1.05, backgroundColor: "rgba(255, 255, 255, 1)" }}
                         whileTap={{ scale: 0.95 }}
                         className={`p-2 bg-white/80 border border-white rounded-xl shadow-sm hover:text-red-500 transition-colors group relative text-gray-400`}

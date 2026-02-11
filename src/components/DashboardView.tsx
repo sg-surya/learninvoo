@@ -20,7 +20,22 @@ import {
     Send
 } from 'lucide-react';
 
+import { useRouter } from 'next/navigation';
+
 const DashboardView: React.FC = () => {
+    const router = useRouter();
+    const [user, setUser] = React.useState<any>(null);
+
+    React.useEffect(() => {
+        const storedUser = localStorage.getItem('learnivo_current_user');
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+        } else {
+            // Redirect to login if no user found
+            router.push('/login');
+        }
+    }, [router]);
+
     // Animation variants
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -48,7 +63,7 @@ const DashboardView: React.FC = () => {
             <header className="mb-8 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
                 <div>
                     <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
-                        Good Morning, <span className="text-lime-600">Rahul Sir!</span>
+                        Good Morning, <span className="text-lime-600">{user?.fullName || 'Educator'}!</span>
                     </h1>
                     <p className="text-slate-500 mt-2 font-medium flex items-center gap-2">
                         <span className="inline-block w-2 H-2 rounded-full bg-lime-500 animate-pulse"></span>
