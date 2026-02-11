@@ -25,6 +25,8 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+import { getAllGeneratedContent, getTypeColor, GeneratedContent } from '@/lib/storage';
+
 const Header: React.FC = () => {
     const pathname = usePathname();
     const router = useRouter();
@@ -32,15 +34,97 @@ const Header: React.FC = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isNotificationOpen, setIsNotificationOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [notifications, setNotifications] = useState<any[]>([]);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const notificationRef = useRef<HTMLDivElement>(null);
     const searchRef = useRef<HTMLDivElement>(null);
+
+    const fetchNotifications = async () => {
+        try {
+            const content = await getAllGeneratedContent();
+            const formatted = content.slice(0, 5).map(item => ({
+                id: item.id,
+                title: item.title,
+                desc: `New ${item.type.replace('-', ' ')} generated.`,
+                time: new Date(item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                icon: getIconForType(item.type),
+                ...getTypeColor(item.type)
+            }));
+            setNotifications(formatted);
+        } catch (error) {
+            console.error('Failed to fetch notifications:', error);
+        }
+    };
+
+    const navItems = [
+        { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+        { href: '/tools', label: 'Tools', icon: Wand2 },
+        { href: '/library', label: 'Library', icon: LibraryIcon },
+        { href: '/workspace', label: 'Workspace', icon: Briefcase },
+        { href: '/calendar', label: 'Calendar', icon: CalendarIcon },
+        { href: '/notes', label: 'Notes', icon: FileText },
+        { href: '/schedule', label: 'MY Schedule', icon: Clock },
+        { href: '/classes', label: 'Classes', icon: GraduationCap },
+    ];
+
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchResults, setSearchResults] = useState<any[]>([]);
+
+    const handleSearch = async (query: string) => {
+        setSearchQuery(query);
+        if (!query.trim()) {
+            setSearchResults([]);
+            return;
+        }
+
+        const lowerQuery = query.toLowerCase();
+
+        // 1. Search Nav Items
+        const routeMatches = navItems
+            .filter(item => item.label.toLowerCase().includes(lowerQuery))
+            .map(item => ({
+                id: `route-${item.href}`,
+                title: item.label,
+                type: 'Page',
+                href: item.href,
+                icon: item.icon
+            }));
+
+        // 2. Search Workspace Content
+        const content = await getAllGeneratedContent();
+        const contentMatches = content
+            .filter(item =>
+                item.title.toLowerCase().includes(lowerQuery) ||
+                item.type.toLowerCase().includes(lowerQuery)
+            )
+            .map(item => ({
+                id: item.id,
+                title: item.title,
+                type: item.type.replace('-', ' '),
+                href: `/workspace?id=${item.id}`,
+                icon: getIconForType(item.type)
+            }));
+
+        setSearchResults([...routeMatches, ...contentMatches.slice(0, 5)]);
+    };
+
+    const getIconForType = (type: GeneratedContent['type']) => {
+        switch (type) {
+            case 'lesson-plan': return Wand2;
+            case 'quiz': return FileText;
+            case 'simulation': return LayoutDashboard;
+            case 'visual': return Wand2;
+            case 'story': return Wand2;
+            default: return Wand2;
+        }
+    };
 
     useEffect(() => {
         const storedUser = localStorage.getItem('learnivo_current_user');
         if (storedUser) {
             setUser(JSON.parse(storedUser));
         }
+        fetchNotifications();
 
         const handleClickOutside = (event: MouseEvent) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -62,22 +146,6 @@ const Header: React.FC = () => {
         router.push('/login');
     };
 
-    const navItems = [
-        { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-        { href: '/tools', label: 'Tools', icon: Wand2 },
-        { href: '/library', label: 'Library', icon: LibraryIcon },
-        { href: '/workspace', label: 'Workspace', icon: Briefcase },
-        { href: '/calendar', label: 'Calendar', icon: CalendarIcon },
-        { href: '/notes', label: 'Notes', icon: FileText },
-        { href: '/schedule', label: 'MY Schedule', icon: Clock },
-        { href: '/classes', label: 'Classes', icon: GraduationCap },
-    ];
-
-    const notifications = [
-        { id: 1, title: 'New Lesson Plan', desc: 'Photosynthesis plan is ready.', time: '2m ago', icon: Wand2, color: 'text-lime-600', bg: 'bg-lime-50' },
-        { id: 2, title: 'Class Started', desc: 'Grade 10 Biology has begun.', time: '15m ago', icon: GraduationCap, color: 'text-sky-600', bg: 'bg-sky-50' },
-        { id: 3, title: 'Assignment Due', desc: 'Quiz #4 submissions closing soon.', time: '1h ago', icon: FileText, color: 'text-orange-600', bg: 'bg-orange-50' },
-    ];
 
     const isActive = (href: string) => {
         if (href === '/' && pathname === '/') return true;
@@ -110,20 +178,66 @@ const Header: React.FC = () => {
                                 <input
                                     autoFocus
                                     type="text"
-                                    placeholder="Search tools, books, or students..."
+                                    value={searchQuery}
+                                    onChange={(e) => handleSearch(e.target.value)}
+                                    placeholder="Search tools, books, or workspace..."
                                     className="w-full bg-slate-50 border-none focus:ring-0 rounded-2xl pl-14 pr-6 py-4 text-lg font-bold text-slate-800 placeholder:text-slate-400 placeholder:font-medium"
                                 />
                             </div>
-                            <div className="px-6 py-4 pb-8">
-                                <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 ml-2">Recent Searches</h3>
-                                <div className="space-y-1">
-                                    {['Lesson Planner for Grade 10', 'Chemistry Quiz', 'Student Reports'].map((item, i) => (
-                                        <button key={i} className="w-full flex items-center gap-3 px-4 py-3 hover:bg-lime-50 rounded-xl transition-all group text-left">
-                                            <Clock size={16} className="text-slate-300 group-hover:text-lime-500" />
-                                            <span className="text-sm font-bold text-slate-600 group-hover:text-slate-900">{item}</span>
-                                        </button>
-                                    ))}
-                                </div>
+                            <div className="px-6 py-4 pb-8 max-h-[400px] overflow-y-auto">
+                                {searchQuery.trim() === '' ? (
+                                    <>
+                                        <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 ml-2">Quick Navigation</h3>
+                                        <div className="grid grid-cols-2 gap-2">
+                                            {navItems.slice(0, 4).map((item, i) => (
+                                                <Link
+                                                    key={i}
+                                                    href={item.href}
+                                                    onClick={() => setIsSearchOpen(false)}
+                                                    className="flex items-center gap-3 px-4 py-3 hover:bg-lime-50 rounded-xl transition-all group"
+                                                >
+                                                    <item.icon size={16} className="text-slate-400 group-hover:text-lime-600" />
+                                                    <span className="text-sm font-bold text-slate-600 group-hover:text-slate-900">{item.label}</span>
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    </>
+                                ) : (
+                                    <div className="space-y-1">
+                                        <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 ml-2">Search Results</h3>
+                                        {searchResults.length > 0 ? (
+                                            searchResults.map((result) => (
+                                                <Link
+                                                    key={result.id}
+                                                    href={result.href}
+                                                    onClick={() => setIsSearchOpen(false)}
+                                                    className="w-full flex items-center justify-between px-4 py-3 hover:bg-lime-50 rounded-xl transition-all group"
+                                                >
+                                                    <div className="flex items-center gap-4">
+                                                        <div className="w-10 h-10 bg-white shadow-sm border border-slate-100 rounded-xl flex items-center justify-center text-slate-400 group-hover:text-lime-600 group-hover:scale-110 transition-all">
+                                                            <result.icon size={18} />
+                                                        </div>
+                                                        <div>
+                                                            <h4 className="text-sm font-bold text-slate-900 leading-tight">{result.title}</h4>
+                                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-0.5">{result.type}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                                                        <Zap size={14} className="text-lime-500" />
+                                                    </div>
+                                                </Link>
+                                            ))
+                                        ) : (
+                                            <div className="py-12 flex flex-col items-center justify-center text-center px-6">
+                                                <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-300 mb-3">
+                                                    <Search size={24} />
+                                                </div>
+                                                <p className="text-sm font-bold text-slate-900 mb-1">No results for "{searchQuery}"</p>
+                                                <p className="text-xs text-slate-400 font-medium">Try searching for "Dashboard", "Lesson", or "Quiz".</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         </motion.div>
                     </div>
@@ -179,9 +293,10 @@ const Header: React.FC = () => {
                         className={`w-9 h-9 flex items-center justify-center bg-white rounded-full shadow-[0_1px_4px_rgba(0,0,0,0.02)] border border-gray-100/50 text-[#6c727f] hover:text-lime-600 hover:shadow-sm transition-all relative ${isNotificationOpen ? 'text-lime-600 bg-lime-50' : ''}`}
                     >
                         <Bell size={16} />
-                        <span className="absolute top-[8px] right-[8px] w-1.5 h-1.5 bg-[#ef4444] rounded-full border border-white"></span>
+                        {notifications.length > 0 && (
+                            <span className="absolute top-[8px] right-[8px] w-2 h-2 bg-rose-500 rounded-full border border-white"></span>
+                        )}
                     </button>
-
                     <AnimatePresence>
                         {isNotificationOpen && (
                             <motion.div
@@ -193,27 +308,44 @@ const Header: React.FC = () => {
                             >
                                 <div className="p-4 flex items-center justify-between border-b border-slate-50">
                                     <h3 className="text-sm font-black text-slate-800 uppercase tracking-tight">Notifications</h3>
-                                    <span className="px-2 py-0.5 bg-lime-100 text-lime-700 rounded-lg text-[10px] font-black tracking-widest uppercase">3 NEW</span>
+                                    {notifications.length > 0 && (
+                                        <span className="px-2 py-0.5 bg-lime-100 text-lime-700 rounded-lg text-[10px] font-black tracking-widest uppercase">{notifications.length} NEW</span>
+                                    )}
                                 </div>
-                                <div className="py-2">
-                                    {notifications.map((notif) => (
-                                        <div key={notif.id} className="px-3 py-3 hover:bg-slate-50/80 transition-all cursor-pointer rounded-2xl flex gap-3 group">
-                                            <div className={`w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center ${notif.bg} ${notif.color} group-hover:scale-110 transition-transform`}>
-                                                <notif.icon size={18} />
-                                            </div>
-                                            <div className="flex-1 min-w-0">
-                                                <div className="flex justify-between items-start mb-0.5">
-                                                    <h4 className="text-xs font-bold text-slate-900 truncate">{notif.title}</h4>
-                                                    <span className="text-[9px] font-bold text-slate-400 shrink-0">{notif.time}</span>
+                                <div className="max-h-[350px] overflow-y-auto py-2">
+                                    {notifications.length > 0 ? (
+                                        notifications.map((notif) => (
+                                            <div key={notif.id} className="px-3 py-3 hover:bg-slate-50/80 transition-all cursor-pointer rounded-2xl flex gap-3 group">
+                                                <div className={`w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center ${notif.bg} ${notif.text} group-hover:scale-110 transition-transform`}>
+                                                    <notif.icon size={18} />
                                                 </div>
-                                                <p className="text-[11px] text-slate-500 leading-tight line-clamp-2">{notif.desc}</p>
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex justify-between items-start mb-0.5">
+                                                        <h4 className="text-xs font-bold text-slate-900 truncate">{notif.title}</h4>
+                                                        <span className="text-[9px] font-bold text-slate-400 shrink-0">{notif.time}</span>
+                                                    </div>
+                                                    <p className="text-[11px] text-slate-500 leading-tight line-clamp-2">{notif.desc}</p>
+                                                </div>
                                             </div>
+                                        ))
+                                    ) : (
+                                        <div className="py-12 flex flex-col items-center justify-center text-center px-6">
+                                            <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-300 mb-3">
+                                                <Bell size={24} />
+                                            </div>
+                                            <p className="text-sm font-bold text-slate-900 mb-1">All caught up!</p>
+                                            <p className="text-xs text-slate-400 font-medium">No new notifications at the moment.</p>
                                         </div>
-                                    ))}
+                                    )}
                                 </div>
-                                <button className="w-full py-3.5 bg-slate-50 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] hover:bg-lime-50 hover:text-lime-600 transition-all rounded-b-[1.8rem]">
-                                    Clear all alerts
-                                </button>
+                                {notifications.length > 0 && (
+                                    <button
+                                        onClick={() => setNotifications([])}
+                                        className="w-full py-3.5 bg-slate-50 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] hover:bg-rose-50 hover:text-rose-600 transition-all rounded-b-[1.8rem]"
+                                    >
+                                        Clear all alerts
+                                    </button>
+                                )}
                             </motion.div>
                         )}
                     </AnimatePresence>
