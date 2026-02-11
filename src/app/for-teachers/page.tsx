@@ -3,20 +3,16 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import {
     ArrowRight,
     Sparkles,
     BookOpen,
     Zap,
     Check,
-    X,
     FileText,
-    Target,
     BarChart,
     Globe,
     Users,
-    Clock,
     ExternalLink,
     Plus
 } from 'lucide-react';
@@ -43,10 +39,10 @@ const ForTeachersPage = () => {
 
             {/* HEADER SYSTEM */}
             <header className="fixed top-0 left-0 right-0 z-[999] w-full">
-                <div className={`bg-slate-950 text-white transition-all duration-300 flex items-center justify-center text-[10px] font-bold uppercase tracking-[0.3em] px-4 ${scrolled ? 'h-0 opacity-0' : 'h-10 opacity-100'}`}>
+                <div className={`bg-slate-950 text-white transition-none flex items-center justify-center text-[10px] font-bold uppercase tracking-[0.3em] px-4 ${scrolled ? 'h-0 opacity-0' : 'h-10 opacity-100'}`}>
                     The Future of Indian <span className="text-lime-400 ml-1">Teaching is Here</span>
                 </div>
-                <nav className={`w-full transition-all duration-300 bg-white border-b border-slate-100 flex items-center px-6 md:px-12 lg:px-20 ${scrolled ? 'h-16 shadow-md' : 'h-20'}`}>
+                <nav className={`w-full transition-none bg-white border-b border-slate-100 flex items-center px-6 md:px-12 lg:px-20 ${scrolled ? 'h-16 shadow-md' : 'h-20'}`}>
                     <div className="w-full flex items-center justify-between mx-auto">
                         <Link href="/" className="flex items-center gap-2 group">
                             <div className="w-7 h-7 bg-slate-950 flex items-center justify-center rounded group-hover:bg-lime-500 transition-colors">
@@ -93,18 +89,17 @@ const ForTeachersPage = () => {
                             <p className="text-slate-500 font-medium">Generate NEP-synced weekly plans, pedagogical activities, and learning outcomes in any board format (CBSE, ICSE, UPB) in 30 seconds.</p>
                             <button className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-950 pt-4 group-hover:gap-4 transition-all">Try Architect <ArrowRight size={14} /></button>
                         </div>
-                        <div className="absolute top-10 right-10 hidden md:block w-32 h-32 bg-lime-200/20 rounded-full blur-3xl group-hover:bg-lime-300/30 transition-colors"></div>
                     </div>
 
                     {/* Medium Card: Question Gen */}
                     <div className="md:col-span-4 lg:col-span-2 bg-slate-950 rounded-3xl p-10 text-white relative flex flex-col justify-between group">
                         <div className="space-y-4">
-                            <Plus className="text-lime-400 animate-spin-slow" size={32} />
+                            <Plus className="text-lime-400" size={32} />
                             <h3 className="text-2xl font-bold uppercase tracking-tight">Rapid Quiz Generator</h3>
                             <p className="text-slate-400 text-sm">Convert any PDF or textbook chapter into a balanced board-style mock paper instantly.</p>
                         </div>
                         <div className="grid grid-cols-3 gap-2 mt-8">
-                            {[1, 2, 3].map(i => <div key={i} className="h-1 bg-white/10 rounded-full overflow-hidden"><motion.div initial={{ width: 0 }} animate={{ width: "100%" }} transition={{ duration: i + 1, repeat: Infinity }} className="h-full bg-lime-500" /></div>)}
+                            {[1, 2, 3].map(i => <div key={i} className="h-1 bg-white/10 rounded-full overflow-hidden"><div className="h-full bg-lime-500 w-full" /></div>)}
                         </div>
                     </div>
 

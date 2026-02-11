@@ -3,7 +3,6 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import {
   ArrowRight,
   Sparkles,
@@ -37,7 +36,7 @@ const LandingPage = () => {
       <header className="fixed top-0 left-0 right-0 z-[999] w-full">
         {/* Top Banner */}
         <div
-          className={`bg-slate-950 text-white transition-all duration-500 ease-in-out overflow-hidden flex items-center justify-center text-[10px] font-bold uppercase tracking-[0.3em] px-4 ${scrolled ? 'h-0 opacity-0' : 'h-10 opacity-100'
+          className={`bg-slate-950 text-white transition-none overflow-hidden flex items-center justify-center text-[10px] font-bold uppercase tracking-[0.3em] px-4 ${scrolled ? 'h-0 opacity-0' : 'h-10 opacity-100'
             }`}
         >
           India's First AI Platform for <span className="text-lime-400 ml-1">Education (NEP 2020)</span>
@@ -45,7 +44,7 @@ const LandingPage = () => {
 
         {/* Navbar */}
         <nav
-          className={`w-full transition-all duration-300 bg-white/95 backdrop-blur-md border-b border-slate-100 flex items-center px-6 md:px-12 lg:px-20 ${scrolled ? 'h-16 shadow-lg' : 'h-20 shadow-sm'
+          className={`w-full transition-none bg-white/95 backdrop-blur-md border-b border-slate-100 flex items-center px-6 md:px-12 lg:px-20 ${scrolled ? 'h-16 shadow-lg' : 'h-20 shadow-sm'
             }`}
         >
           <div className="w-full flex items-center justify-between mx-auto">
@@ -87,42 +86,23 @@ const LandingPage = () => {
 
           {/* Left Column */}
           <div className="space-y-8 text-center lg:text-left">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="inline-flex items-center gap-2 px-3 py-1 bg-lime-50 border border-lime-100 text-lime-700 text-[10px] font-black uppercase tracking-[0.2em] rounded-md mx-auto lg:mx-0"
-            >
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-lime-50 border border-lime-100 text-lime-700 text-[10px] font-black uppercase tracking-[0.2em] rounded-md mx-auto lg:mx-0">
               <Sparkles size={12} className="animate-pulse" />
               Unified Learning Ecosystem
-            </motion.div>
+            </div>
 
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="text-5xl md:text-7xl lg:text-[5.5rem] font-black tracking-pro leading-[1.05] text-slate-950 font-display uppercase"
-            >
+            <h1 className="text-5xl md:text-7xl lg:text-[5.5rem] font-black tracking-pro leading-[1.05] text-slate-950 font-display uppercase">
               Transforming <br />
               How <span className="text-lime-600">Bharat</span> <br />
               Teaches & Learns.
-            </motion.h1>
+            </h1>
 
             <div className="space-y-6">
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="text-lg md:text-xl text-slate-500 font-medium max-w-2xl mx-auto lg:mx-0 leading-relaxed uppercase tracking-tighter"
-              >
+              <p className="text-lg md:text-xl text-slate-500 font-medium max-w-2xl mx-auto lg:mx-0 leading-relaxed uppercase tracking-tighter">
                 The complete AI operating system for <span className="text-slate-950 font-black border-b-2 border-lime-400">10,000+ Smart Classrooms.</span> Align with NEP 2020 and master subjects in 22+ languages.
-              </motion.p>
+              </p>
 
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4"
-              >
+              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
                 <Link href="/for-teachers">
                   <button className="px-8 h-16 bg-slate-950 text-white font-black rounded-2xl text-[12px] uppercase tracking-widest hover:bg-slate-800 transition-all shadow-2xl shadow-black/20 flex items-center gap-2 group">
                     Teacher Suite <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
@@ -133,17 +113,12 @@ const LandingPage = () => {
                     Student Hub <Rocket size={18} className="group-hover:-translate-y-1 transition-transform" />
                   </button>
                 </Link>
-              </motion.div>
+              </div>
             </div>
           </div>
 
           {/* Right Column - Visual */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2, duration: 0.8 }}
-            className="relative"
-          >
+          <div className="relative">
             <div className="relative z-10 bg-slate-900 rounded-[3rem] p-4 shadow-2xl border border-white/10 aspect-[4/3] flex items-center justify-center mx-auto lg:ml-auto max-w-[500px]">
               <div className="absolute inset-0 bg-gradient-to-br from-lime-500/20 to-transparent"></div>
               <div className="relative z-20 space-y-6 w-full px-8">
@@ -167,7 +142,7 @@ const LandingPage = () => {
               <span className="text-[8px] font-black uppercase text-slate-400 leading-tight">Board<br />Ready</span>
               <span className="text-base font-black text-slate-950 tracking-tighter uppercase">NCERT</span>
             </div>
-          </motion.div>
+          </div>
         </div>
       </main>
 
@@ -175,7 +150,7 @@ const LandingPage = () => {
       <section className="py-20 border-y border-slate-50 bg-slate-50/30 overflow-hidden relative z-10 w-full">
         <div className="w-full px-6 md:px-12 lg:px-20 space-y-8">
           <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400 text-center">Empowering Bharat's Classrooms & Students</p>
-          <div className="flex flex-wrap justify-center items-center gap-x-12 lg:gap-x-20 gap-y-8 opacity-30 grayscale hover:grayscale-0 transition-all duration-500">
+          <div className="flex flex-wrap justify-center items-center gap-x-12 lg:gap-x-20 gap-y-8 opacity-30 grayscale hover:grayscale-0 transition-none duration-500">
             {['NCERT', 'CBSE', 'ICSE', 'UP BOARD', 'JEE / NEET', 'SAT'].map((board) => (
               <span key={board} className="text-3xl lg:text-5xl font-black text-slate-400 hover:text-slate-950 transition-colors font-display tracking-tighter uppercase">{board}</span>
             ))}
@@ -195,7 +170,7 @@ const LandingPage = () => {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="p-10 bg-white border border-slate-100 rounded-[3rem] shadow-xl group hover:border-lime-200 transition-all duration-500">
+            <div className="p-10 bg-white border border-slate-100 rounded-[3rem] shadow-xl group hover:border-lime-200 transition-none duration-500">
               <div className="w-14 h-14 bg-slate-950 text-white rounded-2xl flex items-center justify-center mb-8">
                 <Presentation size={28} />
               </div>
@@ -204,7 +179,7 @@ const LandingPage = () => {
                 Generate NEP-synced lesson plans and automated assessments in 30 seconds.
               </p>
             </div>
-            <div className="p-10 bg-lime-500 text-white rounded-[3rem] shadow-2xl group transition-all duration-500">
+            <div className="p-10 bg-lime-500 text-white rounded-[3rem] shadow-2xl group transition-none duration-500">
               <div className="w-14 h-14 bg-white text-lime-500 rounded-2xl flex items-center justify-center mb-8">
                 <BrainCircuit size={28} />
               </div>
@@ -213,7 +188,7 @@ const LandingPage = () => {
                 24/7 AI Tutor. Master any board exam with localized mocks and mother-tongue help.
               </p>
             </div>
-            <div className="p-10 bg-white border border-slate-100 rounded-[3rem] shadow-xl group hover:border-lime-200 transition-all duration-500">
+            <div className="p-10 bg-white border border-slate-100 rounded-[3rem] shadow-xl group hover:border-lime-200 transition-none duration-500">
               <div className="w-14 h-14 bg-slate-100 text-slate-400 rounded-2xl flex items-center justify-center mb-8">
                 <Zap size={28} />
               </div>
