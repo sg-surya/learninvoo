@@ -1,9 +1,8 @@
-
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
     Search,
     Bell,
@@ -14,11 +13,41 @@ import {
     FileText,
     Clock,
     GraduationCap,
-    Wand2
+    Wand2,
+    LogOut,
+    Settings,
+    User,
+    ChevronDown
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Header: React.FC = () => {
     const pathname = usePathname();
+    const router = useRouter();
+    const [user, setUser] = useState<any>(null);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const storedUser = localStorage.getItem('learnivo_current_user');
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+        }
+
+        // Close dropdown when clicking outside
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setIsDropdownOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const handleLogout = () => {
+        localStorage.removeItem('learnivo_current_user');
+        router.push('/login');
+    };
 
     const navItems = [
         { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -82,12 +111,87 @@ const Header: React.FC = () => {
                     <Bell size={16} />
                     <span className="absolute top-[8px] right-[8px] w-1.5 h-1.5 bg-[#ef4444] rounded-full border border-white"></span>
                 </button>
-                <div className="ml-1 w-9 h-9 rounded-full border border-white shadow-[0_1px_6px_rgba(0,0,0,0.06)] overflow-hidden cursor-pointer hover:scale-105 transition-transform">
-                    <img
-                        src="https://picsum.photos/seed/profile-123/100/100"
-                        alt="User"
-                        className="w-full h-full object-cover"
-                    />
+
+                {/* Profile Section with Dropdown */}
+                <div className="relative" ref={dropdownRef}>
+                    <motion.div
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                        className="ml-1 px-2 py-1 flex items-center gap-2 bg-white rounded-full border border-gray-100 shadow-[0_1px_6px_rgba(0,0,0,0.06)] cursor-pointer transition-all"
+                    >
+                        <div className="w-7 h-7 rounded-full overflow-hidden border border-slate-100">
+                            <img
+                                src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.fullName || 'User'}`}
+                                alt="User"
+                                className="w-full h-full object-cover"
+                            />
+                        </div>
+                        <ChevronDown size={14} className={`text-slate-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                    </motion.div>
+
+                    <AnimatePresence>
+                        {isDropdownOpen && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                transition={{ duration: 0.2, ease: "easeOut" }}
+                                className="absolute right-0 mt-3 w-56 bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] border border-slate-100 p-1.5 overflow-hidden"
+                            >
+                                {/* User Info Header */}
+                                <div className="px-3 py-3 mb-1.5 bg-slate-50/50 rounded-xl">
+                                    <div className="flex items-center gap-2.5 mb-1">
+                                        <div className="w-9 h-9 rounded-full border-2 border-white shadow-sm overflow-hidden bg-white shrink-0">
+                                            <img
+                                                src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.fullName || 'User'}`}
+                                                alt="User"
+                                                className="w-full h-full object-cover"
+                                            />
+                                        </div>
+                                        <div className="flex-1 min-w-0 overflow-hidden">
+                                            <h4 className="text-[13px] font-black text-slate-800 truncate">{user?.fullName || 'Educator'}</h4>
+                                            <p className="text-[9px] text-slate-400 font-bold uppercase tracking-wider truncate">{user?.role || 'Teacher'}</p>
+                                        </div>
+                                    </div>
+                                    <div className="mt-1.5 pt-1.5 border-t border-slate-100">
+                                        <p className="text-[9px] font-medium text-slate-400 truncate">{user?.email}</p>
+                                    </div>
+                                </div>
+
+                                {/* Menu Items */}
+                                <div className="space-y-0.5">
+                                    <Link href="/profile" className="w-full flex items-center gap-2.5 px-2.5 py-1.5 text-[13px] font-bold text-slate-600 hover:bg-slate-50 hover:text-lime-600 rounded-lg transition-colors group">
+                                        <div className="w-7 h-7 flex items-center justify-center bg-slate-100 rounded-lg group-hover:bg-lime-50 transition-colors shrink-0">
+                                            <User size={14} />
+                                        </div>
+                                        My Hub Profile
+                                    </Link>
+                                    <button className="w-full flex items-center gap-2.5 px-2.5 py-1.5 text-[13px] font-bold text-slate-600 hover:bg-slate-50 rounded-lg transition-colors group">
+                                        <div className="w-7 h-7 flex items-center justify-center bg-slate-100 rounded-lg transition-colors shrink-0">
+                                            <Settings size={14} />
+                                        </div>
+                                        Platform Prefs
+                                    </button>
+                                    <div className="h-px bg-slate-100 my-1.5 mx-1.5"></div>
+                                    <button
+                                        onClick={handleLogout}
+                                        className="w-full flex items-center gap-2.5 px-2.5 py-1.5 text-[13px] font-bold text-red-500 hover:bg-red-50 rounded-lg transition-colors group"
+                                    >
+                                        <div className="w-7 h-7 flex items-center justify-center bg-red-50 rounded-lg group-hover:bg-red-100 transition-colors shrink-0">
+                                            <LogOut size={14} />
+                                        </div>
+                                        Sign Out Portal
+                                    </button>
+                                </div>
+
+                                {/* Bottom Tag */}
+                                <div className="mt-1.5 px-2 py-1.5 text-center border-t border-slate-50">
+                                    <span className="text-[8px] font-black text-slate-300 uppercase tracking-[0.2em]">Learnivo Secure Session</span>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </div>
             </div>
         </header>

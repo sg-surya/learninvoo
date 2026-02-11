@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, GraduationCap, PieChart, BookOpen, Settings, LogOut, ChevronLeft, ChevronRight, Wand2 } from 'lucide-react';
+import { LayoutDashboard, GraduationCap, PieChart, BookOpen, ChevronLeft, ChevronRight, Wand2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface SidebarProps {
@@ -13,19 +13,6 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
     const pathname = usePathname();
-    const [user, setUser] = React.useState<any>(null);
-
-    React.useEffect(() => {
-        const storedUser = localStorage.getItem('learnivo_current_user');
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
-        }
-    }, []);
-
-    const handleLogout = () => {
-        localStorage.removeItem('learnivo_current_user');
-        window.location.href = '/login';
-    };
 
     const navItems = [
         { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -160,69 +147,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
                     );
                 })}
             </nav>
-
-            {/* Footer / Profile Section */}
-            <div className={`mt-auto flex flex-col items-center transition-all ${isCollapsed ? 'gap-3' : ''}`}>
-                <div className={`text-center ${isCollapsed ? 'mb-2' : 'mb-6'}`}>
-                    <motion.div
-                        className="relative inline-block"
-                        whileHover={{ scale: 1.05 }}
-                    >
-                        <div className={`${isCollapsed ? 'w-10 h-10' : 'w-14 h-14'} transition-all rounded-full border-2 border-white shadow-sm p-0.5 overflow-hidden bg-white`}>
-                            <img
-                                src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.fullName || 'Jane'}`}
-                                alt={user?.fullName || 'User'}
-                                className="w-full h-full object-cover rounded-full"
-                            />
-                        </div>
-                    </motion.div>
-
-                    <AnimatePresence>
-                        {!isCollapsed && (
-                            <motion.div
-                                initial={{ opacity: 0, height: 0 }}
-                                animate={{ opacity: 1, height: 'auto' }}
-                                exit={{ opacity: 0, height: 0 }}
-                                className="mt-3 overflow-hidden"
-                            >
-                                <h4 className="text-sm font-bold text-gray-800 leading-tight">{user?.fullName || 'Jane Cooper'}</h4>
-                                <p className="text-[10px] text-gray-400 font-medium mt-0.5">{user?.email || 'jane.c02@gmail.com'}</p>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-                </div>
-
-                <div className={`flex w-full justify-center transition-all ${isCollapsed ? 'flex-col items-center gap-2' : 'gap-3'}`}>
-                    {/* Settings Button */}
-                    <motion.button
-                        whileHover={{ scale: 1.05, backgroundColor: "rgba(255, 255, 255, 1)" }}
-                        whileTap={{ scale: 0.95 }}
-                        className={`p-2 bg-white/80 border border-white rounded-xl shadow-sm hover:text-lime-600 transition-colors group relative text-gray-400`}
-                    >
-                        <Settings size={18} />
-                        {isCollapsed && (
-                            <div className="absolute left-full ml-4 px-3 py-1.5 bg-gray-900/90 text-white text-[10px] rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 whitespace-nowrap z-50 shadow-xl translate-x-[-10px] group-hover:translate-x-0">
-                                Settings
-                            </div>
-                        )}
-                    </motion.button>
-
-                    {/* Logout Button */}
-                    <motion.button
-                        onClick={handleLogout}
-                        whileHover={{ scale: 1.05, backgroundColor: "rgba(255, 255, 255, 1)" }}
-                        whileTap={{ scale: 0.95 }}
-                        className={`p-2 bg-white/80 border border-white rounded-xl shadow-sm hover:text-red-500 transition-colors group relative text-gray-400`}
-                    >
-                        <LogOut size={18} />
-                        {isCollapsed && (
-                            <div className="absolute left-full ml-4 px-3 py-1.5 bg-gray-900/90 text-white text-[10px] rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 whitespace-nowrap z-50 shadow-xl translate-x-[-10px] group-hover:translate-x-0">
-                                Logout
-                            </div>
-                        )}
-                    </motion.button>
-                </div>
-            </div>
         </motion.div>
     );
 };

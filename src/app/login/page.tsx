@@ -1,19 +1,32 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { BookOpen, Mail, Lock, ArrowRight, LayoutGrid } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { BookOpen, Mail, Lock, ArrowRight, ChevronLeft, KeyRound } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
     const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [rememberMe, setRememberMe] = useState(false);
+    const [view, setView] = useState<'login' | 'forgot'>('login');
+    const [resetEmail, setResetEmail] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [resetStep, setResetStep] = useState(1);
 
-    React.useEffect(() => {
+    useEffect(() => {
+        // Auth check
         if (localStorage.getItem('learnivo_current_user')) {
             router.push('/dashboard');
+        }
+
+        // Remember me check
+        const rememberedEmail = localStorage.getItem('learnivo_remembered_email');
+        if (rememberedEmail) {
+            setEmail(rememberedEmail);
+            setRememberMe(true);
         }
     }, [router]);
 
@@ -24,6 +37,11 @@ export default function LoginPage() {
         const user = users.find((u: any) => u.email === email && u.password === password);
 
         if (user) {
+            if (rememberMe) {
+                localStorage.setItem('learnivo_remembered_email', email);
+            } else {
+                localStorage.removeItem('learnivo_remembered_email');
+            }
             localStorage.setItem('learnivo_current_user', JSON.stringify(user));
             router.push('/dashboard');
         } else {
@@ -31,13 +49,40 @@ export default function LoginPage() {
         }
     };
 
+    const handleForgotPassword = (e: React.FormEvent) => {
+        e.preventDefault();
+        const users = JSON.parse(localStorage.getItem('learnivo_users') || '[]');
+        const userExists = users.find((u: any) => u.email === resetEmail);
+
+        if (userExists) {
+            setResetStep(2);
+        } else {
+            alert('This email is not registered with us.');
+        }
+    };
+
+    const handleResetPassword = (e: React.FormEvent) => {
+        e.preventDefault();
+        const users = JSON.parse(localStorage.getItem('learnivo_users') || '[]');
+        const userIndex = users.findIndex((u: any) => u.email === resetEmail);
+
+        if (userIndex !== -1) {
+            users[userIndex].password = newPassword;
+            localStorage.setItem('learnivo_users', JSON.stringify(users));
+            alert('Password successfully reset! Please login with your new credentials.');
+            setView('login');
+            setResetStep(1);
+            setResetEmail('');
+            setNewPassword('');
+        }
+    };
+
     return (
         <div className="h-screen w-full bg-slate-950 px-[10px] pb-[10px] overflow-hidden">
             <div className="h-full w-full flex overflow-y-auto overflow-x-hidden font-sans selection:bg-lime-600 selection:text-white rounded-b-[10px] rounded-t-none bg-white shadow-2xl">
 
-                {/* 🟢 LEFT SIDE: Login Form */}
+                {/* 🟢 LEFT SIDE: Form Area */}
                 <div className="w-full lg:w-[60%] bg-white flex flex-col relative overflow-hidden">
-                    {/* Consistent Header Area - Fixed Jump */}
                     <header className="h-20 flex items-center px-12 md:px-16 lg:px-24 shrink-0 relative z-20">
                         <Link href="/" className="flex items-center gap-2 group">
                             <div className="w-8 h-8 bg-slate-950 flex items-center justify-center rounded group-hover:bg-lime-500 transition-colors">
@@ -47,103 +92,159 @@ export default function LoginPage() {
                         </Link>
                     </header>
 
-                    {/* Decorative Circles */}
                     <div className="absolute -top-20 -left-20 w-64 h-64 bg-lime-50 rounded-full opacity-50 pointer-events-none"></div>
                     <div className="absolute -bottom-20 -left-10 w-48 h-48 bg-lime-50 rounded-full opacity-50 pointer-events-none"></div>
 
                     <div className="flex-1 flex flex-col justify-center items-center px-12 md:px-16 lg:px-24 py-12 relative z-10">
-                        <div className="max-w-md w-full">
-                            <h1 className="text-6xl font-black text-slate-950 uppercase tracking-tighter leading-[0.9] mb-4">Sign <br /> <span className="text-lime-500">In</span></h1>
-                            <p className="text-slate-400 text-[10px] font-bold uppercase tracking-[0.3em] mb-12">Access your personalized teaching workshop.</p>
+                        <AnimatePresence mode="wait">
+                            {view === 'login' ? (
+                                <motion.div
+                                    key="login"
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: 20 }}
+                                    className="max-w-md w-full"
+                                >
+                                    <h1 className="text-6xl font-black text-slate-950 uppercase tracking-tighter leading-[0.9] mb-4">Sign <br /> <span className="text-lime-500">In</span></h1>
+                                    <p className="text-slate-400 text-[10px] font-bold uppercase tracking-[0.3em] mb-12">Access your personalized teaching workshop.</p>
 
-                            <form className="space-y-6" onSubmit={handleLogin}>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Email Address</label>
-                                    <input
-                                        type="email"
-                                        placeholder="name@school.com"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                        className="w-full px-5 h-12 bg-slate-50 border border-slate-100 rounded focus:outline-none focus:border-lime-500 transition-all font-bold text-sm text-slate-800"
-                                        required
-                                    />
-                                </div>
+                                    <form className="space-y-6" onSubmit={handleLogin}>
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Email Address</label>
+                                            <input
+                                                type="email"
+                                                placeholder="name@school.com"
+                                                value={email}
+                                                onChange={(e) => setEmail(e.target.value)}
+                                                className="w-full px-5 h-12 bg-slate-50 border border-slate-100 rounded focus:outline-none focus:border-lime-500 transition-all font-bold text-sm text-slate-800"
+                                                required
+                                            />
+                                        </div>
 
-                                <div className="space-y-2">
-                                    <div className="flex justify-between items-center ml-1">
-                                        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Password</label>
-                                    </div>
-                                    <input
-                                        type="password"
-                                        placeholder="••••••••"
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        className="w-full px-5 h-12 bg-slate-50 border border-slate-100 rounded focus:outline-none focus:border-lime-500 transition-all font-bold text-sm text-slate-800"
-                                        required
-                                    />
-                                </div>
+                                        <div className="space-y-2">
+                                            <div className="flex justify-between items-center ml-1">
+                                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Password</label>
+                                            </div>
+                                            <input
+                                                type="password"
+                                                placeholder="••••••••"
+                                                value={password}
+                                                onChange={(e) => setPassword(e.target.value)}
+                                                className="w-full px-5 h-12 bg-slate-50 border border-slate-100 rounded focus:outline-none focus:border-lime-500 transition-all font-bold text-sm text-slate-800"
+                                                required
+                                            />
+                                        </div>
 
-                                <div className="flex items-center justify-between px-1">
-                                    <div className="flex items-center gap-2">
-                                        <input type="checkbox" id="remember" className="w-4 h-4 rounded border-slate-200 text-lime-600 focus:ring-lime-500" />
-                                        <label htmlFor="remember" className="text-[10px] font-black uppercase tracking-widest text-slate-400 cursor-pointer">Remember me</label>
-                                    </div>
-                                    <Link href="#" className="text-[10px] font-black uppercase tracking-widest text-lime-600 hover:underline">Forgot?</Link>
-                                </div>
+                                        <div className="flex items-center justify-between px-1">
+                                            <div className="flex items-center gap-2">
+                                                <input
+                                                    type="checkbox"
+                                                    id="remember"
+                                                    checked={rememberMe}
+                                                    onChange={(e) => setRememberMe(e.target.checked)}
+                                                    className="w-4 h-4 rounded border-slate-200 text-lime-600 focus:ring-lime-500 cursor-pointer"
+                                                />
+                                                <label htmlFor="remember" className="text-[10px] font-black uppercase tracking-widest text-slate-400 cursor-pointer select-none">Remember me</label>
+                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={() => setView('forgot')}
+                                                className="text-[10px] font-black uppercase tracking-widest text-lime-600 hover:underline"
+                                            >
+                                                Forgot?
+                                            </button>
+                                        </div>
 
-                                <div className="pt-6 flex flex-col sm:flex-row items-center gap-6">
-                                    <motion.button
-                                        whileTap={{ scale: 0.95 }}
-                                        type="submit"
-                                        className="h-12 px-10 bg-lime-600 text-white font-black uppercase text-[10px] tracking-widest rounded shadow-xl shadow-lime-600/20 hover:bg-lime-700 transition-all"
+                                        <div className="pt-6 flex flex-col sm:flex-row items-center gap-6">
+                                            <motion.button
+                                                whileTap={{ scale: 0.95 }}
+                                                type="submit"
+                                                className="h-12 px-10 bg-lime-600 text-white font-black uppercase text-[10px] tracking-widest rounded shadow-xl shadow-lime-600/20 hover:bg-lime-700 transition-all"
+                                            >
+                                                Sign In Now
+                                            </motion.button>
+                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                                New user? <Link href="/register" className="text-lime-600 hover:underline">Register hub</Link>
+                                            </p>
+                                        </div>
+                                    </form>
+                                </motion.div>
+                            ) : (
+                                <motion.div
+                                    key="forgot"
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -20 }}
+                                    className="max-w-md w-full"
+                                >
+                                    <button
+                                        onClick={() => { setView('login'); setResetStep(1); }}
+                                        className="flex items-center gap-2 text-slate-400 hover:text-slate-900 transition-colors mb-8 group"
                                     >
-                                        Sign In Now
-                                    </motion.button>
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                                        New user? <Link href="/register" className="text-lime-600 hover:underline">Register hub</Link>
-                                    </p>
-                                </div>
-                            </form>
-                        </div>
+                                        <ChevronLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
+                                        <span className="text-[10px] font-black uppercase tracking-widest">Back to Login</span>
+                                    </button>
+
+                                    <h1 className="text-6xl font-black text-slate-950 uppercase tracking-tighter leading-[0.9] mb-4">Reset <br /> <span className="text-sky-500">Access</span></h1>
+                                    <p className="text-slate-400 text-[10px] font-bold uppercase tracking-[0.3em] mb-12">Recover your credentials securely.</p>
+
+                                    {resetStep === 1 ? (
+                                        <form className="space-y-6" onSubmit={handleForgotPassword}>
+                                            <div className="space-y-2">
+                                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Registered Email</label>
+                                                <input
+                                                    type="email"
+                                                    placeholder="name@school.com"
+                                                    value={resetEmail}
+                                                    onChange={(e) => setResetEmail(e.target.value)}
+                                                    className="w-full px-5 h-12 bg-slate-50 border border-slate-100 rounded focus:outline-none focus:border-sky-500 transition-all font-bold text-sm text-slate-800"
+                                                    required
+                                                />
+                                            </div>
+                                            <motion.button
+                                                whileTap={{ scale: 0.95 }}
+                                                type="submit"
+                                                className="w-full h-12 bg-slate-950 text-white font-black uppercase text-[10px] tracking-widest rounded shadow-xl hover:bg-slate-800 transition-all flex items-center justify-center gap-2"
+                                            >
+                                                Verify Email <ArrowRight size={14} />
+                                            </motion.button>
+                                        </form>
+                                    ) : (
+                                        <form className="space-y-6" onSubmit={handleResetPassword}>
+                                            <div className="space-y-2">
+                                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">New Password</label>
+                                                <input
+                                                    type="password"
+                                                    placeholder="••••••••"
+                                                    value={newPassword}
+                                                    onChange={(e) => setNewPassword(e.target.value)}
+                                                    className="w-full px-5 h-12 bg-slate-50 border border-slate-100 rounded focus:outline-none focus:border-sky-500 transition-all font-bold text-sm text-slate-800"
+                                                    required
+                                                />
+                                            </div>
+                                            <motion.button
+                                                whileTap={{ scale: 0.95 }}
+                                                type="submit"
+                                                className="w-full h-12 bg-sky-600 text-white font-black uppercase text-[10px] tracking-widest rounded shadow-xl shadow-sky-600/20 hover:bg-sky-700 transition-all flex items-center justify-center gap-2"
+                                            >
+                                                Update Credentials <KeyRound size={14} />
+                                            </motion.button>
+                                        </form>
+                                    )}
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
 
                         <div className="mt-auto pt-20 text-[10px] font-black text-slate-300 uppercase tracking-[0.4em]">
-                            © 2026 LEARNIVO AI PLATFORM
+                            © 2026 LEARNIVO SECURE ACCESS
                         </div>
                     </div>
                 </div>
 
-                {/* 🟢 RIGHT SIDE: Creative Visual Sidebar */}
+                {/* 🟢 RIGHT SIDE: Visual Sidebar */}
                 <div className="hidden lg:flex lg:w-[40%] bg-slate-950 relative flex-col items-center justify-center p-12 overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-br from-lime-500 via-lime-600 to-emerald-700"></div>
                     <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent animate-pulse"></div>
-
-                    <div className="absolute z-10 w-full h-full pointer-events-none">
-                        <motion.div
-                            initial={{ x: -20, y: -20, opacity: 0 }}
-                            animate={{ x: 0, y: 0, opacity: 1 }}
-                            transition={{ duration: 1, delay: 0.2 }}
-                            className="absolute top-[15%] left-[10%] bg-white/10 backdrop-blur-md border border-white/20 p-3 rounded-xl shadow-2xl"
-                        >
-                            <div className="flex items-center gap-2">
-                                <div className="w-2 h-2 rounded-full bg-lime-400 animate-ping" />
-                                <span className="text-[10px] font-bold text-white uppercase tracking-tighter">Vasu AI: Planning Lesson...</span>
-                            </div>
-                        </motion.div>
-
-                        <motion.div
-                            initial={{ x: 20, y: 20, opacity: 0 }}
-                            animate={{ x: 0, y: 0, opacity: 1 }}
-                            transition={{ duration: 1, delay: 0.5 }}
-                            className="absolute bottom-[20%] right-[10%] bg-slate-900/40 backdrop-blur-md border border-white/10 p-4 rounded-2xl shadow-2xl"
-                        >
-                            <div className="space-y-2">
-                                <div className="flex gap-1">
-                                    {[1, 2, 3].map(i => <div key={i} className="w-8 h-1 bg-lime-500/50 rounded-full" />)}
-                                </div>
-                                <span className="text-[9px] font-black text-lime-400 uppercase tracking-widest">22+ Regional Languages</span>
-                            </div>
-                        </motion.div>
-                    </div>
 
                     <div className="relative z-20 text-center space-y-8 flex flex-col items-center">
                         <motion.div whileHover={{ scale: 1.05 }} className="flex flex-col items-center gap-4">
@@ -161,14 +262,7 @@ export default function LoginPage() {
                                 Orchestrate your classroom with Bharat's most advanced AI-Native interface.
                             </p>
                         </div>
-
-                        <div className="pt-8">
-                            <div className="px-6 py-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-[10px] font-black text-white uppercase tracking-widest">
-                                Trusted by 500+ Institutes
-                            </div>
-                        </div>
                     </div>
-                    <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black/20 to-transparent"></div>
                 </div>
             </div>
         </div>

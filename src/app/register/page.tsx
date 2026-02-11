@@ -14,7 +14,8 @@ import {
     ChevronLeft,
     LayoutGrid,
     Activity,
-    Sparkles
+    Sparkles,
+    AtSign
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -27,6 +28,7 @@ export default function RegisterPage() {
     const [formData, setFormData] = useState({
         fullName: '',
         email: '',
+        username: '',
         password: ''
     });
 
@@ -36,25 +38,41 @@ export default function RegisterPage() {
         }
     }, [router]);
 
+    const validateUsername = (username: string) => {
+        const regex = /^[a-zA-Z0-9.]+$/;
+        return regex.test(username);
+    };
+
     const handleRegister = (e: React.FormEvent) => {
         e.preventDefault();
 
         // Basic validation
-        if (!formData.fullName || !formData.email || !formData.password || !role) {
+        if (!formData.fullName || !formData.email || !formData.password || !formData.username || !role) {
             alert('Please fill all fields');
+            return;
+        }
+
+        if (!validateUsername(formData.username)) {
+            alert('Username can only contain letters, numbers, and dots (.)');
             return;
         }
 
         // Save to LocalStorage
         const users = JSON.parse(localStorage.getItem('learnivo_users') || '[]');
-        const newUser = { ...formData, role, id: Date.now() };
 
-        // Check if user already exists
+        // Check if email already exists
         if (users.find((u: any) => u.email === formData.email)) {
-            alert('User already exists');
+            alert('Email already registered');
             return;
         }
 
+        // Check if username already exists
+        if (users.find((u: any) => u.username === formData.username)) {
+            alert('Username already taken. Please try another one.');
+            return;
+        }
+
+        const newUser = { ...formData, role, id: Date.now(), createdAt: new Date().toISOString() };
         users.push(newUser);
         localStorage.setItem('learnivo_users', JSON.stringify(users));
         localStorage.setItem('learnivo_current_user', JSON.stringify(newUser));
@@ -75,7 +93,6 @@ export default function RegisterPage() {
 
                 {/* 🟢 LEFT SIDE: Registration Form Side */}
                 <div className="w-full lg:w-[60%] bg-white flex flex-col relative overflow-hidden text-slate-950">
-                    {/* Consistent Header Area - Fixed Jump */}
                     <header className="h-20 flex items-center px-12 md:px-16 lg:px-24 shrink-0 relative z-20">
                         <Link href="/" className="flex items-center gap-2 group">
                             <div className="w-8 h-8 bg-slate-950 flex items-center justify-center rounded group-hover:bg-lime-500 transition-colors">
@@ -85,7 +102,6 @@ export default function RegisterPage() {
                         </Link>
                     </header>
 
-                    {/* Decorative Circles */}
                     <div className="absolute -top-20 -right-20 w-64 h-64 bg-lime-50 rounded-full opacity-50 pointer-events-none"></div>
                     <div className="absolute -bottom-20 -left-10 w-48 h-48 bg-lime-50 rounded-full opacity-50 pointer-events-none"></div>
 
@@ -107,7 +123,6 @@ export default function RegisterPage() {
                                         </div>
 
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                            {/* Role Options */}
                                             <button
                                                 onClick={() => setRole('teacher')}
                                                 className={`p-6 rounded border-2 text-left transition-all flex flex-col gap-4 ${role === 'teacher' ? 'border-lime-500 bg-lime-50/30' : 'border-slate-50 bg-slate-50 hover:border-slate-100'}`}
@@ -192,7 +207,22 @@ export default function RegisterPage() {
                                                     required
                                                 />
                                             </div>
-                                            <div className="space-y-2 sm:col-span-2">
+                                            <div className="space-y-2">
+                                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Unique Username</label>
+                                                <div className="relative">
+                                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"><AtSign size={14} /></span>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="rahul.ai"
+                                                        value={formData.username}
+                                                        onChange={(e) => setFormData({ ...formData, username: e.target.value.toLowerCase() })}
+                                                        className="w-full pl-10 pr-5 h-12 bg-slate-50 border border-slate-100 rounded focus:outline-none focus:border-lime-500 transition-all font-bold text-sm"
+                                                        required
+                                                    />
+                                                </div>
+                                                <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest ml-1">Letters, numbers, and dots only</p>
+                                            </div>
+                                            <div className="space-y-2">
                                                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Set Access Key</label>
                                                 <input
                                                     type="password"
@@ -222,46 +252,8 @@ export default function RegisterPage() {
 
                 {/* 🟢 RIGHT SIDE: Branding Sidebar */}
                 <div className="hidden lg:flex lg:w-[40%] bg-slate-950 relative flex-col items-center justify-center p-12 overflow-hidden">
-                    {/* Background Visuals */}
                     <div className="absolute inset-0 bg-gradient-to-br from-lime-500 via-lime-600 to-emerald-700"></div>
                     <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent animate-pulse"></div>
-
-                    {/* Floating Tooltips / Tags - Creative Idea */}
-                    <div className="absolute z-10 w-full h-full pointer-events-none">
-                        <motion.div
-                            initial={{ x: -20, y: -20, opacity: 0 }}
-                            animate={{ x: 0, y: 0, opacity: 1 }}
-                            transition={{ duration: 1, delay: 0.2 }}
-                            className="absolute top-[10%] right-[10%] bg-white/10 backdrop-blur-md border border-white/20 p-3 rounded-xl shadow-2xl"
-                        >
-                            <div className="flex items-center gap-2">
-                                <Sparkles className="text-white" size={12} />
-                                <span className="text-[10px] font-bold text-white uppercase tracking-tighter">AI Ready: Setup Hub</span>
-                            </div>
-                        </motion.div>
-
-                        <motion.div
-                            initial={{ x: 20, y: 20, opacity: 0 }}
-                            animate={{ x: 0, y: 0, opacity: 1 }}
-                            transition={{ duration: 1, delay: 0.5 }}
-                            className="absolute bottom-[25%] left-[10%] bg-slate-900/40 backdrop-blur-md border border-white/10 p-4 rounded-2xl shadow-2xl"
-                        >
-                            <div className="space-y-2">
-                                <div className="flex items-center gap-2">
-                                    <Activity className="text-lime-400" size={14} />
-                                    <span className="text-[9px] font-black text-lime-400 uppercase tracking-widest">Global Analytics Live</span>
-                                </div>
-                                <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
-                                    <motion.div
-                                        initial={{ width: 0 }}
-                                        animate={{ width: '70%' }}
-                                        transition={{ duration: 2, delay: 1 }}
-                                        className="h-full bg-lime-500"
-                                    />
-                                </div>
-                            </div>
-                        </motion.div>
-                    </div>
 
                     <div className="relative z-20 text-center space-y-8 flex flex-col items-center">
                         <motion.div whileHover={{ scale: 1.05 }} className="flex flex-col items-center gap-4">
@@ -279,14 +271,7 @@ export default function RegisterPage() {
                                 Join Bharat's elite educational network and leverage the power of Vasu AI.
                             </p>
                         </div>
-
-                        <div className="pt-8">
-                            <div className="px-6 py-2 bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-full text-[10px] font-black text-lime-400 uppercase tracking-widest">
-                                100% Secure & Private
-                            </div>
-                        </div>
                     </div>
-                    <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black/20 to-transparent"></div>
                 </div>
             </div>
         </div>
