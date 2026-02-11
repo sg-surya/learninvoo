@@ -114,7 +114,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
 
                                 <motion.div
                                     whileHover={{ scale: 1.1, rotate: active ? 0 : [0, -5, 5, 0] }}
-                                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                                    transition={{
+                                        scale: { type: "spring", stiffness: 400, damping: 10 },
+                                        rotate: { duration: 0.4, ease: "easeInOut" }
+                                    }}
                                 >
                                     <item.icon
                                         size={20}

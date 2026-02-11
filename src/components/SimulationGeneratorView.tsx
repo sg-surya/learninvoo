@@ -359,7 +359,7 @@ const SimulationGeneratorView: React.FC = () => {
                             <div className="text-center">
                                 <motion.div
                                     animate={isRunning ? { scale: [1, 1 + (paramValues['v'] / 40), 1], rotate: [0, 5, -5, 0] } : {}}
-                                    transition={{ duration: 1, repeat: Infinity }}
+                                    transition={{ duration: 1, repeat: Infinity, ease: "linear", type: "tween" }}
                                     className="w-48 h-48 bg-gradient-to-tr from-sky-400 to-indigo-500 rounded-[3rem] shadow-2xl flex items-center justify-center text-white mb-8"
                                 >
                                     <Zap size={64} style={{ opacity: paramValues['v'] / 24 }} />
