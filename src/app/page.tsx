@@ -10,8 +10,6 @@ import {
   BookOpen,
   Zap,
   Check,
-  Plus,
-  Minus,
   GraduationCap,
   Presentation,
   ExternalLink,
@@ -31,11 +29,11 @@ const LandingPage = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-lime-500 selection:text-white w-full">
+    <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-lime-500 selection:text-white w-full overflow-x-hidden">
       {/* Background Pattern */}
       <div className="fixed inset-0 pointer-events-none bg-dot-pro z-0 opacity-30"></div>
 
-      {/* FIXED HEADER SYSTEM */}
+      {/* SHARED HEADER SYSTEM */}
       <header className="fixed top-0 left-0 right-0 z-[999] w-full">
         {/* Top Banner */}
         <div
@@ -51,7 +49,6 @@ const LandingPage = () => {
             }`}
         >
           <div className="w-full flex items-center justify-between mx-auto">
-            {/* Logo */}
             <Link href="/" className="flex items-center gap-2 group">
               <div className="w-8 h-8 bg-slate-950 flex items-center justify-center rounded-lg rotate-[-6deg] shadow-lg group-hover:rotate-0 transition-transform">
                 <BookOpen className="text-lime-400" size={18} />
@@ -61,7 +58,6 @@ const LandingPage = () => {
               </span>
             </Link>
 
-            {/* Nav Links */}
             <div className="hidden lg:flex items-center gap-10">
               <Link href="/for-teachers" className="text-[10px] font-bold text-slate-500 hover:text-slate-950 uppercase tracking-widest flex items-center gap-1.5 transition-colors">
                 For Teachers <ExternalLink size={10} />
@@ -71,13 +67,12 @@ const LandingPage = () => {
               </Link>
             </div>
 
-            {/* Auth Buttons */}
             <div className="flex items-center gap-4">
               <Link href="/login" className="text-[10px] font-bold text-slate-500 hover:text-slate-950 uppercase tracking-widest px-2">
                 Sign In
               </Link>
               <Link href="/register">
-                <button className="px-5 py-2.5 bg-slate-950 text-white text-[10px] font-bold rounded-lg hover:bg-slate-800 transition-all uppercase tracking-widest shadow-xl shadow-black/10">
+                <button className="px-5 py-2.5 bg-slate-950 text-white text-[10px] font-bold rounded-lg hover:bg-slate-800 transition-all uppercase tracking-widest shadow-xl">
                   Get Started
                 </button>
               </Link>
@@ -87,7 +82,7 @@ const LandingPage = () => {
       </header>
 
       {/* Hero Section */}
-      <main className="relative pt-40 md:pt-48 pb-20 px-6 md:px-12 lg:px-20 w-full">
+      <main className="relative pt-44 md:pt-52 pb-20 px-6 md:px-12 lg:px-20 w-full">
         <div className="w-full grid lg:grid-cols-2 gap-12 lg:gap-20 items-center mx-auto">
 
           {/* Left Column */}
@@ -105,11 +100,11 @@ const LandingPage = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-5xl md:text-7xl lg:text-[5.2rem] font-black tracking-pro leading-[1.05] text-slate-950 font-display uppercase"
+              className="text-5xl md:text-7xl lg:text-[5.5rem] font-black tracking-pro leading-[1.05] text-slate-950 font-display uppercase"
             >
-              Empowering <br />
-              Bharat's Smartest <br />
-              <span className="text-lime-600">Classrooms.</span>
+              Transforming <br />
+              How <span className="text-lime-600">Bharat</span> <br />
+              Teaches & Learns.
             </motion.h1>
 
             <div className="space-y-6">
@@ -117,23 +112,28 @@ const LandingPage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="text-lg md:text-xl text-slate-500 font-medium max-w-2xl mx-auto lg:mx-0 leading-relaxed"
+                className="text-lg md:text-xl text-slate-500 font-medium max-w-2xl mx-auto lg:mx-0 leading-relaxed uppercase tracking-tighter"
               >
-                The complete AI operating system for <span className="text-slate-950 font-black border-b-2 border-lime-400">10,000+ Educators & Students.</span> Synchronize teaching and learning in 22+ languages.
+                The complete AI operating system for <span className="text-slate-950 font-black border-b-2 border-lime-400">10,000+ Smart Classrooms.</span> Align with NEP 2020 and master subjects in 22+ languages.
               </motion.p>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4"
+              >
                 <Link href="/for-teachers">
-                  <button className="px-8 h-16 bg-slate-950 text-white font-black rounded-2xl text-[12px] uppercase tracking-widest hover:bg-slate-800 transition-all shadow-2xl flex items-center gap-2 group">
+                  <button className="px-8 h-16 bg-slate-950 text-white font-black rounded-2xl text-[12px] uppercase tracking-widest hover:bg-slate-800 transition-all shadow-2xl shadow-black/20 flex items-center gap-2 group">
                     Teacher Suite <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                   </button>
                 </Link>
                 <Link href="/for-students">
-                  <button className="px-8 h-16 bg-white text-slate-950 border-2 border-slate-100 font-black rounded-2xl text-[12px] uppercase tracking-widest hover:bg-slate-50 transition-all shadow-xl flex items-center gap-2 group">
+                  <button className="px-8 h-16 bg-white text-slate-950 border-2 border-slate-100 font-black rounded-2xl text-[12px] uppercase tracking-widest hover:bg-slate-50 transition-all shadow-xl shadow-black/5 flex items-center gap-2 group">
                     Student Hub <Rocket size={18} className="group-hover:-translate-y-1 transition-transform" />
                   </button>
                 </Link>
-              </div>
+              </motion.div>
             </div>
           </div>
 
@@ -156,6 +156,9 @@ const LandingPage = () => {
                     <GraduationCap className="text-white" size={32} />
                     <span className="text-[8px] font-bold text-white uppercase opacity-50">Scholar</span>
                   </div>
+                </div>
+                <div className="h-12 w-full bg-white/5 border border-white/10 rounded-2xl flex items-center px-6">
+                  <div className="h-1.5 w-full bg-gradient-to-r from-lime-500 to-transparent rounded-full opacity-50"></div>
                 </div>
               </div>
             </div>

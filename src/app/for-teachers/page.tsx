@@ -1,149 +1,254 @@
 
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
-    BookOpen,
-    Presentation,
     ArrowRight,
-    Languages,
-    FileText,
-    Zap,
-    Target,
     Sparkles,
-    Image as ImageIcon,
+    BookOpen,
+    Zap,
+    Check,
+    GraduationCap,
+    Presentation,
+    ExternalLink,
+    FileText,
+    ImageIcon,
     MapPin,
     MessageSquare,
-    ClipboardCheck,
-    Cpu,
+    Target,
     ScanLine,
-    ExternalLink
+    Cpu,
+    ClipboardCheck,
+    Rocket
 } from 'lucide-react';
 
 const teacherTools = [
-    { icon: <FileText className="text-lime-600" />, title: "Lesson Planner", desc: "Generate comprehensive weekly lesson plans tailored to your board." },
-    { icon: <ImageIcon className="text-blue-600" />, title: "Visual Generator", desc: "Create simple drawings, diagrams or charts for your lessons instantly." },
-    { icon: <MapPin className="text-orange-600" />, title: "Hyper Local Content", desc: "Create content tailored to your students' specific region." },
-    { icon: <MessageSquare className="text-purple-600" />, title: "Story Generator", desc: "Generate creative stories for any topic or moral lesson in seconds." },
-    { icon: <Target className="text-pink-600" />, title: "Quiz/Exam Generator", desc: "Create engaging quizzes and detailed exams tailored to your curriculum." },
-    { icon: <ScanLine className="text-cyan-600" />, title: "Paper Digitizer", desc: "Digitize handwritten notes and student papers instantly." },
-    { icon: <Cpu className="text-indigo-600" />, title: "Simulation Generator", desc: "Create interactive simulations for complex scientific concepts." },
-    { icon: <ClipboardCheck className="text-emerald-600" />, title: "Rubric Generator", desc: "Design detailed grading rubrics for assignments and projects." }
+    { icon: <FileText className="text-lime-500" />, title: "Lesson Planner", desc: "Generate comprehensive weekly lesson plans tailored to your board in seconds." },
+    { icon: <ImageIcon className="text-blue-500" />, title: "Visual Generator", desc: "Create simple drawings, diagrams or charts for your lessons instantly." },
+    { icon: <MapPin className="text-orange-500" />, title: "Hyper Local Content", desc: "Create content tailored to your students' specific region and culture." },
+    { icon: <MessageSquare className="text-purple-500" />, title: "Story Generator", desc: "Generate creative stories for any topic or moral lesson instantly." },
+    { icon: <Target className="text-pink-500" />, title: "Exam Generator", desc: "Create engaging quizzes and detailed exams tailored to your curriculum." },
+    { icon: <ScanLine className="text-cyan-500" />, title: "Paper Digitizer", desc: "Digitize handwritten notes and student papers with high accuracy AI." },
+    { icon: <Cpu className="text-indigo-500" />, title: "Simulation AI", desc: "Create interactive simulations for complex scientific concepts." },
+    { icon: <ClipboardCheck className="text-emerald-500" />, title: "Rubric Designer", desc: "Design detailed grading rubrics for assignments and projects." }
 ];
 
-export default function ForTeachersPage() {
+const ForTeachersPage = () => {
+    const [scrolled, setScrolled] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 20);
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
     return (
-        <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-lime-500 selection:text-white overflow-x-hidden">
-            <div className="fixed inset-0 pointer-events-none bg-dot-pro z-0 opacity-20"></div>
+        <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-lime-500 selection:text-white w-full overflow-x-hidden">
+            {/* Background Pattern */}
+            <div className="fixed inset-0 pointer-events-none bg-dot-pro z-0 opacity-30"></div>
 
-            {/* Top Banner Matching Main Page */}
-            <div className="bg-slate-950 text-white py-2.5 text-center text-[10px] font-bold uppercase tracking-[0.3em] relative z-[60] px-4">
-                Localized AI Power for <span className="text-lime-400">Bharat's Educators.</span>
-            </div>
-
-            {/* Header */}
-            <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100 h-16">
-                <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
-                    <Link href="/" className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-slate-950 flex items-center justify-center rounded-md rotate-[-6deg]">
-                            <BookOpen className="text-lime-400" size={18} />
-                        </div>
-                        <span className="text-xl font-bold tracking-tighter font-display uppercase">LEARNIVO</span>
-                    </Link>
-                    <div className="flex items-center gap-6">
-                        <Link href="/" className="text-[10px] font-bold text-slate-500 uppercase tracking-widest hover:text-slate-950">Home</Link>
-                        <Link href="/register">
-                            <button className="px-4 py-2 bg-slate-950 text-white text-[10px] font-bold rounded-lg uppercase tracking-widest">Get Started</button>
-                        </Link>
-                    </div>
+            {/* SHARED HEADER SYSTEM */}
+            <header className="fixed top-0 left-0 right-0 z-[999] w-full">
+                {/* Top Banner */}
+                <div
+                    className={`bg-slate-950 text-white transition-all duration-500 ease-in-out overflow-hidden flex items-center justify-center text-[10px] font-bold uppercase tracking-[0.3em] px-4 ${scrolled ? 'h-0 opacity-0' : 'h-10 opacity-100'
+                        }`}
+                >
+                    India's First AI Platform for <span className="text-lime-400 ml-1">Education (NEP 2020)</span>
                 </div>
-            </nav>
 
-            {/* Hero Section - Balanced Sizing */}
-            <section className="relative px-6 pt-40 pb-20">
-                <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
-                    <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-lime-50 border border-lime-100 text-lime-700 text-[10px] font-bold uppercase tracking-widest rounded-md">
-                            <Sparkles size={12} /> Indian Educator's Super-Toolkit
+                {/* Navbar */}
+                <nav
+                    className={`w-full transition-all duration-300 bg-white/95 backdrop-blur-md border-b border-slate-100 flex items-center px-6 md:px-12 lg:px-20 ${scrolled ? 'h-16 shadow-lg' : 'h-20 shadow-sm'
+                        }`}
+                >
+                    <div className="w-full flex items-center justify-between mx-auto">
+                        <Link href="/" className="flex items-center gap-2 group">
+                            <div className="w-8 h-8 bg-slate-950 flex items-center justify-center rounded-lg rotate-[-6deg] shadow-lg group-hover:rotate-0 transition-transform">
+                                <BookOpen className="text-lime-400" size={18} />
+                            </div>
+                            <span className="text-xl font-black tracking-tighter text-slate-950 font-display uppercase">
+                                LEARNIVO<span className="text-lime-500">.</span>
+                            </span>
+                        </Link>
+
+                        <div className="hidden lg:flex items-center gap-10">
+                            <Link href="/for-teachers" className="text-[10px] font-extrabold text-slate-950 uppercase tracking-widest flex items-center gap-1.5 transition-colors border-b-2 border-lime-500 pb-1">
+                                For Teachers <ExternalLink size={10} />
+                            </Link>
+                            <Link href="/for-students" className="text-[10px] font-bold text-slate-500 hover:text-slate-950 uppercase tracking-widest flex items-center gap-1.5 transition-colors">
+                                For Students <ExternalLink size={10} />
+                            </Link>
                         </div>
-                        <h1 className="text-5xl md:text-7xl font-black tracking-pro leading-tight font-display uppercase">
-                            Powering <br />
-                            <span className="text-lime-600">Bharat's Gurus.</span>
-                        </h1>
-                        <p className="text-lg text-slate-500 font-medium leading-relaxed max-w-xl">
-                            We've built the most comprehensive AI suite designed specifically for the unique workflows of Indian teachers. Reclaim 15+ hours every week.
-                        </p>
-                        <div className="flex flex-col sm:flex-row gap-4 pt-4">
+
+                        <div className="flex items-center gap-4">
+                            <Link href="/login" className="text-[10px] font-bold text-slate-500 hover:text-slate-950 uppercase tracking-widest px-2">
+                                Sign In
+                            </Link>
                             <Link href="/register">
-                                <button className="px-8 h-14 bg-slate-950 text-white font-bold rounded-xl hover:bg-slate-800 transition-pro shadow-lg shadow-slate-950/20 flex items-center gap-2">
-                                    Launch Teacher Portal <ArrowRight size={18} />
+                                <button className="px-5 py-2.5 bg-slate-950 text-white text-[10px] font-bold rounded-lg hover:bg-slate-800 transition-all uppercase tracking-widest shadow-xl">
+                                    Get Started
                                 </button>
                             </Link>
                         </div>
-                    </motion.div>
-                    <div className="relative bg-slate-50 border border-slate-200 rounded-[2rem] p-10 flex items-center justify-center aspect-video overflow-hidden">
-                        <Zap className="text-lime-500/20" size={200} />
-                        <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="w-3/4 h-3/4 bg-white border border-slate-200 rounded-2xl shadow-2xl p-6 space-y-4 translate-y-4">
-                                <div className="h-2 w-20 bg-slate-100 rounded-full"></div>
-                                <div className="h-8 w-full bg-slate-50 rounded-lg"></div>
-                                <div className="space-y-2">
-                                    <div className="h-2 w-full bg-slate-100/50 rounded-full"></div>
-                                    <div className="h-2 w-full bg-slate-100/50 rounded-full"></div>
-                                    <div className="h-2 w-[80%] bg-slate-100/50 rounded-full"></div>
+                    </div>
+                </nav>
+            </header>
+
+            {/* Hero Section - Panoramic Style */}
+            <main className="relative pt-44 md:pt-56 pb-20 px-6 md:px-12 lg:px-20 w-full">
+                <div className="w-full grid lg:grid-cols-2 gap-16 lg:gap-32 items-center mx-auto">
+
+                    <div className="space-y-10 text-center lg:text-left">
+                        <motion.div
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            className="inline-flex items-center gap-2 px-4 py-1.5 bg-lime-50 border border-lime-100 text-lime-700 text-[11px] font-black uppercase tracking-[0.2em] rounded-full mx-auto lg:mx-0"
+                        >
+                            <Presentation size={14} /> Instructor's Ultimate Command Center
+                        </motion.div>
+
+                        <motion.h1
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="text-5xl md:text-7xl lg:text-[6rem] font-black tracking-pro leading-[0.95] text-slate-950 font-display uppercase"
+                        >
+                            Powering <br />
+                            The Modern <br />
+                            <span className="text-lime-600">Indian Guru.</span>
+                        </motion.h1>
+
+                        <p className="text-xl text-slate-500 font-medium max-w-2xl mx-auto lg:mx-0 leading-relaxed uppercase tracking-tighter">
+                            A comprehensive AI suite designed specifically for the unique workflows
+                            <span className="text-slate-950 border-b-4 border-lime-400 font-black"> of Bharat's Educators.</span>
+                            Reclaim 15+ hours weekly.
+                        </p>
+
+                        <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                            <Link href="/register">
+                                <button className="px-10 h-16 bg-slate-950 text-white font-black rounded-2xl text-[12px] uppercase tracking-widest hover:bg-slate-800 transition-all shadow-2xl flex items-center gap-3 group">
+                                    Launch Teacher Suite <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                                </button>
+                            </Link>
+                        </div>
+                    </div>
+
+                    {/* Panoramic Visual Card */}
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="relative hidden lg:block"
+                    >
+                        <div className="bg-slate-50 rounded-[4rem] p-12 border border-slate-100 shadow-inner relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-lime-400/10 rounded-full blur-3xl -mr-32 -mt-32 transition-all group-hover:bg-lime-400/20"></div>
+                            <div className="relative z-10 space-y-8">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-3 h-3 rounded-full bg-lime-500 animate-pulse"></div>
+                                    <div className="h-2 w-32 bg-slate-200 rounded-full"></div>
+                                </div>
+                                <div className="space-y-4">
+                                    <div className="h-12 w-full bg-white rounded-2xl shadow-sm flex items-center px-6">
+                                        <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                            <motion.div
+                                                initial={{ width: 0 }}
+                                                animate={{ width: "80%" }}
+                                                transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
+                                                className="h-full bg-lime-500"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="h-32 bg-white rounded-3xl shadow-sm border border-slate-50 flex items-center justify-center">
+                                            <FileText className="text-lime-500 opacity-20" size={64} />
+                                        </div>
+                                        <div className="h-32 bg-white rounded-3xl shadow-sm border border-slate-50 flex items-center justify-center">
+                                            <ScanLine className="text-slate-200" size={64} />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </motion.div>
                 </div>
-            </section>
+            </main>
 
-            {/* Grid Section - Clean & Usable */}
-            <section className="py-24 bg-slate-950 text-white relative">
-                <div className="px-6 max-w-6xl mx-auto space-y-16">
-                    <div className="space-y-4 text-center lg:text-left">
-                        <h2 className="text-3xl md:text-5xl font-black font-display uppercase tracking-tight">AI Command <span className="text-lime-400">Toolkit.</span></h2>
-                        <p className="text-slate-400 font-medium max-w-lg">8 tools designed to handle every aspect of your professional career.</p>
+            {/* Panoramic Toolkit Grid */}
+            <section className="py-32 px-6 md:px-12 lg:px-20 w-full bg-slate-950 relative overflow-hidden">
+                <div className="absolute inset-0 bg-dot-white opacity-5"></div>
+                <div className="relative z-10 space-y-24">
+                    <div className="text-center space-y-6">
+                        <h2 className="text-4xl md:text-7xl font-black font-display text-white uppercase tracking-tighter">
+                            AI Powered <span className="text-lime-400 italic">Arsenal.</span>
+                        </h2>
+                        <p className="text-slate-400 font-bold uppercase tracking-widest text-[12px]">8 High-Precision tools built for excellence</p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                         {teacherTools.map((tool, i) => (
-                            <div key={i} className="bg-white/5 border border-white/10 p-8 rounded-2xl group hover:border-lime-500/50 transition-all">
-                                <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-white/10 text-white mb-6 group-hover:bg-lime-500 group-hover:text-slate-950 transition-colors">
-                                    {React.cloneElement(tool.icon as React.ReactElement<any>, { size: 20 })}
+                            <motion.div
+                                key={i}
+                                whileHover={{ y: -10 }}
+                                className="bg-white/5 border border-white/10 p-10 rounded-[3rem] group hover:border-lime-500/50 transition-all duration-500"
+                            >
+                                <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center mb-8 border border-white/10 group-hover:bg-lime-500 group-hover:text-slate-950 transition-all">
+                                    {React.cloneElement(tool.icon as React.ReactElement, { size: 28 })}
                                 </div>
-                                <h3 className="text-lg font-bold uppercase tracking-tight mb-2">{tool.title}</h3>
-                                <p className="text-xs text-slate-400 font-medium leading-relaxed mb-6">{tool.desc}</p>
-                                <div className="text-[10px] font-black uppercase tracking-widest text-lime-400 flex items-center gap-2 group-hover:gap-3 transition-all">
-                                    Launch Tool <ArrowRight size={14} />
+                                <h3 className="text-xl font-black text-white uppercase tracking-tight mb-4">{tool.title}</h3>
+                                <p className="text-slate-400 font-medium text-sm leading-relaxed mb-8 opacity-70">
+                                    {tool.desc}
+                                </p>
+                                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-lime-400">
+                                    Select Tool <ArrowRight size={14} />
                                 </div>
-                            </div>
+                            </motion.div>
                         ))}
                     </div>
                 </div>
             </section>
 
-            {/* Board Alignment */}
-            <section className="py-24 px-6 max-w-6xl mx-auto grid md:grid-cols-2 gap-20 items-center">
-                <div className="space-y-8">
-                    <h3 className="text-4xl font-black font-display uppercase tracking-tight">Board & NEP <span className="text-lime-600">Aligned.</span></h3>
-                    <p className="text-slate-500 font-medium text-lg leading-relaxed">Curriculum alignment is at our core. We support NCERT, CBSE, ICSE, and various State Boards seamlessly.</p>
-                    <div className="flex flex-wrap gap-3 pt-2">
-                        {["CBSE", "ICSE", "NCERT", "NEP 2020"].map(t => (
-                            <span key={t} className="px-3 py-1 bg-slate-50 border border-slate-100 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 rounded">{t}</span>
-                        ))}
+            {/* Board Alignment - Expansive section */}
+            <section className="py-40 px-6 md:px-12 lg:px-20 w-full bg-white">
+                <div className="grid lg:grid-cols-2 gap-24 items-center">
+                    <div className="space-y-12">
+                        <div className="w-16 h-1.5 bg-lime-500 rounded-full"></div>
+                        <h2 className="text-5xl md:text-7xl font-black font-display uppercase text-slate-950 leading-tight tracking-tight">
+                            Native Board <br />
+                            <span className="text-slate-400 italic">Alignment.</span>
+                        </h2>
+                        <p className="text-xl text-slate-500 font-medium leading-relaxed uppercase tracking-tighter">
+                            Curriculum alignment is in our DNA. Whether it's <span className="text-slate-950 font-black">CBSE, ICSE, or UP Board</span>, we generate content that maps 1:1 with your textbook.
+                        </p>
+                        <div className="flex flex-wrap gap-4">
+                            {["CBSE", "ICSE", "NCERT", "UP BOARD", "BIHAR BOARD", "KERALA BOARD"].map(board => (
+                                <span key={board} className="px-5 py-2 bg-slate-50 border border-slate-100 text-[10px] font-black uppercase tracking-widest text-slate-500 rounded-xl">{board}</span>
+                            ))}
+                        </div>
                     </div>
-                </div>
-                <div className="h-64 bg-slate-50 rounded-3xl border border-slate-100 flex items-center justify-center">
-                    <Presentation size={80} className="text-slate-200" />
+                    <div className="h-[400px] bg-slate-50 rounded-[4rem] border border-slate-100 flex items-center justify-center relative overflow-hidden group">
+                        <div className="absolute inset-0 bg-lime-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <Presentation className="text-slate-200 group-hover:text-lime-500/20 group-hover:scale-125 transition-all duration-700" size={200} />
+                    </div>
                 </div>
             </section>
 
-            <footer className="py-12 border-t border-slate-100 text-center">
-                <p className="text-[9px] font-bold uppercase tracking-[0.4em] text-slate-300">© 2026 Learnivo AI Technologies. Built for Teachers.</p>
+            {/* Footer */}
+            <footer className="py-24 border-t border-slate-100 bg-white">
+                <div className="w-full px-6 md:px-12 lg:px-20 flex flex-col md:flex-row justify-between items-center gap-10">
+                    <div className="flex items-center gap-2.5">
+                        <div className="w-9 h-9 bg-slate-950 flex items-center justify-center rounded-xl rotate-[-6deg]">
+                            <BookOpen className="text-lime-400" size={20} />
+                        </div>
+                        <span className="text-2xl font-black tracking-tighter text-slate-950 font-display uppercase">LEARNIVO</span>
+                    </div>
+                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.4em]">© 2026 Learnivo AI Technologies. For the Teachers of Bharat.</p>
+                </div>
             </footer>
         </div>
     );
-}
+};
+
+export default ForTeachersPage;
