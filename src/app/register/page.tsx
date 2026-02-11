@@ -25,27 +25,14 @@ export default function RegisterPage() {
     const [role, setRole] = useState<Role>(null);
 
     const containerVariants = {
-        hidden: { opacity: 0, x: 20 },
+        hidden: { opacity: 0, x: 10 },
         visible: { opacity: 1, x: 0 },
-        exit: { opacity: 0, x: -20 }
-    };
-
-    const handleContinue = () => {
-        if (role) setStep(2);
-    };
-
-    const handleBack = () => {
-        setStep(1);
-        setRole(null);
+        exit: { opacity: 0, x: -10 }
     };
 
     return (
-        <div className="min-h-screen bg-[#fcfdfa] flex items-center justify-center p-6 relative overflow-hidden">
-            {/* Background Blobs */}
-            <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-50 rounded-full blur-[100px] opacity-50"></div>
-            <div className="absolute bottom-[-10%] left-[-10%] w-[35%] h-[35%] bg-lime-100 rounded-full blur-[100px] opacity-40"></div>
-
-            <div className="w-full max-w-2xl z-10">
+        <div className="min-h-screen bg-white flex items-center justify-center p-6 relative bg-dot-pro">
+            <div className="w-full max-w-[640px] z-10">
                 <AnimatePresence mode="wait">
                     {step === 1 ? (
                         <motion.div
@@ -54,78 +41,78 @@ export default function RegisterPage() {
                             initial="hidden"
                             animate="visible"
                             exit="exit"
-                            className="bg-white/70 backdrop-blur-2xl border border-white p-10 md:p-14 rounded-[3rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.08)]"
+                            className="bg-white border border-slate-200 p-10 lg:p-14 rounded-xl shadow-pro-lg relative"
                         >
-                            <div className="flex flex-col items-center mb-12 text-center">
-                                <Link href="/" className="mb-8">
-                                    <div className="w-14 h-14 bg-black rounded-2xl flex items-center justify-center shadow-xl shadow-black/10">
-                                        <BookOpen className="text-lime-400" size={28} />
+                            <div className="absolute top-0 left-0 right-0 h-1 bg-lime-600"></div>
+
+                            <div className="flex flex-col mb-12">
+                                <Link href="/" className="mb-8 inline-flex items-center gap-2">
+                                    <div className="w-8 h-8 bg-slate-900 rounded flex items-center justify-center">
+                                        <BookOpen className="text-lime-400" size={18} />
                                     </div>
+                                    <span className="text-xl font-bold tracking-tight text-slate-900 font-display uppercase">LEARNIVO</span>
                                 </Link>
-                                <h1 className="text-4xl font-black text-slate-900 tracking-tight mb-3">Join Learnivo AI</h1>
-                                <p className="text-slate-500 font-medium text-lg">Select how you'll be using the platform</p>
+                                <h1 className="text-2xl font-bold text-slate-900 tracking-pro">Create your account</h1>
+                                <p className="text-sm text-slate-500 font-medium mt-1">Start your journey with Learnivo AI toolkit.</p>
                             </div>
 
-                            <div className="space-y-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 {/* Teacher Option */}
                                 <button
                                     onClick={() => setRole('teacher')}
-                                    className={`w-full p-6 rounded-3xl border-2 text-left transition-all flex items-center gap-6 group ${role === 'teacher'
-                                            ? 'border-lime-500 bg-lime-50/50 shadow-lg shadow-lime-500/10'
-                                            : 'border-slate-100 bg-white hover:border-slate-200 hover:bg-slate-50/50'
+                                    className={`p-6 rounded-lg border-2 text-left transition-pro flex flex-col gap-4 group ${role === 'teacher'
+                                            ? 'border-lime-600 bg-lime-50/20'
+                                            : 'border-slate-100 bg-slate-50/50 hover:border-slate-200 hover:bg-slate-50'
                                         }`}
                                 >
-                                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-colors ${role === 'teacher' ? 'bg-lime-500 text-white' : 'bg-slate-100 text-slate-400 group-hover:bg-slate-200'
+                                    <div className={`w-10 h-10 rounded flex items-center justify-center transition-colors ${role === 'teacher' ? 'bg-lime-600 text-white' : 'bg-white text-slate-400 border border-slate-200 shadow-sm'
                                         }`}>
-                                        <Presentation size={28} />
+                                        <Presentation size={20} />
                                     </div>
                                     <div>
-                                        <h3 className="text-xl font-black text-slate-900 leading-tight">I'm a Teacher</h3>
-                                        <p className="text-sm font-medium text-slate-500 mt-1">I'm here to create lesson plans and manage my classes.</p>
+                                        <h3 className="text-lg font-bold text-slate-900">I'm a Teacher</h3>
+                                        <p className="text-xs font-semibold text-slate-500 mt-1 leading-relaxed">I want to manage classes and create content.</p>
                                     </div>
-                                    <div className={`ml-auto w-6 h-6 rounded-full border-2 transition-all flex items-center justify-center ${role === 'teacher' ? 'border-lime-500 bg-lime-500' : 'border-slate-200 group-hover:border-slate-300'
-                                        }`}>
-                                        {role === 'teacher' && <div className="w-2 h-2 rounded-full bg-white shadow-sm" />}
+                                    <div className={`mt-auto pt-4 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest transition-opacity ${role === 'teacher' ? 'opacity-100' : 'opacity-0'}`}>
+                                        <div className="w-1.5 h-1.5 rounded-full bg-lime-600"></div> Selective
                                     </div>
                                 </button>
 
                                 {/* Student Option */}
                                 <button
                                     onClick={() => setRole('student')}
-                                    className={`w-full p-6 rounded-3xl border-2 text-left transition-all flex items-center gap-6 group ${role === 'student'
-                                            ? 'border-blue-500 bg-blue-50/50 shadow-lg shadow-blue-500/10'
-                                            : 'border-slate-100 bg-white hover:border-slate-200 hover:bg-slate-50/50'
+                                    className={`p-6 rounded-lg border-2 text-left transition-pro flex flex-col gap-4 group ${role === 'student'
+                                            ? 'border-slate-900 bg-slate-50'
+                                            : 'border-slate-100 bg-slate-50/50 hover:border-slate-200 hover:bg-slate-50'
                                         }`}
                                 >
-                                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-colors ${role === 'student' ? 'bg-blue-500 text-white' : 'bg-slate-100 text-slate-400 group-hover:bg-slate-200'
+                                    <div className={`w-10 h-10 rounded flex items-center justify-center transition-colors ${role === 'student' ? 'bg-slate-900 text-white' : 'bg-white text-slate-400 border border-slate-200 shadow-sm'
                                         }`}>
-                                        <GraduationCap size={28} />
+                                        <GraduationCap size={20} />
                                     </div>
                                     <div>
-                                        <h3 className="text-xl font-black text-slate-900 leading-tight">I'm a Student</h3>
-                                        <p className="text-sm font-medium text-slate-500 mt-1">I'm here to learn, complete assignments and track progress.</p>
+                                        <h3 className="text-lg font-bold text-slate-900">I'm a Student</h3>
+                                        <p className="text-xs font-semibold text-slate-500 mt-1 leading-relaxed">I want to learn and complete my assignments.</p>
                                     </div>
-                                    <div className={`ml-auto w-6 h-6 rounded-full border-2 transition-all flex items-center justify-center ${role === 'student' ? 'border-blue-500 bg-blue-500' : 'border-slate-200 group-hover:border-slate-300'
-                                        }`}>
-                                        {role === 'student' && <div className="w-2 h-2 rounded-full bg-white shadow-sm" />}
+                                    <div className={`mt-auto pt-4 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest transition-opacity ${role === 'student' ? 'opacity-100' : 'opacity-0'}`}>
+                                        <div className="w-1.5 h-1.5 rounded-full bg-slate-900"></div> Selective
                                     </div>
                                 </button>
                             </div>
 
-                            <div className="mt-10">
+                            <div className="mt-10 space-y-4">
                                 <button
-                                    onClick={handleContinue}
-                                    disabled={!role}
-                                    className={`w-full h-16 rounded-[1.25rem] font-black text-xl flex items-center justify-center gap-2 transition-all shadow-xl active:scale-[0.98] ${role
-                                            ? 'bg-black text-white hover:bg-slate-800 shadow-black/10'
-                                            : 'bg-slate-100 text-slate-300 cursor-not-allowed'
+                                    onClick={() => role && setStep(2)}
+                                    className={`w-full h-12 rounded-lg font-bold text-sm flex items-center justify-center gap-2 transition-pro ${role
+                                            ? 'bg-slate-900 text-white hover:bg-slate-800'
+                                            : 'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed'
                                         }`}
                                 >
-                                    Continue
-                                    <ArrowRight size={20} />
+                                    Continue Registration
+                                    <ArrowRight size={16} />
                                 </button>
-                                <p className="mt-8 text-center text-sm font-medium text-slate-500 uppercase tracking-widest">
-                                    Already have an account? <Link href="/login" className="text-lime-600 font-bold hover:underline">Log in</Link>
+                                <p className="text-center text-xs font-bold text-slate-500 uppercase tracking-widest">
+                                    Already have an account? <Link href="/login" className="text-lime-600 hover:text-lime-700">Log in</Link>
                                 </p>
                             </div>
                         </motion.div>
@@ -136,144 +123,72 @@ export default function RegisterPage() {
                             initial="hidden"
                             animate="visible"
                             exit="exit"
-                            className="bg-white/70 backdrop-blur-2xl border border-white p-10 md:p-14 rounded-[3rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.08)]"
+                            className="bg-white border border-slate-200 p-10 lg:p-14 rounded-xl shadow-pro-lg relative"
                         >
+                            <div className="absolute top-0 left-0 right-0 h-1 bg-lime-600"></div>
+
                             <button
-                                onClick={handleBack}
-                                className="mb-8 flex items-center gap-2 text-slate-400 hover:text-slate-900 font-bold text-xs uppercase tracking-widest transition-colors"
+                                onClick={() => setStep(1)}
+                                className="mb-8 flex items-center gap-2 text-slate-400 hover:text-slate-900 font-bold text-[10px] uppercase tracking-widest transition-colors"
                             >
                                 <ChevronLeft size={16} />
-                                Change Role
+                                Change Selection
                             </button>
 
-                            <div className="mb-10 text-left">
-                                <h1 className="text-3xl font-black text-slate-900 tracking-tight mb-2">
-                                    Complete your {role === 'teacher' ? 'Teacher' : 'Student'} Profile
+                            <div className="mb-10">
+                                <h1 className="text-2xl font-bold text-slate-900 tracking-pro">
+                                    Complete your {role} profile
                                 </h1>
-                                <p className="text-slate-500 font-medium">Final step to get started with Learnivo AI</p>
+                                <p className="text-sm text-slate-500 font-medium mt-1">Almost there! Just a few more details.</p>
                             </div>
 
-                            <form className="grid grid-cols-1 md:grid-cols-2 gap-6" onSubmit={(e) => e.preventDefault()}>
-                                <div className="space-y-2 md:col-span-1">
-                                    <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Full Name</label>
-                                    <div className="relative group">
-                                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-lime-600 transition-colors">
-                                            <User size={18} />
-                                        </div>
-                                        <input
-                                            type="text"
-                                            placeholder="Jane Cooper"
-                                            className="w-full pl-11 pr-4 h-14 bg-white/50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-lime-500/10 focus:border-lime-500 transition-all font-medium text-slate-800"
-                                        />
-                                    </div>
+                            <form className="grid grid-cols-1 sm:grid-cols-2 gap-5" onSubmit={(e) => e.preventDefault()}>
+                                <div className="space-y-1.5 sm:col-span-1">
+                                    <label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">Full Name</label>
+                                    <input type="text" placeholder="Rahul Kumar" className="w-full px-4 h-11 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-lime-500/10 focus:border-lime-600 transition-pro text-sm" />
                                 </div>
-
-                                <div className="space-y-2 md:col-span-1">
-                                    <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Email Address</label>
-                                    <div className="relative group">
-                                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-lime-600 transition-colors">
-                                            <Mail size={18} />
-                                        </div>
-                                        <input
-                                            type="email"
-                                            placeholder="jane@school.com"
-                                            className="w-full pl-11 pr-4 h-14 bg-white/50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-lime-500/10 focus:border-lime-500 transition-all font-medium text-slate-800"
-                                        />
-                                    </div>
+                                <div className="space-y-1.5 sm:col-span-1">
+                                    <label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">Email</label>
+                                    <input type="email" placeholder="rahul@school.com" className="w-full px-4 h-11 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-lime-500/10 focus:border-lime-600 transition-pro text-sm" />
                                 </div>
 
                                 {role === 'teacher' ? (
                                     <>
-                                        <div className="space-y-2 md:col-span-1">
-                                            <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">School Name</label>
-                                            <div className="relative group">
-                                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-lime-600 transition-colors">
-                                                    <School size={18} />
-                                                </div>
-                                                <input
-                                                    type="text"
-                                                    placeholder="Green Valley High"
-                                                    className="w-full pl-11 pr-4 h-14 bg-white/50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-lime-500/10 focus:border-lime-500 transition-all font-medium text-slate-800"
-                                                />
-                                            </div>
+                                        <div className="space-y-1.5 sm:col-span-1">
+                                            <label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">School Name</label>
+                                            <input type="text" placeholder="Green Valley High" className="w-full px-4 h-11 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-lime-500/10 focus:border-lime-600 transition-pro text-sm" />
                                         </div>
-                                        <div className="space-y-2 md:col-span-1">
-                                            <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Primary Subject</label>
-                                            <div className="relative group">
-                                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-lime-600 transition-colors">
-                                                    <BookMarked size={18} />
-                                                </div>
-                                                <select className="w-full pl-11 pr-4 h-14 bg-white/50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-lime-500/10 focus:border-lime-500 transition-all font-medium text-slate-800 appearance-none">
-                                                    <option>Mathematics</option>
-                                                    <option>Science</option>
-                                                    <option>Social Studies</option>
-                                                    <option>English</option>
-                                                    <option>Other</option>
-                                                </select>
-                                            </div>
+                                        <div className="space-y-1.5 sm:col-span-1">
+                                            <label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">Primary Subject</label>
+                                            <select className="w-full px-4 h-11 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-lime-500/10 focus:border-lime-600 transition-pro text-sm appearance-none">
+                                                <option>Mathematics</option><option>Science</option><option>English</option><option>Other</option>
+                                            </select>
                                         </div>
                                     </>
                                 ) : (
                                     <>
-                                        <div className="space-y-2 md:col-span-1">
-                                            <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Grade / Class</label>
-                                            <div className="relative group">
-                                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-lime-600 transition-colors">
-                                                    <GraduationCap size={18} />
-                                                </div>
-                                                <select className="w-full pl-11 pr-4 h-14 bg-white/50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-lime-500/10 focus:border-lime-500 transition-all font-medium text-slate-800 appearance-none">
-                                                    {[6, 7, 8, 9, 10, 11, 12].map(g => <option key={g}>Class {g}</option>)}
-                                                </select>
-                                            </div>
+                                        <div className="space-y-1.5 sm:col-span-1">
+                                            <label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">Grade</label>
+                                            <select className="w-full px-4 h-11 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-lime-500/10 focus:border-lime-600 transition-pro text-sm appearance-none">
+                                                {[6, 7, 8, 9, 10, 11, 12].map(g => <option key={g}>Class {g}</option>)}
+                                            </select>
                                         </div>
-                                        <div className="space-y-2 md:col-span-1">
-                                            <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Student ID (Optional)</label>
-                                            <div className="relative group">
-                                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-lime-600 transition-colors">
-                                                    <School size={18} />
-                                                </div>
-                                                <input
-                                                    type="text"
-                                                    placeholder="L-2026-99"
-                                                    className="w-full pl-11 pr-4 h-14 bg-white/50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-lime-500/10 focus:border-lime-500 transition-all font-medium text-slate-800"
-                                                />
-                                            </div>
+                                        <div className="space-y-1.5 sm:col-span-1">
+                                            <label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">Student ID (Opt)</label>
+                                            <input type="text" placeholder="L-2026-01" className="w-full px-4 h-11 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-lime-500/10 focus:border-lime-600 transition-pro text-sm" />
                                         </div>
                                     </>
                                 )}
 
-                                <div className="space-y-2 md:col-span-1">
-                                    <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Password</label>
-                                    <div className="relative group">
-                                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-lime-600 transition-colors">
-                                            <Lock size={18} />
-                                        </div>
-                                        <input
-                                            type="password"
-                                            placeholder="••••••••"
-                                            className="w-full pl-11 pr-4 h-14 bg-white/50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-lime-500/10 focus:border-lime-500 transition-all font-medium text-slate-800"
-                                        />
-                                    </div>
+                                <div className="space-y-1.5 sm:col-span-2 pt-2">
+                                    <label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">Set Password</label>
+                                    <input type="password" placeholder="••••••••" className="w-full px-4 h-11 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-lime-500/10 focus:border-lime-600 transition-pro text-sm" />
                                 </div>
 
-                                <div className="space-y-2 md:col-span-1">
-                                    <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Confirm</label>
-                                    <div className="relative group">
-                                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-lime-600 transition-colors">
-                                            <ShieldCheck size={18} />
-                                        </div>
-                                        <input
-                                            type="password"
-                                            placeholder="••••••••"
-                                            className="w-full pl-11 pr-4 h-14 bg-white/50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-lime-500/10 focus:border-lime-500 transition-all font-medium text-slate-800"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="md:col-span-2 pt-4">
-                                    <button className="w-full h-16 bg-black text-white font-black rounded-2xl shadow-xl shadow-black/10 hover:bg-slate-800 active:scale-[0.98] transition-all flex items-center justify-center gap-3 group">
-                                        Create {role === 'teacher' ? 'Teacher' : 'Student'} Account
-                                        <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                                <div className="sm:col-span-2 pt-4">
+                                    <button className="w-full h-12 bg-slate-900 text-white font-bold rounded-lg hover:bg-slate-800 transition-pro flex items-center justify-center gap-2">
+                                        Create My Account
+                                        <ArrowRight size={16} />
                                     </button>
                                 </div>
                             </form>

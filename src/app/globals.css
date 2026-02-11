@@ -2,165 +2,98 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #0f172a;
+  --primary: #84cc16;
+  --border: #e2e8f0;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-border: var(--border);
+  --color-primary-custom: var(--primary);
   --font-sans: var(--font-inter);
-  --font-outfit: var(--font-outfit);
-  --font-headline: var(--font-outfit);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-display: var(--font-outfit);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
-
-  /* Custom Scrollbar Styles */
-  ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: transparent;
-    border-radius: 99px;
-    transition: background 0.3s ease;
-  }
-
-  *:hover::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    /* slate-300 */
-  }
-
-  *:hover::-webkit-scrollbar-thumb:hover {
-    background: #65a30d;
-    /* lime-600 */
-  }
-
-  /* Firefox */
-  * {
-    scrollbar-width: thin;
-    scrollbar-color: transparent transparent;
-    transition: scrollbar-color 0.3s ease;
-  }
-
-  scrollbar-color: #cbd5e1 transparent;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Custom Scrollbar Utility Class */
-.custom-scrollbar::-webkit-scrollbar {
+/* Sharp UI Scrollbar */
+::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: #f1f5f9;
-  border-radius: 10px;
+::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
   background: #cbd5e1;
-  border-radius: 10px;
+  border-radius: 4px;
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #65a30d;
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
 
-/* Custom Animations */
-@keyframes float {
-  0% {
-    transform: translateY(0px) rotate(0deg);
-  }
-
-  50% {
-    transform: translateY(-10px) rotate(5deg);
-  }
-
-  100% {
-    transform: translateY(0px) rotate(0deg);
-  }
+/* Grid Pattern for Pro look */
+.bg-grid-pro {
+  background-image: radial-gradient(circle at 1px 1px, #e2e8f0 1px, transparent 0);
+  background-size: 24px 24px;
 }
 
-@keyframes progress {
-  0% {
-    transform: translateX(-100%);
-  }
-
-  50% {
-    transform: translateX(0%);
-  }
-
-  100% {
-    transform: translateX(100%);
-  }
+.bg-dot-pro {
+  background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
+  background-size: 20px 20px;
 }
 
-@keyframes wiggle {
-
-  0%,
-  100% {
-    transform: rotate(-3deg);
-  }
-
-  50% {
-    transform: rotate(3deg);
-  }
+/* Typography Enhancements */
+.text-balance {
+  text-wrap: balance;
 }
 
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-
-  to {
-    opacity: 0.6;
-    transform: translateY(0);
-  }
+.tracking-pro {
+  letter-spacing: -0.02em;
 }
 
-@keyframes pulse {
-
-  0%,
-  100% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: .5;
-  }
+/* Transitions */
+.transition-pro {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.animate-float {
-  animation: float 6s ease-in-out infinite;
+/* Card Shadows */
+.shadow-pro {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
 }
 
-.animate-pulse-slow {
-  animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+.shadow-pro-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
 }
 
-.animate-wiggle {
-  animation: wiggle 3s ease-in-out infinite;
+/* Custom Utilities */
+.rounded-pro-sm {
+  border-radius: 4px;
 }
 
+.rounded-pro {
+  border-radius: 8px;
+}
 
-/* Global Button Tap Animation */
+.rounded-pro-lg {
+  border-radius: 12px;
+}
+
+.rounded-pro-xl {
+  border-radius: 16px;
+}
+
+/* Global Button Tap Animation - subtle */
 button:active {
-  transform: scale(0.95);
-  transition: transform 0.1s ease;
+  transform: scale(0.98);
 }
