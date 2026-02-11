@@ -3,23 +3,17 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import {
     ArrowRight,
     Sparkles,
     BookOpen,
-    Zap,
     Check,
-    GraduationCap,
     Trophy,
     BarChart,
     BrainCircuit,
-    MessageCircle,
-    Clock,
-    Layout,
-    LayoutGrid,
     Calculator,
-    ImageIcon
+    ImageIcon,
+    LayoutGrid
 } from 'lucide-react';
 
 const ForStudentsPage = () => {
@@ -44,10 +38,10 @@ const ForStudentsPage = () => {
 
             {/* HEADER SYSTEM */}
             <header className="fixed top-0 left-0 right-0 z-[999] w-full">
-                <div className={`bg-slate-950 text-white transition-all duration-300 flex items-center justify-center text-[10px] font-bold uppercase tracking-[0.3em] px-4 ${scrolled ? 'h-0 opacity-0' : 'h-10 opacity-100'}`}>
+                <div className={`bg-slate-950 text-white transition-none flex items-center justify-center text-[10px] font-bold uppercase tracking-[0.3em] px-4 ${scrolled ? 'h-0 opacity-0' : 'h-10 opacity-100'}`}>
                     Bharat's Smartest Students <span className="text-purple-400 ml-1">Learn Better</span>
                 </div>
-                <nav className={`w-full transition-all duration-300 bg-white border-b border-slate-100 flex items-center px-6 md:px-12 lg:px-20 ${scrolled ? 'h-16 shadow-md' : 'h-20'}`}>
+                <nav className={`w-full transition-none bg-white border-b border-slate-100 flex items-center px-6 md:px-12 lg:px-20 ${scrolled ? 'h-16 shadow-md' : 'h-20'}`}>
                     <div className="w-full flex items-center justify-between mx-auto">
                         <Link href="/" className="flex items-center gap-2 group">
                             <div className="w-7 h-7 bg-slate-950 flex items-center justify-center rounded group-hover:bg-purple-600 transition-colors">
@@ -97,7 +91,6 @@ const ForStudentsPage = () => {
                                 <div className="px-3 py-1 bg-white border border-purple-100 rounded-full text-[9px] font-black text-purple-600 uppercase">CBSE/UPB</div>
                             </div>
                         </div>
-                        <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-purple-200/20 rounded-full blur-3xl" />
                     </div>
 
                     {/* Medium Card: Math Solver */}
@@ -110,7 +103,7 @@ const ForStudentsPage = () => {
                         </div>
                         <div className="mt-8 relative h-10 w-full bg-white/5 border border-white/10 rounded-xl flex items-center px-4">
                             <div className="h-1 w-full bg-purple-500/30 rounded-full overflow-hidden">
-                                <motion.div animate={{ x: ["-100%", "100%"] }} transition={{ duration: 2, repeat: Infinity, ease: "linear" }} className="h-full w-1/3 bg-purple-500" />
+                                <div className="h-full w-1/3 bg-purple-500" />
                             </div>
                         </div>
                     </div>
