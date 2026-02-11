@@ -69,7 +69,7 @@ const HyperLocalView: React.FC = () => {
                         {viewState === 'result' ? (
                             <div>
                                 <div className="flex items-center gap-3">
-                                    <h1 className="text-lg font-bold tracking-tight">Mumbai Water Conservation</h1>
+                                    <h1 className="text-lg font-bold tracking-tight font-outfit">Mumbai Water Conservation</h1>
                                     <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-lime-500/10 text-lime-600 border border-lime-500/20 rounded-md">Result Generated</span>
                                 </div>
                                 <p className="text-xs text-slate-500 mt-0.5">Grade 4-6 • Hindi/English Context • Maharashtra, India</p>
@@ -77,7 +77,7 @@ const HyperLocalView: React.FC = () => {
                         ) : (
                             <div>
                                 <div className="flex items-center gap-2">
-                                    <h1 className="text-lg font-bold tracking-tight">Hyper Local Content</h1>
+                                    <h1 className="text-lg font-bold tracking-tight font-outfit">Hyper Local Content</h1>
                                     <span className="px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider bg-lime-500/10 text-lime-600 border border-lime-500/20 rounded-md">Generation</span>
                                 </div>
                                 <p className="text-[10px] text-slate-500 mt-0.5">Create content tailored to your students' specific region.</p>
@@ -114,7 +114,7 @@ const HyperLocalView: React.FC = () => {
                 {viewState === 'form' && (
                     <div className="w-full max-w-7xl mx-auto flex flex-col items-center h-full animate-fadeIn justify-center">
                         <div className="text-center mb-6 max-w-2xl shrink-0">
-                            <h2 className="text-3xl md:text-4xl font-extrabold mb-2 tracking-tight leading-tight">
+                            <h2 className="text-3xl md:text-4xl font-extrabold mb-2 tracking-tight leading-tight font-outfit">
                                 Ready to Create <span className="text-lime-500">Magic?</span>
                             </h2>
                             <p className="text-sm text-slate-500 leading-relaxed">
@@ -283,7 +283,7 @@ const HyperLocalView: React.FC = () => {
 
                         <div className="w-full max-w-md space-y-8 text-center relative z-20">
                             <div className="space-y-4">
-                                <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900">
+                                <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900 font-outfit">
                                     Crafting Your <span className="text-lime-500">Content</span>
                                 </h2>
 
@@ -387,7 +387,7 @@ const HyperLocalView: React.FC = () => {
                             <section className="lg:col-span-6">
                                 <div className="bg-white/80 backdrop-blur-xl border border-white/40 rounded-[2.5rem] p-10 min-h-[800px] shadow-2xl shadow-slate-200/50 relative">
                                     <article className="prose prose-slate max-w-none">
-                                        <h1 className="text-4xl font-extrabold mb-8 text-slate-900">The Journey of a Raindrop in Mumbai</h1>
+                                        <h1 className="text-4xl font-extrabold mb-8 text-slate-900 font-outfit">The Journey of a Raindrop in Mumbai</h1>
                                         <p className="text-xl text-slate-600 leading-relaxed mb-6">Imagine you are a small raindrop falling over the Gateway of India during the heavy July Monsoons...</p>
 
                                         <div className="my-8 p-6 rounded-2xl bg-lime-50 border-l-4 border-lime-500">
