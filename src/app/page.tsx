@@ -121,7 +121,7 @@ const LandingPage = () => {
         </header>
 
         {/* Hero Section */}
-        <main className="relative pt-44 md:pt-52 pb-20 px-6 md:px-12 lg:px-20 w-full">
+        <main className="relative pt-24 md:pt-28 pb-20 px-6 md:px-12 lg:px-20 w-full">
           <div className="w-full grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
 
             <div className="space-y-8 text-center lg:text-left">
