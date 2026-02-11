@@ -107,8 +107,85 @@ const WorkspaceView: React.FC = () => {
         }
     };
 
+    // Render structured JSON content
+    const renderStructuredContent = (data: any) => {
+        if (!data || typeof data !== 'object') return <p>{String(data)}</p>;
+
+        return (
+            <div className="space-y-8 pb-10">
+                {/* Specific Layout for Lesson Plans/Summaries */}
+                {data.title && (
+                    <div className="border-b-2 border-lime-100 pb-4 mb-6">
+                        <h1 className="text-3xl font-black text-slate-900 tracking-tight">{data.title}</h1>
+                        {data.subtitle && <p className="text-lg font-bold text-slate-400 italic mt-1">{data.subtitle}</p>}
+                    </div>
+                )}
+
+                <div className="grid gap-8">
+                    {Object.entries(data).map(([key, value], i) => {
+                        if (['title', 'subtitle'].includes(key)) return null;
+
+                        return (
+                            <section key={key} className="relative">
+                                <h3 className="text-xs font-black text-lime-600 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+                                    <div className="w-1.5 h-4 bg-lime-500 rounded-full" />
+                                    {key.replace(/([A-Z])/g, ' $1').trim()}
+                                </h3>
+
+                                <div className="ml-3.5 border-l border-slate-100 pl-6">
+                                    {Array.isArray(value) ? (
+                                        <div className="space-y-3">
+                                            {value.map((item, j) => (
+                                                <div key={j} className="flex items-start gap-3">
+                                                    <div className="w-1.5 h-1.5 rounded-full bg-slate-200 mt-1.5 flex-shrink-0" />
+                                                    {typeof item === 'object' ? (
+                                                        <div className="flex-1 bg-slate-50/50 p-4 rounded-2xl border border-slate-100/50">
+                                                            {Object.entries(item).map(([subK, subV]) => (
+                                                                <div key={subK} className="mb-2 last:mb-0">
+                                                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-0.5">{subK}</span>
+                                                                    <p className="text-sm text-slate-700 font-bold">{String(subV)}</p>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    ) : (
+                                                        <p className="text-sm text-slate-600 font-medium leading-relaxed">{String(item)}</p>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : typeof value === 'object' && value !== null ? (
+                                        <div className="grid gap-4">
+                                            {Object.entries(value).map(([subK, subV]) => (
+                                                <div key={subK} className="bg-slate-50/50 p-4 rounded-2xl border border-slate-100/50">
+                                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">{subK}</span>
+                                                    <p className="text-sm text-slate-700 font-bold">{String(subV)}</p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <p className="text-base text-slate-600 font-medium leading-relaxed whitespace-pre-wrap">{String(value)}</p>
+                                    )}
+                                </div>
+                            </section>
+                        );
+                    })}
+                </div>
+            </div>
+        );
+    };
+
     // Render formatted content - cleaner version
     const renderFormattedContent = (content: string) => {
+        // Try to parse as JSON first
+        if (content.trim().startsWith('{') || content.trim().startsWith('[')) {
+            try {
+                const data = JSON.parse(content);
+                return renderStructuredContent(data);
+            } catch (e) {
+                // Not valid JSON, fall back to markdown
+            }
+        }
+
         const lines = content.split('\n');
         const elements: React.ReactNode[] = [];
         let tableLines: string[] = [];
@@ -291,8 +368,8 @@ const WorkspaceView: React.FC = () => {
                         <button
                             onClick={() => setFilterType('all')}
                             className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all mb-1 ${filterType === 'all'
-                                    ? 'bg-lime-50 text-lime-700 font-semibold'
-                                    : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+                                ? 'bg-lime-50 text-lime-700 font-semibold'
+                                : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
                                 }`}
                         >
                             <FolderOpen size={16} className={filterType === 'all' ? 'text-lime-600' : 'text-gray-400'} />
@@ -321,8 +398,8 @@ const WorkspaceView: React.FC = () => {
                                     key={folder.type}
                                     onClick={() => setFilterType(isActive ? 'all' : folder.type)}
                                     className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all mb-1 ${isActive
-                                            ? 'bg-lime-50 text-lime-700 font-semibold'
-                                            : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+                                        ? 'bg-lime-50 text-lime-700 font-semibold'
+                                        : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
                                         }`}
                                 >
                                     <span className="text-base">{folder.icon}</span>
@@ -431,7 +508,17 @@ const WorkspaceView: React.FC = () => {
                                                 {/* Content Preview (Text) */}
                                                 {res.contentType === 'text' && (
                                                     <p className="text-xs text-gray-500 line-clamp-3 mb-4 flex-1">
-                                                        {res.content.replace(/[#*`]/g, '').substring(0, 100)}...
+                                                        {(function () {
+                                                            if (res.content.trim().startsWith('{')) {
+                                                                try {
+                                                                    const data = JSON.parse(res.content);
+                                                                    return data.overview || data.description || data.subtitle || data.content || res.title;
+                                                                } catch (e) {
+                                                                    return res.content.substring(0, 100);
+                                                                }
+                                                            }
+                                                            return res.content.replace(/[#*`]/g, '').substring(0, 100);
+                                                        })()}...
                                                     </p>
                                                 )}
 
