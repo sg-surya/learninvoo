@@ -4,84 +4,120 @@
 import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { BookOpen, Mail, Lock, ArrowRight } from 'lucide-react';
+import { BookOpen, Mail, Lock, ArrowRight, Facebook, Twitter, Chrome, Linkedin } from 'lucide-react';
 
 export default function LoginPage() {
     return (
-        <div className="min-h-screen bg-white flex items-center justify-center p-6 relative bg-dot-pro">
-            <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="w-full max-w-[440px] z-10"
-            >
-                <div className="bg-white border border-slate-200 p-10 lg:p-12 rounded-xl shadow-pro-lg relative overflow-hidden">
-                    {/* Top accent bar */}
-                    <div className="absolute top-0 left-0 right-0 h-1 bg-lime-600"></div>
+        <div className="min-h-screen w-full bg-slate-950 p-[10px]">
+            <div className="min-h-[calc(100vh-20px)] w-full flex overflow-hidden font-sans selection:bg-lime-500 selection:text-white rounded-[10px] bg-white">
 
-                    <div className="flex flex-col mb-10">
-                        <Link href="/" className="mb-8 inline-flex items-center gap-2">
-                            <div className="w-8 h-8 bg-slate-900 rounded flex items-center justify-center tracking-tighter">
-                                <BookOpen className="text-lime-400" size={18} />
-                            </div>
-                            <span className="text-xl font-bold tracking-tight text-slate-900 font-display uppercase">LEARNIVO</span>
-                        </Link>
-                        <h1 className="text-2xl font-bold text-slate-900 tracking-pro">Log in to your account</h1>
-                        <p className="text-sm text-slate-500 font-medium mt-1">Welcome back! Please enter your details.</p>
-                    </div>
+                {/* 🟢 LEFT SIDE: Login Form */}
+                <div className="w-full lg:w-[60%] bg-white p-8 md:p-16 lg:p-24 flex flex-col relative overflow-hidden">
 
-                    <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
-                        <div className="space-y-1.5">
-                            <label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">Email</label>
-                            <div className="relative group">
-                                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-lime-600 transition-colors">
-                                    <Mail size={16} />
-                                </div>
+                    {/* Decorative Circles (Inspired by image) */}
+                    <div className="absolute -top-20 -left-20 w-64 h-64 bg-lime-50 rounded-full opacity-50 pointer-events-none"></div>
+                    <div className="absolute -bottom-20 -left-10 w-48 h-48 bg-lime-50 rounded-full opacity-50 pointer-events-none"></div>
+
+                    {/* Brand Header */}
+                    <Link href="/" className="mb-20 inline-flex items-center gap-2 relative z-10 group">
+                        <div className="w-8 h-8 bg-slate-950 flex items-center justify-center rounded group-hover:bg-lime-500 transition-colors">
+                            <BookOpen className="text-lime-400 group-hover:text-slate-950" size={18} />
+                        </div>
+                        <span className="text-2xl font-black tracking-tighter text-slate-950 uppercase italic">LEARNIVO<span className="text-lime-500">.</span></span>
+                    </Link>
+
+                    <div className="max-w-md w-full relative z-10">
+                        <h1 className="text-3xl font-black text-slate-950 uppercase tracking-tight mb-2">Sign In</h1>
+                        <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mb-10">Access your personalized teaching workshop.</p>
+
+                        <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Email Address</label>
                                 <input
                                     type="email"
-                                    placeholder="name@company.com"
-                                    className="w-full pl-10 pr-4 h-11 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-lime-500/10 focus:border-lime-600 transition-pro font-medium text-sm text-slate-800"
+                                    placeholder="name@school.com"
+                                    className="w-full px-5 h-12 bg-slate-50 border border-slate-100 rounded focus:outline-none focus:border-lime-500 transition-all font-bold text-sm text-slate-800"
                                 />
                             </div>
-                        </div>
 
-                        <div className="space-y-1.5">
-                            <div className="flex justify-between items-center ml-1">
-                                <label className="text-xs font-bold uppercase tracking-widest text-slate-500">Password</label>
-                                <Link href="#" className="text-xs font-bold text-lime-600 hover:text-lime-700">Forgot password?</Link>
-                            </div>
-                            <div className="relative group">
-                                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-lime-600 transition-colors">
-                                    <Lock size={16} />
+                            <div className="space-y-2">
+                                <div className="flex justify-between items-center ml-1">
+                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Password</label>
                                 </div>
                                 <input
                                     type="password"
                                     placeholder="••••••••"
-                                    className="w-full pl-10 pr-4 h-11 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-lime-500/10 focus:border-lime-600 transition-pro font-medium text-sm text-slate-800"
+                                    className="w-full px-5 h-12 bg-slate-50 border border-slate-100 rounded focus:outline-none focus:border-lime-500 transition-all font-bold text-sm text-slate-800"
                                 />
                             </div>
-                        </div>
 
-                        <div className="flex items-center gap-2 px-1">
-                            <input type="checkbox" id="remember" className="w-4 h-4 rounded border-slate-300 text-lime-600 focus:ring-lime-600" />
-                            <label htmlFor="remember" className="text-sm font-semibold text-slate-600 select-none cursor-pointer">Remember for 30 days</label>
-                        </div>
+                            <div className="flex items-center justify-between px-1">
+                                <div className="flex items-center gap-2">
+                                    <input type="checkbox" id="remember" className="w-4 h-4 rounded border-slate-200 text-lime-600 focus:ring-lime-500" />
+                                    <label htmlFor="remember" className="text-[10px] font-black uppercase tracking-widest text-slate-400 cursor-pointer">Remember me</label>
+                                </div>
+                                <Link href="#" className="text-[10px] font-black uppercase tracking-widest text-lime-600 hover:underline">Forgot?</Link>
+                            </div>
 
-                        <button className="w-full h-11 bg-slate-900 text-white font-bold rounded-lg shadow-sm hover:bg-slate-800 transition-pro flex items-center justify-center gap-2 group mt-2">
-                            Sign In
-                            <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                        </button>
+                            <div className="pt-6 flex flex-col sm:flex-row items-center gap-6">
+                                <motion.button
+                                    whileTap={{ scale: 0.95 }}
+                                    className="h-12 px-10 bg-lime-600 text-white font-black uppercase text-[10px] tracking-widest rounded shadow-xl shadow-lime-600/20 hover:bg-lime-700 transition-all"
+                                >
+                                    Sign In Now
+                                </motion.button>
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                    New user? <Link href="/register" className="text-lime-600 hover:underline">Register hub</Link>
+                                </p>
+                            </div>
+                        </form>
+                    </div>
 
-                        <button className="w-full h-11 bg-white border border-slate-200 rounded-lg font-bold text-slate-700 flex items-center justify-center gap-3 hover:bg-slate-50 transition-pro">
-                            <img src="https://www.svgrepo.com/show/475656/google-color.svg" className="w-5 h-5" alt="Google" />
-                            Sign in with Google
-                        </button>
-                    </form>
-
-                    <p className="mt-8 text-center text-sm font-semibold text-slate-500">
-                        New to Learnivo? <Link href="/register" className="text-lime-600 font-bold hover:underline">Create an account</Link>
-                    </p>
+                    <div className="mt-auto pt-10 text-[10px] font-black text-slate-300 uppercase tracking-[0.4em]">
+                        © 2026 LEARNIVO AI PLATFORM
+                    </div>
                 </div>
-            </motion.div>
+
+                {/* 🟢 RIGHT SIDE: Branding / Accent (Inspired by image) */}
+                <div className="hidden lg:flex lg:w-[40%] bg-lime-600 relative flex-col items-center justify-center p-12 overflow-hidden">
+                    {/* Texture / Pattern overlay */}
+                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/clothe.png')] opacity-20"></div>
+                    <div className="absolute inset-0 bg-gradient-to-br from-lime-500 to-lime-700"></div>
+
+                    {/* Decorative Shapes */}
+                    <div className="absolute top-1/4 -right-20 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+                    <div className="absolute bottom-1/4 -left-20 w-64 h-64 bg-slate-900/10 rounded-full blur-3xl"></div>
+
+                    <div className="relative z-10 text-center space-y-8 flex flex-col items-center">
+                        <div className="flex items-center gap-3">
+                            <div className="w-12 h-12 bg-white flex items-center justify-center rounded shadow-2xl">
+                                <BookOpen className="text-lime-600" size={28} />
+                            </div>
+                            <span className="text-4xl font-black tracking-tighter text-white uppercase italic">LEARNIVO</span>
+                        </div>
+
+                        <div className="h-px w-20 bg-white/20"></div>
+
+                        <div className="space-y-4">
+                            <h2 className="text-5xl font-black text-white uppercase tracking-tighter leading-none">
+                                Hello, <br /> Educator!
+                            </h2>
+                            <p className="text-white/80 max-w-xs text-xs font-bold uppercase tracking-widest leading-relaxed">
+                                Join the revolution of localized AI education. Manage, teach, and scale with Bharat's smartest toolset.
+                            </p>
+                        </div>
+
+                        {/* Social Links (Like the image) */}
+                        <div className="flex gap-4 pt-4">
+                            {[Facebook, Twitter, Chrome, Linkedin].map((Icon, i) => (
+                                <button key={i} className="w-10 h-10 border border-white/30 rounded flex items-center justify-center text-white hover:bg-white hover:text-lime-600 transition-all">
+                                    <Icon size={18} />
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
