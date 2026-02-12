@@ -52,6 +52,25 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Interface Scaling */
+:root.scale-compact {
+  font-size: 14px;
+}
+
+:root.scale-standard {
+  font-size: 16px;
+}
+
+:root.scale-spacious {
+  font-size: 18px;
+}
+
+:root.scale-legacy {
+  font-size: 15px;
+  --font-sans: serif;
+  /* Just an example for "Legacy" */
+}
+
 /* Sharp UI Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;

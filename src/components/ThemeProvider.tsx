@@ -7,15 +7,18 @@ type Theme = 'Light' | 'Dark' | 'System';
 interface ThemeContextType {
     theme: Theme;
     accentColor: string;
+    interfaceScale: string;
     setTheme: (theme: Theme) => void;
     setAccentColor: (color: string) => void;
+    setInterfaceScale: (scale: string) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const [theme, setTheme] = useState<Theme>('System');
-    const [accentColor, setAccentColor] = useState('#84cc16'); // Default Learnivo Green
+    const [accentColor, setAccentColor] = useState('#84cc16');
+    const [interfaceScale, setInterfaceScale] = useState('Standard Quality');
 
     useEffect(() => {
         const savedSettings = localStorage.getItem('learnivo_settings');
@@ -23,12 +26,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
             const settings = JSON.parse(savedSettings);
             if (settings.appearance) setTheme(settings.appearance);
             if (settings.accentColor) setAccentColor(settings.accentColor);
+            if (settings.interfaceScale) setInterfaceScale(settings.interfaceScale);
         }
 
         const handleSettingsUpdate = () => {
             const updatedSettings = JSON.parse(localStorage.getItem('learnivo_settings') || '{}');
             if (updatedSettings.appearance) setTheme(updatedSettings.appearance);
             if (updatedSettings.accentColor) setAccentColor(updatedSettings.accentColor);
+            if (updatedSettings.interfaceScale) setInterfaceScale(updatedSettings.interfaceScale);
         };
 
         window.addEventListener('learnivo_settings_updated', handleSettingsUpdate);
@@ -64,12 +69,18 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         const root = window.document.documentElement;
         root.style.setProperty('--primary', accentColor);
-        // Also update the tailwind variable if using v4 or specific logic
         root.style.setProperty('--color-primary-custom', accentColor);
     }, [accentColor]);
 
+    useEffect(() => {
+        const root = window.document.documentElement;
+        root.classList.remove('scale-compact', 'scale-standard', 'scale-spacious', 'scale-legacy');
+        const scaleClass = `scale-${interfaceScale.toLowerCase().split(' ')[0]}`;
+        root.classList.add(scaleClass);
+    }, [interfaceScale]);
+
     return (
-        <ThemeContext.Provider value={{ theme, accentColor, setTheme, setAccentColor }}>
+        <ThemeContext.Provider value={{ theme, accentColor, interfaceScale, setTheme, setAccentColor, setInterfaceScale }}>
             {children}
         </ThemeContext.Provider>
     );

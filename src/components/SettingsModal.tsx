@@ -20,7 +20,7 @@ interface SettingsModalProps {
 const SectionBox = ({ title, children }: { title: string, children: React.ReactNode }) => (
     <div className="mb-6">
         <h4 className="text-[13px] font-bold text-muted-foreground mb-3 ml-1">{title}</h4>
-        <div className="bg-card-bg border border-border rounded-2xl overflow-hidden shadow-sm">
+        <div className="bg-card-bg border border-border rounded-2xl shadow-sm">
             {children}
         </div>
     </div>
@@ -112,6 +112,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, user }) 
         username: '',
         bio: 'Educator & Lifelong Learner',
         accentColor: '#8b5cf6',
+        interfaceScale: 'Standard Quality',
         glassmorphism: true,
         aiTone: 'Creative',
         defaultGrade: 'Middle School',
@@ -190,8 +191,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, user }) 
                             </SectionRow>
                             <SectionRow label="Interface scale" isLast={true}>
                                 <CustomDropdown
-                                    value="Standard Quality"
-                                    onChange={() => { }}
+                                    value={settings.interfaceScale}
+                                    onChange={(val) => updateSetting('interfaceScale', val)}
                                     options={['Compact', 'Standard Quality', 'Spacious', 'Legacy']}
                                 />
                             </SectionRow>
