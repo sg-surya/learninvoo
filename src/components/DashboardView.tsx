@@ -32,8 +32,8 @@ const LineChart = () => (
         <svg className="w-full h-full" viewBox="0 0 400 100" preserveAspectRatio="none">
             <defs>
                 <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stopColor="#84cc16" stopOpacity="0.3" />
-                    <stop offset="100%" stopColor="#84cc16" stopOpacity="0" />
+                    <stop offset="0%" stopColor="var(--primary-custom)" stopOpacity="0.3" />
+                    <stop offset="100%" stopColor="var(--primary-custom)" stopOpacity="0" />
                 </linearGradient>
             </defs>
             <path
@@ -46,13 +46,13 @@ const LineChart = () => (
                 transition={{ duration: 2, ease: "easeInOut" }}
                 d="M 0 80 Q 50 20, 100 60 T 200 40 T 300 70 T 400 30"
                 fill="none"
-                stroke="#84cc16"
+                stroke="var(--primary-custom)"
                 strokeWidth="3"
                 strokeLinecap="round"
             />
             {/* Markers */}
             {[0, 100, 200, 300, 400].map((x, i) => (
-                <circle key={i} cx={x} cy={[80, 60, 40, 70, 30][i]} r="4" fill="#84cc16" />
+                <circle key={i} cx={x} cy={[80, 60, 40, 70, 30][i]} r="4" fill="var(--primary-custom)" />
             ))}
         </svg>
     </div>
@@ -106,29 +106,23 @@ const DashboardView: React.FC = () => {
 
     return (
         <motion.div
-            className="p-8 w-full min-h-screen bg-[#fbfcfd] text-slate-800"
+            className="p-8 w-full min-h-screen bg-transparent text-foreground"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
         >
-            {/* Subtle Gradient Orbs */}
-            <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
-                <div className="absolute top-[-10%] left-[20%] w-[500px] h-[500px] bg-lime-100/30 rounded-full blur-[120px]" />
-                <div className="absolute bottom-[-5%] right-[10%] w-[400px] h-[400px] bg-sky-100/30 rounded-full blur-[100px]" />
-            </div>
-
             {/* Header Area */}
             <header className="mb-12 flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div className="space-y-1">
-                    <h1 className="text-4xl font-black text-slate-950 tracking-tight">
-                        {getTimeBasedGreeting()}, <span className="text-lime-600">{user?.fullName?.split(' ')[0] || 'Educator'}</span>
+                    <h1 className="text-4xl font-black text-foreground tracking-tight">
+                        {getTimeBasedGreeting()}, <span className="text-primary-custom">{user?.fullName?.split(' ')[0] || 'Educator'}</span>
                     </h1>
-                    <p className="text-sm font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-lime-500 animate-pulse" />
+                    <p className="text-sm font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-primary-custom animate-pulse" />
                         5 Classes scheduled for today
                     </p>
                 </div>
                 <div className="flex items-center gap-4">
-                    <div className="bg-white/60 backdrop-blur-xl border border-white px-5 py-2.5 rounded-2xl shadow-sm text-xs font-black text-slate-400 tracking-widest uppercase">
+                    <div className="bg-card-bg/60 backdrop-blur-xl border border-border px-5 py-2.5 rounded-2xl shadow-sm text-xs font-black text-muted-foreground tracking-widest uppercase">
                         {new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
                     </div>
                 </div>
@@ -141,39 +135,39 @@ const DashboardView: React.FC = () => {
                     {/* Active Session & Quick Graph */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {/* Session Card */}
-                        <div className="bg-white/80 backdrop-blur-2xl p-8 rounded-[2.5rem] border border-white shadow-[0_20px_50px_-20px_rgba(0,0,0,0.05)] relative overflow-hidden group hover:bg-white transition-all duration-500">
+                        <div className="bg-card-bg/80 backdrop-blur-2xl p-8 rounded-[2.5rem] border border-border shadow-sm relative overflow-hidden group hover:bg-card-bg transition-all duration-500">
                             <div className="absolute top-0 right-0 p-4">
-                                <span className="px-3 py-1 bg-lime-50 text-lime-600 text-[10px] font-black rounded-full border border-lime-100 uppercase tracking-widest">In Session</span>
+                                <span className="px-3 py-1 bg-primary-custom/10 text-primary-custom text-[10px] font-black rounded-full border border-primary-custom/20 uppercase tracking-widest">In Session</span>
                             </div>
                             <div className="relative z-10">
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Current Module</p>
-                                <h3 className="text-2xl font-black text-slate-950 mb-1">Class 9-B Mathematics</h3>
-                                <p className="text-sm font-bold text-slate-500 mb-6 italic">Quadratic Equations (Ex 4.2)</p>
+                                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-4">Current Module</p>
+                                <h3 className="text-2xl font-black text-foreground mb-1">Class 9-B Mathematics</h3>
+                                <p className="text-sm font-bold text-muted-foreground mb-6 italic">Quadratic Equations (Ex 4.2)</p>
 
                                 <div className="flex items-center gap-4">
-                                    <button className="flex items-center gap-2 bg-slate-950 text-white px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-lime-600 transition-colors">
+                                    <button className="flex items-center gap-2 bg-primary-custom text-white px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:opacity-90 transition-colors shadow-lg shadow-primary-custom/20">
                                         Open Lab
                                     </button>
                                     <div className="flex -space-x-3">
                                         {[1, 2, 3, 4].map(i => (
-                                            <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-slate-100 overflow-hidden">
+                                            <div key={i} className="w-8 h-8 rounded-full border-2 border-card-bg bg-muted overflow-hidden">
                                                 <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${i}`} alt="student" />
                                             </div>
                                         ))}
-                                        <div className="w-8 h-8 rounded-full border-2 border-white bg-lime-50 text-lime-600 flex items-center justify-center text-[10px] font-black">+38</div>
+                                        <div className="w-8 h-8 rounded-full border-2 border-card-bg bg-primary-custom text-white flex items-center justify-center text-[10px] font-black">+38</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         {/* Performance Graph Card */}
-                        <div className="bg-white/80 backdrop-blur-2xl p-8 rounded-[2.5rem] border border-white shadow-[0_20px_50px_-20px_rgba(0,0,0,0.05)] flex flex-col justify-between">
+                        <div className="bg-card-bg/80 backdrop-blur-2xl p-8 rounded-[2.5rem] border border-border shadow-sm flex flex-col justify-between">
                             <div>
                                 <div className="flex justify-between items-start mb-2">
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Class Performance</p>
-                                    <TrendingUp size={16} className="text-lime-500" />
+                                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Class Performance</p>
+                                    <TrendingUp size={16} className="text-primary-custom" />
                                 </div>
-                                <h4 className="text-xl font-black text-slate-900">+12% <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest ml-1">avg growth</span></h4>
+                                <h4 className="text-xl font-black text-foreground">+12% <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest ml-1">avg growth</span></h4>
                             </div>
                             <LineChart />
                         </div>
@@ -182,37 +176,37 @@ const DashboardView: React.FC = () => {
                     {/* Quick Action Grid */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                         {[
-                            { label: 'Homework', icon: BookOpen, color: 'text-lime-600', bg: 'bg-lime-50' },
-                            { label: 'Exams', icon: FileCheck, color: 'text-sky-600', bg: 'bg-sky-50' },
-                            { label: 'Remarks', icon: MessageCircle, color: 'text-amber-600', bg: 'bg-amber-50' },
-                            { label: 'Logs', icon: AlertCircle, color: 'text-rose-600', bg: 'bg-rose-50' }
+                            { label: 'Homework', icon: BookOpen, color: 'text-primary-custom', bg: 'bg-primary-custom/10' },
+                            { label: 'Exams', icon: FileCheck, color: 'text-sky-500', bg: 'bg-sky-500/10' },
+                            { label: 'Remarks', icon: MessageCircle, color: 'text-amber-500', bg: 'bg-amber-500/10' },
+                            { label: 'Logs', icon: AlertCircle, color: 'text-rose-500', bg: 'bg-rose-500/10' }
                         ].map((item, i) => (
-                            <button key={i} className="bg-white/60 backdrop-blur-lg p-6 rounded-[2rem] border border-white/40 shadow-sm hover:shadow-xl hover:bg-white transition-all flex flex-col items-center text-center group">
+                            <button key={i} className="bg-card-bg/60 backdrop-blur-lg p-6 rounded-[2rem] border border-border/40 shadow-sm hover:shadow-xl hover:bg-card-bg transition-all flex flex-col items-center text-center group">
                                 <div className={`w-12 h-12 ${item.bg} ${item.color} rounded-2xl flex items-center justify-center mb-3 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300`}>
                                     <item.icon size={22} />
                                 </div>
-                                <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">{item.label}</span>
+                                <span className="text-[10px] font-black text-foreground uppercase tracking-widest">{item.label}</span>
                             </button>
                         ))}
                     </div>
 
                     {/* Minimalist Progress Section */}
-                    <div className="bg-white/40 backdrop-blur-md rounded-[2.5rem] p-8 border border-white/60">
-                        <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-8">Syllabus Milestones</h3>
+                    <div className="bg-card-bg/40 backdrop-blur-md rounded-[2.5rem] p-8 border border-border/60">
+                        <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em] mb-8">Syllabus Milestones</h3>
                         <div className="space-y-8">
                             {[
-                                { title: 'Physics (Grade 9)', sub: 'Forces and Laws of Motion', progress: 65, color: 'bg-lime-500' },
+                                { title: 'Physics (Grade 9)', sub: 'Forces and Laws of Motion', progress: 65, color: 'bg-primary-custom' },
                                 { title: 'Mathematics (Grade 10)', sub: 'Arithmetic Progressions', progress: 42, color: 'bg-sky-500' }
                             ].map((topic, i) => (
                                 <div key={i} className="space-y-3">
                                     <div className="flex justify-between items-end">
                                         <div>
-                                            <h4 className="text-sm font-black text-slate-900 uppercase tracking-tight">{topic.title}</h4>
-                                            <p className="text-[10px] font-bold text-slate-400 italic">Current: {topic.sub}</p>
+                                            <h4 className="text-sm font-black text-foreground uppercase tracking-tight">{topic.title}</h4>
+                                            <p className="text-[10px] font-bold text-muted-foreground italic">Current: {topic.sub}</p>
                                         </div>
-                                        <span className="text-xl font-black text-slate-950">{topic.progress}%</span>
+                                        <span className="text-xl font-black text-foreground">{topic.progress}%</span>
                                     </div>
-                                    <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                    <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
                                         <motion.div
                                             initial={{ width: 0 }}
                                             animate={{ width: `${topic.progress}%` }}
@@ -229,10 +223,10 @@ const DashboardView: React.FC = () => {
                 {/* Sidebar Column */}
                 <div className="col-span-12 lg:col-span-4 space-y-8">
                     {/* Tasks Panel */}
-                    <div className="bg-slate-950 rounded-[2.5rem] p-8 text-white relative overflow-hidden">
-                        <div className="absolute top-[-10%] right-[-10%] w-40 h-40 bg-lime-500/20 rounded-full blur-[40px]" />
+                    <div className="bg-card-bg border border-border rounded-[2.5rem] p-8 relative overflow-hidden shadow-sm">
+                        <div className="absolute top-[-10%] right-[-10%] w-40 h-40 bg-primary-custom/10 rounded-full blur-[40px]" />
                         <div className="relative z-10">
-                            <h3 className="text-xs font-black uppercase tracking-[0.3em] text-lime-500 mb-6 flex items-center gap-2">
+                            <h3 className="text-xs font-black uppercase tracking-[0.3em] text-primary-custom mb-6 flex items-center gap-2">
                                 <CheckCircle2 size={16} /> Attention Required
                             </h3>
                             <div className="space-y-4">
@@ -241,36 +235,36 @@ const DashboardView: React.FC = () => {
                                     { title: 'Leave Application', sub: 'Amit (10-C) pending approval', priority: 'Normal' },
                                     { title: 'Staff Meeting', sub: 'Today at 3:30 PM', priority: 'Low' }
                                 ].map((task, i) => (
-                                    <div key={i} className="p-4 bg-white/5 rounded-2xl border border-white/10 hover:bg-white/10 transition-colors cursor-pointer group">
+                                    <div key={i} className="p-4 bg-muted rounded-2xl border border-border hover:bg-muted/80 transition-colors cursor-pointer group">
                                         <div className="flex items-center gap-3">
-                                            <div className={`w-2 h-2 rounded-full ${task.priority === 'High' ? 'bg-rose-500' : 'bg-slate-500'} group-hover:scale-150 transition-transform`} />
+                                            <div className={`w-2 h-2 rounded-full ${task.priority === 'High' ? 'bg-rose-500' : 'bg-muted-foreground'} group-hover:scale-150 transition-transform`} />
                                             <div>
-                                                <h4 className="text-sm font-black text-white uppercase tracking-tight">{task.title}</h4>
-                                                <p className="text-[10px] text-slate-400 italic mt-0.5">{task.sub}</p>
+                                                <h4 className="text-sm font-black text-foreground uppercase tracking-tight">{task.title}</h4>
+                                                <p className="text-[10px] text-muted-foreground italic mt-0.5">{task.sub}</p>
                                             </div>
                                         </div>
                                     </div>
                                 ))}
                             </div>
-                            <button className="w-full mt-6 py-4 bg-lime-600 rounded-2xl text-[10px] font-black uppercase tracking-widest text-white shadow-xl shadow-lime-600/20 hover:bg-lime-500 transition-all">
+                            <button className="w-full mt-6 py-4 bg-primary-custom rounded-2xl text-[10px] font-black uppercase tracking-widest text-white shadow-xl shadow-primary-custom/20 hover:opacity-90 transition-all">
                                 View Full Agenda
                             </button>
                         </div>
                     </div>
 
                     {/* Up Next / AI Suggestion */}
-                    <div className="bg-white/80 backdrop-blur-2xl p-8 rounded-[2.5rem] border border-white shadow-sm flex flex-col gap-6">
+                    <div className="bg-card-bg/80 backdrop-blur-2xl p-8 rounded-[2.5rem] border border-border shadow-sm flex flex-col gap-6">
                         <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 bg-sky-50 text-sky-600 rounded-2xl flex items-center justify-center">
+                            <div className="w-12 h-12 bg-sky-500/10 text-sky-500 rounded-2xl flex items-center justify-center">
                                 <Sparkles size={24} />
                             </div>
                             <div>
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Next Break</p>
-                                <h3 className="text-xl font-black text-slate-900">Tea Break (15m)</h3>
+                                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Next Break</p>
+                                <h3 className="text-xl font-black text-foreground">Tea Break (15m)</h3>
                             </div>
                         </div>
-                        <div className="p-4 bg-sky-50 rounded-2xl border border-sky-100">
-                            <p className="text-[11px] text-sky-800 font-bold leading-relaxed italic">
+                        <div className="p-4 bg-sky-500/10 rounded-2xl border border-sky-500/20">
+                            <p className="text-[11px] text-sky-500 font-bold leading-relaxed italic">
                                 "Suggesting: Use this break to review the Physics lesson plan I generated earlier. It's ready for Class 9-B tomorrow."
                             </p>
                         </div>

@@ -61,7 +61,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
                             initial="hidden"
                             animate="visible"
                             exit="exit"
-                            className="text-xl font-bold text-gray-800 tracking-tight whitespace-nowrap overflow-hidden"
+                            className="text-xl font-bold text-foreground tracking-tight whitespace-nowrap overflow-hidden"
                         >
                             Learnivo AI
                         </motion.span>
@@ -73,7 +73,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
                     onClick={onToggle}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
-                    className={`absolute ${isCollapsed ? '-right-6' : '-right-8'} top-1/2 -translate-y-1/2 bg-white border border-gray-100 shadow-md p-1.5 rounded-full hover:bg-lime-50 text-gray-400 hover:text-lime-600 transition-colors z-20`}
+                    className={`absolute ${isCollapsed ? '-right-6' : '-right-8'} top-1/2 -translate-y-1/2 bg-card-bg border border-border shadow-md p-1.5 rounded-full hover:bg-primary-custom/10 text-muted-foreground hover:text-primary-custom transition-colors z-20`}
                 >
                     {isCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
                 </motion.button>
@@ -93,15 +93,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
                                 layout
                                 className={`w-full flex items-center overflow-hidden relative z-10 ${isCollapsed ? 'justify-center py-3' : 'gap-3 px-4 py-2.5 rounded-2xl'
                                     } ${active
-                                        ? 'text-lime-700 font-bold'
-                                        : 'text-gray-500 font-medium hover:text-lime-600'
+                                        ? 'text-primary-custom font-bold'
+                                        : 'text-muted-foreground font-medium hover:text-primary-custom'
                                     }`}
                             >
                                 {/* Active Background Layer */}
                                 {active && !isCollapsed && (
                                     <motion.div
                                         layoutId="activeTab"
-                                        className="absolute inset-0 bg-lime-100/40 rounded-2xl -z-10"
+                                        className="absolute inset-0 bg-primary-custom/10 rounded-2xl -z-10"
                                         initial={false}
                                         transition={{ type: "spring", stiffness: 300, damping: 30 }}
                                     />
@@ -109,7 +109,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
 
                                 {/* Hover Effect Layer for non-active */}
                                 {!active && !isCollapsed && (
-                                    <div className="absolute inset-0 bg-white/50 opacity-0 group-hover:opacity-100 rounded-2xl transition-opacity -z-10" />
+                                    <div className="absolute inset-0 bg-primary-custom/5 opacity-0 group-hover:opacity-100 rounded-2xl transition-opacity -z-10" />
                                 )}
 
                                 <motion.div
@@ -121,7 +121,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
                                 >
                                     <item.icon
                                         size={20}
-                                        className={`flex-shrink-0 transition-colors ${active ? 'text-lime-600' : 'text-gray-400 group-hover:text-lime-500'}`}
+                                        className={`flex-shrink-0 transition-colors ${active ? 'text-primary-custom' : 'text-muted-foreground group-hover:text-primary-custom'}`}
                                     />
                                 </motion.div>
 
@@ -142,7 +142,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
 
                             {/* Tooltip for Collapsed State */}
                             {isCollapsed && (
-                                <div className="absolute left-full ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-sm text-white text-[10px] font-medium rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 whitespace-nowrap z-50 shadow-xl translate-x-[-10px] group-hover:translate-x-0">
+                                <div className="absolute left-full ml-4 px-3 py-1.5 bg-foreground/90 backdrop-blur-sm text-background text-[10px] font-medium rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 whitespace-nowrap z-50 shadow-xl translate-x-[-10px] group-hover:translate-x-0">
                                     {item.label}
                                 </div>
                             )}

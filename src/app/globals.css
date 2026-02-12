@@ -1,10 +1,31 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+  --background: #f8fafc;
   --foreground: #0f172a;
   --primary: #84cc16;
   --border: #e2e8f0;
+  --card-bg: #ffffff;
+  --sidebar-bg: transparent;
+  --header-bg: rgba(255, 255, 255, 0.8);
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --accent: #f1f5f9;
+  --accent-foreground: #0f172a;
+}
+
+.dark {
+  --background: #020617;
+  --foreground: #f8fafc;
+  --primary: #84cc16;
+  --border: #1e293b;
+  --card-bg: #0f172a;
+  --sidebar-bg: #020617;
+  --header-bg: rgba(2, 6, 23, 0.8);
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  --accent: #1e293b;
+  --accent-foreground: #f8fafc;
 }
 
 @theme inline {
@@ -12,6 +33,13 @@
   --color-foreground: var(--foreground);
   --color-border: var(--border);
   --color-primary-custom: var(--primary);
+  --color-card-bg: var(--card-bg);
+  --color-sidebar-bg: var(--sidebar-bg);
+  --color-header-bg: var(--header-bg);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent-custom: var(--accent);
+  --color-accent-foreground-custom: var(--accent-foreground);
   --font-sans: var(--font-inter);
   --font-display: var(--font-outfit);
 }
@@ -35,12 +63,17 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: var(--border);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: var(--muted-foreground);
+}
+
+::selection {
+  background-color: var(--primary);
+  color: white;
 }
 
 /* Grid Pattern for Pro look */
@@ -106,15 +139,19 @@ button:active {
 
 /* Glassmorphism Tokens */
 .glass-panel {
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: var(--header-bg);
   backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+}
+
+.dark .glass-panel {
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
 }
 
 /* Skeleton Standard */
 .skeleton-pro {
-  background-color: #f1f5f9;
+  background-color: var(--muted);
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   border-radius: 2.5rem;
 }

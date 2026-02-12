@@ -115,9 +115,9 @@ const WorkspaceView: React.FC = () => {
             <div className="space-y-8 pb-10">
                 {/* Specific Layout for Lesson Plans/Summaries */}
                 {data.title && (
-                    <div className="border-b-2 border-lime-100 pb-4 mb-6">
-                        <h1 className="text-3xl font-black text-slate-900 tracking-tight">{data.title}</h1>
-                        {data.subtitle && <p className="text-lg font-bold text-slate-400 italic mt-1">{data.subtitle}</p>}
+                    <div className="border-b-2 border-primary-custom/20 pb-4 mb-6">
+                        <h1 className="text-3xl font-black text-foreground tracking-tight">{data.title}</h1>
+                        {data.subtitle && <p className="text-lg font-bold text-muted-foreground italic mt-1">{data.subtitle}</p>}
                     </div>
                 )}
 
@@ -127,28 +127,28 @@ const WorkspaceView: React.FC = () => {
 
                         return (
                             <section key={key} className="relative">
-                                <h3 className="text-xs font-black text-lime-600 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
-                                    <div className="w-1.5 h-4 bg-lime-500 rounded-full" />
+                                <h3 className="text-xs font-black text-primary-custom uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+                                    <div className="w-1.5 h-4 bg-primary-custom rounded-full" />
                                     {key.replace(/([A-Z])/g, ' $1').trim()}
                                 </h3>
 
-                                <div className="ml-3.5 border-l border-slate-100 pl-6">
+                                <div className="ml-3.5 border-l border-border pl-6">
                                     {Array.isArray(value) ? (
                                         <div className="space-y-3">
                                             {value.map((item, j) => (
                                                 <div key={j} className="flex items-start gap-3">
-                                                    <div className="w-1.5 h-1.5 rounded-full bg-slate-200 mt-1.5 flex-shrink-0" />
+                                                    <div className="w-1.5 h-1.5 rounded-full bg-border mt-1.5 flex-shrink-0" />
                                                     {typeof item === 'object' ? (
-                                                        <div className="flex-1 bg-slate-50/50 p-4 rounded-2xl border border-slate-100/50">
+                                                        <div className="flex-1 bg-muted p-4 rounded-2xl border border-border">
                                                             {Object.entries(item).map(([subK, subV]) => (
                                                                 <div key={subK} className="mb-2 last:mb-0">
-                                                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-0.5">{subK}</span>
-                                                                    <p className="text-sm text-slate-700 font-bold">{String(subV)}</p>
+                                                                    <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest block mb-0.5">{subK}</span>
+                                                                    <p className="text-sm text-foreground font-bold">{String(subV)}</p>
                                                                 </div>
                                                             ))}
                                                         </div>
                                                     ) : (
-                                                        <p className="text-sm text-slate-600 font-medium leading-relaxed">{String(item)}</p>
+                                                        <p className="text-sm text-muted-foreground font-medium leading-relaxed">{String(item)}</p>
                                                     )}
                                                 </div>
                                             ))}
@@ -156,14 +156,14 @@ const WorkspaceView: React.FC = () => {
                                     ) : typeof value === 'object' && value !== null ? (
                                         <div className="grid gap-4">
                                             {Object.entries(value).map(([subK, subV]) => (
-                                                <div key={subK} className="bg-slate-50/50 p-4 rounded-2xl border border-slate-100/50">
-                                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">{subK}</span>
-                                                    <p className="text-sm text-slate-700 font-bold">{String(subV)}</p>
+                                                <div key={subK} className="bg-muted p-4 rounded-2xl border border-border">
+                                                    <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest block mb-1">{subK}</span>
+                                                    <p className="text-sm text-foreground font-bold">{String(subV)}</p>
                                                 </div>
                                             ))}
                                         </div>
                                     ) : (
-                                        <p className="text-base text-slate-600 font-medium leading-relaxed whitespace-pre-wrap">{String(value)}</p>
+                                        <p className="text-base text-muted-foreground font-medium leading-relaxed whitespace-pre-wrap">{String(value)}</p>
                                     )}
                                 </div>
                             </section>
@@ -200,16 +200,16 @@ const WorkspaceView: React.FC = () => {
             } else if (inTable && tableLines.length > 0) {
                 // End of table, render it
                 elements.push(
-                    <div key={`table-${i}`} className="overflow-x-auto my-4 rounded-xl border border-gray-200">
+                    <div key={`table-${i}`} className="overflow-x-auto my-4 rounded-xl border border-border">
                         <table className="min-w-full text-sm">
                             <tbody>
                                 {tableLines.map((tl, ti) => {
                                     if (tl.includes('---')) return null; // Skip separator row
                                     const cells = tl.split('|').filter(c => c.trim());
                                     return (
-                                        <tr key={ti} className={ti === 0 ? 'bg-gray-100 font-bold' : 'border-t border-gray-100'}>
+                                        <tr key={ti} className={ti === 0 ? 'bg-muted font-bold' : 'border-t border-border'}>
                                             {cells.map((cell, ci) => (
-                                                <td key={ci} className="px-4 py-2 text-gray-700">{cell.trim()}</td>
+                                                <td key={ci} className="px-4 py-2 text-muted-foreground">{cell.trim()}</td>
                                             ))}
                                         </tr>
                                     );
@@ -231,28 +231,28 @@ const WorkspaceView: React.FC = () => {
             // Headings
             if (line.startsWith('# ')) {
                 elements.push(
-                    <h1 key={i} className="text-2xl font-bold text-gray-900 mb-4 mt-6 pb-2 border-b border-lime-200">
+                    <h1 key={i} className="text-2xl font-bold text-foreground mb-4 mt-6 pb-2 border-b border-primary-custom/20">
                         {line.replace('# ', '')}
                     </h1>
                 );
             } else if (line.startsWith('## ')) {
                 elements.push(
-                    <h2 key={i} className="text-lg font-bold text-gray-800 mt-6 mb-2 flex items-center gap-2">
-                        <span className="w-1 h-5 bg-lime-500 rounded-full"></span>
+                    <h2 key={i} className="text-lg font-bold text-foreground mt-6 mb-2 flex items-center gap-2">
+                        <span className="w-1 h-5 bg-primary-custom rounded-full"></span>
                         {line.replace('## ', '')}
                     </h2>
                 );
             } else if (line.startsWith('### ')) {
                 elements.push(
-                    <h3 key={i} className="text-sm font-bold text-lime-700 mt-4 mb-1 uppercase tracking-wider">
+                    <h3 key={i} className="text-sm font-bold text-primary-custom mt-4 mb-1 uppercase tracking-wider">
                         {line.replace('### ', '')}
                     </h3>
                 );
             } else if (line.startsWith('- ') || line.startsWith('* ')) {
                 elements.push(
                     <div key={i} className="flex items-start gap-2 ml-2 mb-1">
-                        <span className="text-lime-500 mt-1.5">•</span>
-                        <span className="text-gray-700" dangerouslySetInnerHTML={{
+                        <span className="text-primary-custom mt-1.5">•</span>
+                        <span className="text-muted-foreground" dangerouslySetInnerHTML={{
                             __html: line.replace(/^[-*] /, '').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                         }} />
                     </div>
@@ -260,20 +260,20 @@ const WorkspaceView: React.FC = () => {
             } else if (line.match(/^\d+\./)) {
                 elements.push(
                     <div key={i} className="flex items-start gap-2 ml-2 mb-1">
-                        <span className="text-lime-600 font-bold min-w-[20px]">{line.match(/^\d+/)?.[0]}.</span>
-                        <span className="text-gray-700" dangerouslySetInnerHTML={{
+                        <span className="text-primary-custom font-bold min-w-[20px]">{line.match(/^\d+/)?.[0]}.</span>
+                        <span className="text-muted-foreground" dangerouslySetInnerHTML={{
                             __html: line.replace(/^\d+\.\s*/, '').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                         }} />
                     </div>
                 );
             } else if (line.startsWith('**') && line.endsWith('**')) {
                 elements.push(
-                    <p key={i} className="font-bold text-gray-800 mt-3 mb-1">{line.replace(/\*\*/g, '')}</p>
+                    <p key={i} className="font-bold text-foreground mt-3 mb-1">{line.replace(/\*\*/g, '')}</p>
                 );
             } else {
                 elements.push(
-                    <p key={i} className="text-gray-600 leading-relaxed mb-1" dangerouslySetInnerHTML={{
-                        __html: line.replace(/\*\*(.*?)\*\*/g, '<strong class="text-gray-800">$1</strong>')
+                    <p key={i} className="text-muted-foreground leading-relaxed mb-1" dangerouslySetInnerHTML={{
+                        __html: line.replace(/\*\*(.*?)\*\*/g, '<strong class="text-foreground">$1</strong>')
                             .replace(/\*(.*?)\*/g, '<em>$1</em>')
                     }} />
                 );
@@ -284,36 +284,36 @@ const WorkspaceView: React.FC = () => {
     };
 
     return (
-        <div className="p-8 w-full min-h-full">
+        <div className="p-8 w-full min-h-full bg-background text-foreground">
             {/* Header */}
             <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
                 <div>
-                    <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-lime-500 to-emerald-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-lime-200">
+                    <h2 className="text-2xl font-bold text-foreground flex items-center gap-3">
+                        <div className="w-10 h-10 bg-primary-custom rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary-custom/20">
                             <FolderOpen size={20} />
                         </div>
                         My Workspace
                     </h2>
-                    <p className="text-gray-400 text-sm mt-1">
+                    <p className="text-muted-foreground text-sm mt-1">
                         All your generated content, saved and organized.
                     </p>
                 </div>
                 <div className="flex gap-3 w-full md:w-auto">
                     <div className="relative flex-1 md:flex-none">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
                         <input
                             type="text"
                             placeholder="Search content..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="bg-gray-50 border-none rounded-xl py-2.5 pl-10 pr-4 text-sm focus:ring-2 focus:ring-lime-200 focus:bg-white w-full md:w-64 transition-all"
+                            className="bg-muted border border-border rounded-xl py-2.5 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary-custom/20 focus:bg-card-bg w-full md:w-64 transition-all text-foreground"
                         />
                     </div>
                     <div className="relative">
                         <select
                             value={filterType}
                             onChange={(e) => setFilterType(e.target.value)}
-                            className="appearance-none bg-white border border-gray-100 px-4 py-2.5 pr-10 rounded-xl text-sm font-medium text-gray-600 hover:bg-lime-50 hover:text-lime-700 transition-all cursor-pointer focus:ring-2 focus:ring-lime-200"
+                            className="appearance-none bg-card-bg border border-border px-4 py-2.5 pr-10 rounded-xl text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-all cursor-pointer focus:ring-2 focus:ring-primary-custom/20"
                         >
                             <option value="all">All Types</option>
                             {uniqueTypes.map(type => (
@@ -322,7 +322,7 @@ const WorkspaceView: React.FC = () => {
                                 </option>
                             ))}
                         </select>
-                        <Filter size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                        <Filter size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
                     </div>
                 </div>
             </header>
@@ -330,18 +330,18 @@ const WorkspaceView: React.FC = () => {
             {/* Content */}
             {loading ? (
                 <div className="flex flex-col items-center justify-center py-20">
-                    <Loader2 size={48} className="text-lime-500 animate-spin mb-4" />
-                    <p className="text-gray-500 font-medium">Loading your workspace...</p>
+                    <Loader2 size={48} className="text-primary-custom animate-spin mb-4" />
+                    <p className="text-muted-foreground font-medium">Loading your workspace...</p>
                 </div>
             ) : filteredResources.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-20 text-center">
-                    <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mb-6">
-                        <FolderOpen size={48} className="text-gray-300" />
+                    <div className="w-24 h-24 bg-muted rounded-full flex items-center justify-center mb-6">
+                        <FolderOpen size={48} className="text-muted-foreground/30" />
                     </div>
-                    <h3 className="text-xl font-bold text-gray-800 mb-2">
+                    <h3 className="text-xl font-bold text-foreground mb-2">
                         {searchQuery || filterType !== 'all' ? 'No matching content found' : 'Your workspace is empty'}
                     </h3>
-                    <p className="text-gray-500 max-w-md mb-6">
+                    <p className="text-muted-foreground max-w-md mb-6">
                         {searchQuery || filterType !== 'all'
                             ? 'Try adjusting your search or filter criteria.'
                             : 'Generate content using our AI tools and save it here for quick access.'}
@@ -349,7 +349,7 @@ const WorkspaceView: React.FC = () => {
                     {!searchQuery && filterType === 'all' && (
                         <Link
                             href="/tools"
-                            className="px-6 py-3 bg-gradient-to-r from-lime-600 to-emerald-600 text-white font-bold rounded-xl shadow-lg shadow-lime-200 hover:shadow-xl transition-all"
+                            className="px-6 py-3 bg-primary-custom text-white font-bold rounded-xl shadow-lg shadow-primary-custom/20 hover:opacity-90 transition-all"
                         >
                             Explore AI Tools
                         </Link>
@@ -358,26 +358,26 @@ const WorkspaceView: React.FC = () => {
             ) : (
                 <div className="flex gap-6 h-[calc(100vh-200px)]">
                     {/* Left Sidebar - File Tree */}
-                    <div className="w-64 flex-shrink-0 bg-white border border-gray-100 rounded-2xl p-4 overflow-y-auto shadow-sm h-full">
+                    <div className="w-64 flex-shrink-0 bg-card-bg border border-border rounded-2xl p-4 overflow-y-auto shadow-sm h-full">
                         <div className="flex items-center gap-2 px-3 py-2 mb-4">
-                            <FolderOpen size={18} className="text-lime-600" />
-                            <span className="text-gray-800 font-bold text-sm">My Assets</span>
+                            <FolderOpen size={18} className="text-primary-custom" />
+                            <span className="text-foreground font-bold text-sm">My Assets</span>
                         </div>
 
                         {/* All Items */}
                         <button
                             onClick={() => setFilterType('all')}
                             className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all mb-1 ${filterType === 'all'
-                                ? 'bg-lime-50 text-lime-700 font-semibold'
-                                : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+                                ? 'bg-primary-custom/10 text-primary-custom font-semibold'
+                                : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                                 }`}
                         >
-                            <FolderOpen size={16} className={filterType === 'all' ? 'text-lime-600' : 'text-gray-400'} />
+                            <FolderOpen size={16} className={filterType === 'all' ? 'text-primary-custom' : 'text-muted-foreground'} />
                             <span className="flex-1 text-sm">All Items</span>
-                            <span className={`text-xs px-2 py-0.5 rounded-full ${filterType === 'all' ? 'bg-lime-100 text-lime-700' : 'bg-gray-100 text-gray-500'}`}>{resources.length}</span>
+                            <span className={`text-xs px-2 py-0.5 rounded-full ${filterType === 'all' ? 'bg-primary-custom/20 text-primary-custom' : 'bg-muted text-muted-foreground'}`}>{resources.length}</span>
                         </button>
 
-                        <div className="h-px bg-gray-100 my-3" />
+                        <div className="h-px bg-border my-3" />
 
                         {/* Folder Items by Type */}
                         {[
@@ -398,28 +398,28 @@ const WorkspaceView: React.FC = () => {
                                     key={folder.type}
                                     onClick={() => setFilterType(isActive ? 'all' : folder.type)}
                                     className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all mb-1 ${isActive
-                                        ? 'bg-lime-50 text-lime-700 font-semibold'
-                                        : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+                                        ? 'bg-primary-custom/10 text-primary-custom font-semibold'
+                                        : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                                         }`}
                                 >
                                     <span className="text-base">{folder.icon}</span>
                                     <span className="flex-1 text-sm">{folder.label}</span>
-                                    <span className={`text-xs px-2 py-0.5 rounded-full ${isActive ? 'bg-lime-100 text-lime-700' : 'bg-gray-100 text-gray-500'}`}>{count}</span>
+                                    <span className={`text-xs px-2 py-0.5 rounded-full ${isActive ? 'bg-primary-custom/20 text-primary-custom' : 'bg-muted text-muted-foreground'}`}>{count}</span>
                                 </button>
                             );
                         })}
 
-                        <div className="h-px bg-gray-100 my-3" />
+                        <div className="h-px bg-border my-3" />
 
                         {/* Search */}
                         <div className="relative">
-                            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                             <input
                                 type="text"
                                 placeholder="Search..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full bg-gray-50 border border-gray-100 rounded-xl py-2 pl-9 pr-3 text-sm text-gray-700 placeholder-gray-400 focus:ring-2 focus:ring-lime-100 focus:border-lime-200 transition-all outline-none"
+                                className="w-full bg-muted border border-border rounded-xl py-2 pl-9 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary-custom/20 focus:border-primary-custom/30 transition-all outline-none"
                             />
                         </div>
                     </div>
@@ -436,7 +436,7 @@ const WorkspaceView: React.FC = () => {
                                                 filterType === 'story' ? '📖' : '📄'}
                             </span>
                             <div>
-                                <h3 className="text-lg font-bold text-gray-800">
+                                <h3 className="text-lg font-bold text-foreground">
                                     {filterType === 'all' ? 'All Items' :
                                         filterType === 'lesson-plan' ? 'Lesson Plans' :
                                             filterType === 'quiz' ? 'Quizzes' :
@@ -444,14 +444,14 @@ const WorkspaceView: React.FC = () => {
                                                     filterType === 'story' ? 'Stories' :
                                                         filterType.charAt(0).toUpperCase() + filterType.slice(1)}
                                 </h3>
-                                <p className="text-xs text-gray-400">{filteredResources.length} items</p>
+                                <p className="text-xs text-muted-foreground">{filteredResources.length} items</p>
                             </div>
                         </div>
 
                         {filteredResources.length === 0 ? (
                             <div className="flex flex-col items-center justify-center py-16 text-center">
-                                <FolderOpen size={48} className="text-gray-200 mb-4" />
-                                <p className="text-gray-400">No items in this folder</p>
+                                <FolderOpen size={48} className="text-muted-foreground/20 mb-4" />
+                                <p className="text-muted-foreground">No items in this folder</p>
                             </div>
                         ) : (
                             /* Grid of Cards */
@@ -462,7 +462,7 @@ const WorkspaceView: React.FC = () => {
                                         <div
                                             key={res.id}
                                             onClick={() => setSelectedContent(res)}
-                                            className="bg-white border border-gray-100 rounded-2xl overflow-hidden hover:shadow-xl hover:shadow-lime-100/40 hover:border-lime-200 transition-all duration-300 group relative cursor-pointer flex flex-col h-full"
+                                            className="bg-card-bg border border-border rounded-2xl overflow-hidden hover:shadow-xl hover:shadow-primary-custom/10 hover:border-primary-custom/30 transition-all duration-300 group relative cursor-pointer flex flex-col h-full"
                                         >
                                             {/* Type Color Bar */}
                                             <div className={`h-1 w-full bg-gradient-to-r ${res.type === 'lesson-plan' ? 'from-lime-400 to-emerald-500' :
@@ -474,32 +474,32 @@ const WorkspaceView: React.FC = () => {
 
                                             <div className="p-5 flex flex-col flex-1">
                                                 <div className="flex items-start justify-between gap-3 mb-3">
-                                                    <div className={`w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center shadow-md ${res.type === 'lesson-plan' ? 'bg-gradient-to-br from-lime-100 to-emerald-100 text-emerald-600' :
-                                                        res.type === 'quiz' ? 'bg-gradient-to-br from-blue-100 to-indigo-100 text-indigo-600' :
-                                                            res.type === 'visual' ? 'bg-gradient-to-br from-purple-100 to-pink-100 text-purple-600' :
-                                                                res.type === 'story' ? 'bg-gradient-to-br from-amber-100 to-orange-100 text-orange-600' :
-                                                                    'bg-gray-100 text-gray-600'
+                                                    <div className={`w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center shadow-md ${res.type === 'lesson-plan' ? 'bg-primary-custom/10 text-primary-custom' :
+                                                        res.type === 'quiz' ? 'bg-blue-500/10 text-blue-500' :
+                                                            res.type === 'visual' ? 'bg-purple-500/10 text-purple-500' :
+                                                                res.type === 'story' ? 'bg-amber-500/10 text-amber-500' :
+                                                                    'bg-muted text-muted-foreground'
                                                         }`}>
                                                         {getTypeIcon(res.type, 20)}
                                                     </div>
-                                                    <div className="flex items-center gap-1 text-[10px] text-gray-400 font-medium bg-gray-50 px-2 py-1 rounded-full">
+                                                    <div className="flex items-center gap-1 text-[10px] text-muted-foreground font-medium bg-muted px-2 py-1 rounded-full">
                                                         <Clock size={10} />
                                                         {formatDate(res.createdAt)}
                                                     </div>
                                                 </div>
 
-                                                <h3 className="text-base font-bold text-gray-800 line-clamp-1 mb-1 group-hover:text-lime-700 transition-colors">
+                                                <h3 className="text-base font-bold text-foreground line-clamp-1 mb-1 group-hover:text-primary-custom transition-colors">
                                                     {res.title}
                                                 </h3>
 
                                                 <div className="flex items-center gap-2 mb-3">
-                                                    <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                                                    <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">
                                                         {getToolDisplayName(res.toolId)}
                                                     </span>
                                                 </div>
 
                                                 {res.bookTitle && (
-                                                    <div className="flex items-center gap-1.5 text-xs text-gray-500 mb-3 bg-gray-50 p-1.5 rounded-lg truncate">
+                                                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-3 bg-muted p-1.5 rounded-lg truncate border border-border">
                                                         <BookOpen size={12} className="flex-shrink-0" />
                                                         <span className="truncate">{res.bookTitle}</span>
                                                     </div>
@@ -507,7 +507,7 @@ const WorkspaceView: React.FC = () => {
 
                                                 {/* Content Preview (Text) */}
                                                 {res.contentType === 'text' && (
-                                                    <p className="text-xs text-gray-500 line-clamp-3 mb-4 flex-1">
+                                                    <p className="text-xs text-muted-foreground line-clamp-3 mb-4 flex-1 font-medium leading-relaxed">
                                                         {(function () {
                                                             if (res.content.trim().startsWith('{')) {
                                                                 try {
@@ -524,7 +524,7 @@ const WorkspaceView: React.FC = () => {
 
                                                 {/* Content Preview (Image) */}
                                                 {res.contentType === 'image' && res.imageUrl && (
-                                                    <div className="mb-4 rounded-lg overflow-hidden bg-gray-100 h-24 w-full relative group/img flex-1">
+                                                    <div className="mb-4 rounded-lg overflow-hidden bg-muted h-24 w-full relative group/img flex-1">
                                                         <img
                                                             src={res.imageUrl}
                                                             alt={res.title}
@@ -533,10 +533,10 @@ const WorkspaceView: React.FC = () => {
                                                     </div>
                                                 )}
 
-                                                <div className="mt-auto pt-3 border-t border-gray-100 flex items-center justify-between">
+                                                <div className="mt-auto pt-3 border-t border-border flex items-center justify-between">
                                                     <button
                                                         onClick={(e) => { e.stopPropagation(); handleDelete(res.id); }}
-                                                        className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                                                        className="p-1.5 text-muted-foreground hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
                                                         title="Delete"
                                                     >
                                                         {deleting === res.id ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
@@ -544,7 +544,7 @@ const WorkspaceView: React.FC = () => {
 
                                                     <button
                                                         onClick={(e) => { e.stopPropagation(); setSelectedContent(res); }}
-                                                        className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 hover:bg-lime-50 text-gray-600 hover:text-lime-600 rounded-lg text-xs font-bold transition-colors"
+                                                        className="flex items-center gap-1.5 px-3 py-1.5 bg-muted hover:bg-primary-custom/10 text-muted-foreground hover:text-primary-custom rounded-lg text-xs font-bold transition-colors border border-border"
                                                     >
                                                         <span>View</span>
                                                         <Maximize2 size={12} />
@@ -563,52 +563,52 @@ const WorkspaceView: React.FC = () => {
             {/* Content Preview Modal */}
             {selectedContent && (
                 <div
-                    className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-md animate-in fade-in duration-200"
+                    className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-background/80 backdrop-blur-md animate-in fade-in duration-200"
                     onClick={() => setSelectedContent(null)}
                 >
                     <div
-                        className="bg-white rounded-3xl w-full max-w-4xl max-h-[90vh] shadow-2xl overflow-hidden flex flex-col animate-in zoom-in-95 duration-300"
+                        className="bg-card-bg rounded-3xl w-full max-w-4xl max-h-[90vh] shadow-2xl overflow-hidden flex flex-col animate-in zoom-in-95 duration-300 border border-border"
                         onClick={(e) => e.stopPropagation()}
                     >
                         {/* Modal Header */}
-                        <div className={`p-6 border-b border-gray-100 flex items-center gap-4 bg-gradient-to-r ${selectedContent.type === 'lesson-plan' ? 'from-lime-50 to-emerald-50' :
-                            selectedContent.type === 'quiz' ? 'from-blue-50 to-indigo-50' :
-                                selectedContent.type === 'visual' ? 'from-purple-50 to-pink-50' :
-                                    selectedContent.type === 'story' ? 'from-amber-50 to-orange-50' :
-                                        'from-gray-50 to-gray-100'
+                        <div className={`p-6 border-b border-border flex items-center gap-4 ${selectedContent.type === 'lesson-plan' ? 'bg-primary-custom/5' :
+                            selectedContent.type === 'quiz' ? 'bg-blue-500/5' :
+                                selectedContent.type === 'visual' ? 'bg-purple-500/5' :
+                                    selectedContent.type === 'story' ? 'bg-amber-500/5' :
+                                        'bg-muted'
                             }`}>
                             {/* Icon */}
-                            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg ${selectedContent.type === 'lesson-plan' ? 'bg-gradient-to-br from-lime-400 to-emerald-500' :
-                                selectedContent.type === 'quiz' ? 'bg-gradient-to-br from-blue-400 to-indigo-500' :
-                                    selectedContent.type === 'visual' ? 'bg-gradient-to-br from-purple-400 to-pink-500' :
-                                        selectedContent.type === 'story' ? 'bg-gradient-to-br from-amber-400 to-orange-500' :
-                                            'bg-gradient-to-br from-gray-400 to-gray-500'
+                            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg ${selectedContent.type === 'lesson-plan' ? 'bg-primary-custom text-white' :
+                                selectedContent.type === 'quiz' ? 'bg-blue-500 text-white' :
+                                    selectedContent.type === 'visual' ? 'bg-purple-500 text-white' :
+                                        selectedContent.type === 'story' ? 'bg-amber-500 text-white' :
+                                            'bg-muted-foreground text-white'
                                 }`}>
                                 <span className="text-white">{getTypeIcon(selectedContent.type)}</span>
                             </div>
 
                             <div className="flex-1 min-w-0">
-                                <h2 className="text-xl font-bold text-gray-800 truncate">{selectedContent.title}</h2>
+                                <h2 className="text-xl font-bold text-foreground truncate">{selectedContent.title}</h2>
                                 <div className="flex items-center gap-2 mt-1">
-                                    <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${selectedContent.type === 'lesson-plan' ? 'bg-lime-100 text-lime-700' :
-                                        selectedContent.type === 'quiz' ? 'bg-blue-100 text-blue-700' :
-                                            selectedContent.type === 'visual' ? 'bg-purple-100 text-purple-700' :
-                                                selectedContent.type === 'story' ? 'bg-amber-100 text-amber-700' :
-                                                    'bg-gray-100 text-gray-600'
+                                    <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${selectedContent.type === 'lesson-plan' ? 'bg-primary-custom/10 text-primary-custom' :
+                                        selectedContent.type === 'quiz' ? 'bg-blue-500/10 text-blue-500' :
+                                            selectedContent.type === 'visual' ? 'bg-purple-500/10 text-purple-500' :
+                                                selectedContent.type === 'story' ? 'bg-amber-500/10 text-amber-500' :
+                                                    'bg-muted text-muted-foreground'
                                         }`}>
                                         {getToolDisplayName(selectedContent.toolId)}
                                     </span>
                                     {selectedContent.bookTitle && (
                                         <>
-                                            <span className="text-gray-300">•</span>
-                                            <div className="flex items-center gap-1 text-xs text-gray-500">
+                                            <span className="text-border">•</span>
+                                            <div className="flex items-center gap-1 text-xs text-muted-foreground">
                                                 <BookOpen size={12} />
                                                 {selectedContent.bookTitle}
                                             </div>
                                         </>
                                     )}
-                                    <span className="text-gray-300">•</span>
-                                    <div className="flex items-center gap-1 text-xs text-gray-400">
+                                    <span className="text-border">•</span>
+                                    <div className="flex items-center gap-1 text-xs text-muted-foreground/60">
                                         <Clock size={12} />
                                         {formatDate(selectedContent.createdAt)}
                                     </div>
@@ -619,7 +619,7 @@ const WorkspaceView: React.FC = () => {
                             <div className="flex items-center gap-2">
                                 <button
                                     onClick={() => handleCopy(selectedContent.content)}
-                                    className="flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-bold text-gray-600 hover:bg-gray-50 transition-all shadow-sm"
+                                    className="flex items-center gap-2 px-3 py-2 bg-card-bg border border-border rounded-xl text-xs font-bold text-foreground hover:bg-muted transition-all shadow-sm"
                                 >
                                     {copied ? (
                                         <>
@@ -635,14 +635,14 @@ const WorkspaceView: React.FC = () => {
                                 </button>
                                 <Link
                                     href={`/tools/${selectedContent.toolId}`}
-                                    className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-lime-500 to-emerald-500 text-white text-xs font-bold rounded-xl shadow-sm hover:shadow-md transition-all"
+                                    className="flex items-center gap-2 px-3 py-2 bg-primary-custom text-white text-xs font-bold rounded-xl shadow-sm hover:opacity-90 transition-all"
                                 >
                                     <ExternalLink size={14} />
                                     Open in Tool
                                 </Link>
                                 <button
                                     onClick={() => setSelectedContent(null)}
-                                    className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200 hover:text-gray-800 transition-colors"
+                                    className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center text-muted-foreground hover:bg-border hover:text-foreground transition-colors"
                                 >
                                     <X size={20} />
                                 </button>
@@ -650,18 +650,18 @@ const WorkspaceView: React.FC = () => {
                         </div>
 
                         {/* Modal Content */}
-                        <div className="flex-1 overflow-y-auto p-8 bg-white">
+                        <div className="flex-1 overflow-y-auto p-8 bg-card-bg">
                             {selectedContent.contentType === 'image' && selectedContent.imageUrl ? (
                                 <div className="flex items-center justify-center h-full">
                                     <img
                                         src={selectedContent.imageUrl}
                                         alt={selectedContent.title}
-                                        className="max-w-full max-h-[60vh] rounded-2xl shadow-lg"
+                                        className="max-w-full max-h-[60vh] rounded-2xl shadow-lg border border-border"
                                     />
                                 </div>
                             ) : (
                                 <div className="max-w-3xl mx-auto">
-                                    <div className="prose prose-lg max-w-none">
+                                    <div className="prose prose-lg dark:prose-invert max-w-none">
                                         {renderFormattedContent(selectedContent.content)}
                                     </div>
                                 </div>

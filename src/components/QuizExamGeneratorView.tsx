@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import {
     Sparkles, CheckSquare, ChevronDown, ChevronLeft, ChevronRight, Check, X,
     ArrowLeft, Download, RefreshCw, Send, Bot, Zap, Plus, BookOpen, Search,
-    FileText, HelpCircle, List, Clock, ShieldCheck, Share2, Copy, Save, Eye, EyeOff
+    FileText, HelpCircle, List, Clock, ShieldCheck, Share2, Copy, Save, Eye, EyeOff, Wand2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { saveGeneratedContent, generateId } from '@/lib/storage';

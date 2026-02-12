@@ -50,18 +50,18 @@ const ReadBookPage = () => {
     ];
 
     return (
-        <div className="h-screen flex flex-col bg-gray-50 font-sans">
+        <div className="h-screen flex flex-col bg-background font-sans text-foreground">
             {/* 1. Sticky Header - This stays at top */}
-            <header className="sticky top-0 z-50 h-16 bg-white/95 backdrop-blur-md border-b border-gray-200 px-6 flex items-center justify-between shadow-sm">
+            <header className="sticky top-0 z-50 h-16 bg-card-bg/95 backdrop-blur-md border-b border-border px-6 flex items-center justify-between shadow-sm">
                 <button
                     onClick={() => router.back()}
-                    className="flex items-center gap-2 text-gray-600 hover:text-black transition-colors group px-3 py-1.5 rounded-lg hover:bg-gray-100"
+                    className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors group px-3 py-1.5 rounded-lg hover:bg-muted"
                 >
                     <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
                     <span className="font-semibold text-sm">Back to Library</span>
                 </button>
                 <div className="flex items-center gap-4">
-                    <span className="text-sm font-bold text-gray-400 hidden md:block">{book.title}</span>
+                    <span className="text-sm font-bold text-muted-foreground hidden md:block">{book.title}</span>
                 </div>
             </header>
 
@@ -69,10 +69,10 @@ const ReadBookPage = () => {
             <main className="flex-1 flex overflow-hidden w-full items-start gap-0">
 
                 {/* Left Panel: Book Details (Independent Scrollable Area) */}
-                <aside className="w-full md:w-[320px] lg:w-[360px] shrink-0 h-full bg-white border-r-2 border-gray-200 flex flex-col shadow-sm">
+                <aside className="w-full md:w-[320px] lg:w-[360px] shrink-0 h-full bg-card-bg border-r-2 border-border flex flex-col shadow-sm">
                     <div className="p-6 flex flex-col gap-6 h-full overflow-y-auto custom-scrollbar">
                         {/* Cover Image - Modern styled */}
-                        <div className="w-full aspect-[2/3] rounded-2xl overflow-hidden shadow-2xl relative group ring-1 ring-gray-900/5 mx-auto max-w-[280px] shrink-0">
+                        <div className="w-full aspect-[2/3] rounded-2xl overflow-hidden shadow-2xl relative group ring-1 ring-border/20 mx-auto max-w-[280px] shrink-0">
                             {book.cover ? (
                                 <img src={book.cover} alt={book.title} className="w-full h-full object-cover" />
                             ) : (
@@ -91,19 +91,19 @@ const ReadBookPage = () => {
 
                         {/* Book Info */}
                         <div className="text-center space-y-2 shrink-0">
-                            <h1 className="text-2xl font-bold text-gray-900 leading-tight">{book.title}</h1>
-                            <p className="text-sm text-gray-500 font-medium">by <span className="text-gray-900">{book.author}</span></p>
+                            <h1 className="text-2xl font-bold text-foreground leading-tight">{book.title}</h1>
+                            <p className="text-sm text-muted-foreground font-medium">by <span className="text-foreground">{book.author}</span></p>
                         </div>
 
                         {/* Meta Grid */}
                         <div className="grid grid-cols-2 gap-3 shrink-0">
-                            <div className="bg-gray-50 p-3 rounded-xl text-center border border-gray-100">
-                                <p className="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1">Subject</p>
-                                <p className="font-bold text-gray-800 text-sm">{book.subject}</p>
+                            <div className="bg-muted p-3 rounded-xl text-center border border-border">
+                                <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider mb-1">Subject</p>
+                                <p className="font-bold text-foreground text-sm">{book.subject}</p>
                             </div>
-                            <div className="bg-gray-50 p-3 rounded-xl text-center border border-gray-100">
-                                <p className="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1">Level</p>
-                                <p className="font-bold text-gray-800 text-sm">{book.classLevel}</p>
+                            <div className="bg-muted p-3 rounded-xl text-center border border-border">
+                                <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider mb-1">Level</p>
+                                <p className="font-bold text-foreground text-sm">{book.classLevel}</p>
                             </div>
                         </div>
 
@@ -114,7 +114,7 @@ const ReadBookPage = () => {
                         <div className="shrink-0">
                             <Link
                                 href={`/library/${book.id}/manage`}
-                                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-lime-600 text-white font-bold text-sm shadow-lg shadow-lime-200 hover:bg-lime-700 transition-all hover:-translate-y-0.5"
+                                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-primary-custom text-white font-bold text-sm shadow-lg shadow-primary-custom/20 hover:bg-primary-custom/90 transition-all hover:-translate-y-0.5"
                             >
                                 Manage Resource
                             </Link>
@@ -123,15 +123,15 @@ const ReadBookPage = () => {
                 </aside>
 
                 {/* Right Panel: Content (Independent Scrollable Area) */}
-                <section className="flex-1 h-full overflow-y-auto bg-gray-50/50 p-6 lg:p-10 custom-scrollbar">
+                <section className="flex-1 h-full overflow-y-auto bg-background p-6 lg:p-10 custom-scrollbar">
                     <div className="max-w-3xl mx-auto space-y-10">
                         {/* Overview */}
-                        <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
-                            <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2 border-b border-gray-100 pb-3">
-                                <FileText className="text-lime-600" size={20} />
+                        <div className="bg-card-bg p-8 rounded-3xl shadow-sm border border-border">
+                            <h2 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2 border-b border-border pb-3">
+                                <FileText className="text-primary-custom" size={20} />
                                 Book Overview
                             </h2>
-                            <p className="text-gray-600 leading-relaxed text-sm md:text-base">
+                            <p className="text-muted-foreground leading-relaxed text-sm md:text-base">
                                 {book.description ||
                                     "No description available for this resource. This is a comprehensive guide tailored for students and educators. It covers essential topics, theories, and practical applications relevant to the subject matter."}
                             </p>
@@ -140,11 +140,11 @@ const ReadBookPage = () => {
                         {/* Chapters */}
                         <div>
                             <div className="flex justify-between items-center mb-6">
-                                <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                                    <Book className="text-lime-600" size={20} />
+                                <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+                                    <Book className="text-primary-custom" size={20} />
                                     <span>Table of Contents</span>
                                 </h2>
-                                <span className="bg-lime-100 text-lime-800 text-xs font-bold px-3 py-1 rounded-full">
+                                <span className="bg-primary-custom/10 text-primary-custom text-xs font-bold px-3 py-1 rounded-full border border-primary-custom/20">
                                     {chapters.length} Chapters
                                 </span>
                             </div>
@@ -154,16 +154,16 @@ const ReadBookPage = () => {
                                     <Link
                                         key={idx}
                                         href={`/library/${book.id}/chapter/${idx}`}
-                                        className="group bg-white p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-lime-200 transition-all cursor-pointer flex items-center gap-5"
+                                        className="group bg-card-bg p-5 rounded-2xl border border-border shadow-sm hover:shadow-md hover:border-primary-custom transition-all cursor-pointer flex items-center gap-5"
                                     >
-                                        <div className="w-12 h-12 shrink-0 rounded-xl bg-gray-50 text-gray-400 font-bold flex items-center justify-center text-sm group-hover:bg-lime-600 group-hover:text-white transition-colors duration-300">
+                                        <div className="w-12 h-12 shrink-0 rounded-xl bg-muted text-muted-foreground font-bold flex items-center justify-center text-sm group-hover:bg-primary-custom group-hover:text-white transition-colors duration-300">
                                             {idx + 1}
                                         </div>
                                         <div className="flex-1">
-                                            <h4 className="font-bold text-gray-900 mb-1 group-hover:text-lime-700 transition-colors">{chapter.title}</h4>
-                                            <p className="text-xs text-gray-400 font-medium">{chapter.pages} pages • PDF</p>
+                                            <h4 className="font-bold text-foreground mb-1 group-hover:text-primary-custom transition-colors">{chapter.title}</h4>
+                                            <p className="text-xs text-muted-foreground font-medium">{chapter.pages} pages • PDF</p>
                                         </div>
-                                        <div className="bg-gray-50 p-2 rounded-full text-gray-300 group-hover:text-lime-600 group-hover:bg-lime-50 transition-colors">
+                                        <div className="bg-muted p-2 rounded-full text-muted-foreground/30 group-hover:text-primary-custom group-hover:bg-primary-custom/10 transition-colors">
                                             <FileText size={18} />
                                         </div>
                                     </Link>

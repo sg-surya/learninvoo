@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Inter, Outfit } from "next/font/google"; // Import fonts
 import "./globals.css";
 import ClientLayout from "./ClientLayout";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -29,7 +30,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} ${outfit.variable} antialiased`} suppressHydrationWarning>
-        <ClientLayout>{children}</ClientLayout>
+        <ThemeProvider>
+          <ClientLayout>{children}</ClientLayout>
+        </ThemeProvider>
       </body>
     </html>
   );

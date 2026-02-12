@@ -19,16 +19,16 @@ interface SettingsModalProps {
 // Custom Styled Components to match the image
 const SectionBox = ({ title, children }: { title: string, children: React.ReactNode }) => (
     <div className="mb-6">
-        <h4 className="text-[13px] font-bold text-slate-500 mb-3 ml-1">{title}</h4>
-        <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+        <h4 className="text-[13px] font-bold text-muted-foreground mb-3 ml-1">{title}</h4>
+        <div className="bg-card-bg border border-border rounded-2xl overflow-hidden shadow-sm">
             {children}
         </div>
     </div>
 );
 
 const SectionRow = ({ label, children, isLast = false }: { label: string, children: React.ReactNode, isLast?: boolean }) => (
-    <div className={`flex items-center justify-between p-4 ${!isLast ? 'border-b border-slate-100' : ''} bg-white`}>
-        <span className="text-sm font-medium text-slate-700">{label}</span>
+    <div className={`flex items-center justify-between p-4 ${!isLast ? 'border-b border-border/50' : ''} bg-card-bg`}>
+        <span className="text-sm font-medium text-foreground">{label}</span>
         <div className="flex items-center gap-3">
             {children}
         </div>
@@ -53,10 +53,10 @@ const CustomDropdown = ({ options, value, onChange }: { options: string[], value
         <div className="relative" ref={containerRef}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg hover:border-slate-300 transition-all text-xs font-bold text-slate-700 min-w-[140px] justify-between outline-none"
+                className="flex items-center gap-2 px-3 py-1.5 bg-muted/50 border border-border rounded-lg hover:border-primary-custom/50 transition-all text-xs font-bold text-foreground min-w-[140px] justify-between outline-none"
             >
                 <span>{value}</span>
-                <ChevronDown size={14} className="text-slate-400" />
+                <ChevronDown size={14} className="text-muted-foreground" />
             </button>
             <AnimatePresence>
                 {isOpen && (
@@ -64,7 +64,7 @@ const CustomDropdown = ({ options, value, onChange }: { options: string[], value
                         initial={{ opacity: 0, y: 5 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 5 }}
-                        className="absolute right-0 top-full mt-1 w-full bg-white rounded-xl shadow-xl border border-slate-200 z-[100] p-1"
+                        className="absolute right-0 top-full mt-1 w-full bg-card-bg rounded-xl shadow-xl border border-border z-[100] p-1"
                     >
                         {options.map((opt) => (
                             <button
@@ -73,7 +73,7 @@ const CustomDropdown = ({ options, value, onChange }: { options: string[], value
                                     onChange(opt);
                                     setIsOpen(false);
                                 }}
-                                className={`w-full text-left px-3 py-2 rounded-lg text-xs font-bold transition-all outline-none ${value === opt ? 'bg-indigo-50 text-indigo-600' : 'text-slate-600 hover:bg-slate-50'}`}
+                                className={`w-full text-left px-3 py-2 rounded-lg text-xs font-bold transition-all outline-none ${value === opt ? 'bg-primary-custom/10 text-primary-custom' : 'text-muted-foreground hover:bg-muted'}`}
                             >
                                 {opt}
                             </button>
@@ -86,14 +86,14 @@ const CustomDropdown = ({ options, value, onChange }: { options: string[], value
 };
 
 const SegmentedControl = ({ options, value, onChange }: { options: any[], value: string, onChange: (val: string) => void }) => (
-    <div className="flex items-center gap-2 bg-slate-100 p-1 rounded-full border border-slate-200">
+    <div className="flex items-center gap-2 bg-muted p-1 rounded-full border border-border">
         {options.map((opt) => (
             <button
                 key={opt.id}
                 onClick={() => onChange(opt.id)}
-                className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold transition-all outline-none ${value === opt.id ? 'bg-white shadow-sm border border-slate-200 text-slate-900' : 'text-slate-500 hover:text-slate-700'}`}
+                className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold transition-all outline-none ${value === opt.id ? 'bg-card-bg shadow-sm border border-border text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
             >
-                {opt.icon && <opt.icon size={13} className={value === opt.id ? 'text-indigo-500' : 'text-slate-400'} />}
+                {opt.icon && <opt.icon size={13} className={value === opt.id ? 'text-primary-custom' : 'text-muted-foreground'} />}
                 <span>{opt.label}</span>
             </button>
         ))}
@@ -222,17 +222,17 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, user }) 
                             <SectionRow label="Full Name">
                                 <input
                                     type="text"
-                                    className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs font-bold text-slate-700 outline-none w-64 focus:border-indigo-500 transition-all"
+                                    className="bg-muted border border-border rounded-lg px-3 py-1.5 text-xs font-bold text-foreground outline-none w-64 focus:border-primary-custom transition-all"
                                     value={settings.fullName}
                                     onChange={(e) => updateSetting('fullName', e.target.value)}
                                 />
                             </SectionRow>
                             <SectionRow label="User handle" isLast={true}>
                                 <div className="flex items-center gap-2">
-                                    <span className="text-xs text-slate-400 font-bold">@</span>
+                                    <span className="text-xs text-muted-foreground font-bold">@</span>
                                     <input
                                         type="text"
-                                        className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs font-bold text-slate-700 outline-none w-56 focus:border-indigo-500 transition-all"
+                                        className="bg-muted border border-border rounded-lg px-3 py-1.5 text-xs font-bold text-foreground outline-none w-56 focus:border-primary-custom transition-all"
                                         value={settings.username}
                                         onChange={(e) => updateSetting('username', e.target.value)}
                                     />
@@ -240,10 +240,10 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, user }) 
                             </SectionRow>
                         </SectionBox>
                         <SectionBox title="Story">
-                            <div className="p-4 bg-white">
-                                <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Professional Bio</label>
+                            <div className="p-4 bg-card-bg">
+                                <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-2 block">Professional Bio</label>
                                 <textarea
-                                    className="w-full h-32 bg-slate-50 border border-slate-200 rounded-xl p-4 text-xs font-bold text-slate-700 outline-none focus:border-indigo-500 transition-all resize-none"
+                                    className="w-full h-32 bg-muted border border-border rounded-xl p-4 text-xs font-bold text-foreground outline-none focus:border-primary-custom transition-all resize-none"
                                     value={settings.bio}
                                     onChange={(e) => updateSetting('bio', e.target.value)}
                                 />
@@ -277,7 +277,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, user }) 
                             <SectionRow label="Auto-save AI Drafts" isLast={true}>
                                 <div
                                     onClick={() => updateSetting('glassmorphism', !settings.glassmorphism)}
-                                    className={`w-10 h-5 rounded-full relative cursor-pointer transition-all ${settings.glassmorphism ? 'bg-indigo-500' : 'bg-slate-200'}`}
+                                    className={`w-10 h-5 rounded-full relative cursor-pointer transition-all ${settings.glassmorphism ? 'bg-primary-custom' : 'bg-muted'}`}
                                 >
                                     <div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all ${settings.glassmorphism ? 'left-6' : 'left-1'}`} />
                                 </div>
@@ -292,7 +292,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, user }) 
                             <SectionRow label="Class start reminders">
                                 <div
                                     onClick={() => updateSetting('classAlerts', !settings.classAlerts)}
-                                    className={`w-10 h-5 rounded-full relative cursor-pointer transition-all ${settings.classAlerts ? 'bg-indigo-500' : 'bg-slate-200'}`}
+                                    className={`w-10 h-5 rounded-full relative cursor-pointer transition-all ${settings.classAlerts ? 'bg-primary-custom' : 'bg-muted'}`}
                                 >
                                     <div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all ${settings.classAlerts ? 'left-6' : 'left-1'}`} />
                                 </div>
@@ -300,7 +300,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, user }) 
                             <SectionRow label="AI task completion" isLast={true}>
                                 <div
                                     onClick={() => updateSetting('aiCompletionNotif', !settings.aiCompletionNotif)}
-                                    className={`w-10 h-5 rounded-full relative cursor-pointer transition-all ${settings.aiCompletionNotif ? 'bg-indigo-500' : 'bg-slate-200'}`}
+                                    className={`w-10 h-5 rounded-full relative cursor-pointer transition-all ${settings.aiCompletionNotif ? 'bg-primary-custom' : 'bg-muted'}`}
                                 >
                                     <div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all ${settings.aiCompletionNotif ? 'left-6' : 'left-1'}`} />
                                 </div>
@@ -315,13 +315,13 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, user }) 
                             <SectionRow label="Two-factor authentication">
                                 <div
                                     onClick={() => updateSetting('mfa', !settings.mfa)}
-                                    className={`w-10 h-5 rounded-full relative cursor-pointer transition-all ${settings.mfa ? 'bg-indigo-500' : 'bg-slate-200'}`}
+                                    className={`w-10 h-5 rounded-full relative cursor-pointer transition-all ${settings.mfa ? 'bg-primary-custom' : 'bg-muted'}`}
                                 >
                                     <div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all ${settings.mfa ? 'left-6' : 'left-1'}`} />
                                 </div>
                             </SectionRow>
                             <SectionRow label="Change system password" isLast={true}>
-                                <button className="px-4 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-700 hover:bg-slate-100 flex items-center gap-2 outline-none">
+                                <button className="px-4 py-1.5 bg-muted border border-border rounded-lg text-xs font-bold text-foreground hover:bg-muted/80 flex items-center gap-2 outline-none">
                                     Update Key <ChevronRight size={14} />
                                 </button>
                             </SectionRow>
@@ -333,14 +333,14 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, user }) 
                     <div className="space-y-6">
                         <SectionBox title="Data Portability">
                             <SectionRow label="Generate archive bundle" isLast={true}>
-                                <button className="px-4 py-1.5 bg-indigo-50 text-indigo-600 border border-indigo-100 rounded-lg text-xs font-bold hover:bg-indigo-100 flex items-center gap-2 outline-none">
+                                <button className="px-4 py-1.5 bg-primary-custom/10 text-primary-custom border border-primary-custom/20 rounded-lg text-xs font-bold hover:bg-primary-custom/20 flex items-center gap-2 outline-none">
                                     <Database size={14} /> Export All
                                 </button>
                             </SectionRow>
                         </SectionBox>
                         <SectionBox title="Termination">
                             <SectionRow label="Permanently remove access" isLast={true}>
-                                <button className="px-4 py-1.5 bg-rose-50 text-rose-500 border border-rose-100 rounded-lg text-xs font-bold hover:bg-rose-100 outline-none">
+                                <button className="px-4 py-1.5 bg-rose-500/10 text-rose-500 border border-rose-500/20 rounded-lg text-xs font-bold hover:bg-rose-500/20 outline-none">
                                     Delete Account
                                 </button>
                             </SectionRow>
@@ -368,23 +368,23 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, user }) 
                         initial={{ opacity: 0, scale: 0.98 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.98 }}
-                        className="relative w-full max-w-5xl h-[700px] bg-white rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white flex overflow-hidden font-inter"
+                        className="relative w-full max-w-5xl h-[700px] bg-card-bg rounded-[2rem] shadow-2xl border border-border flex overflow-hidden font-inter"
                     >
                         {/* Sidebar - Integrated Background */}
-                        <aside className="w-[300px] bg-white p-8 flex flex-col">
+                        <aside className="w-[300px] bg-card-bg p-8 flex flex-col border-r border-border">
                             <div className="mb-10">
                                 <div className="flex items-start gap-4 mb-4">
-                                    <div className="mt-1 shadow-sm p-2 bg-indigo-500 rounded-lg text-white">
+                                    <div className="mt-1 shadow-sm p-2 bg-primary-custom rounded-lg text-white">
                                         <Monitor size={18} />
                                     </div>
                                     <div>
                                         <div className="flex items-center gap-2">
-                                            <h2 className="text-lg font-bold text-slate-800 tracking-tight">System Settings</h2>
-                                            <Info size={14} className="text-slate-300" />
+                                            <h2 className="text-lg font-bold text-foreground tracking-tight">System Settings</h2>
+                                            <Info size={14} className="text-muted-foreground/30" />
                                         </div>
                                     </div>
                                 </div>
-                                <p className="text-[13px] text-slate-500 leading-relaxed font-medium">
+                                <p className="text-[13px] text-muted-foreground leading-relaxed font-medium">
                                     Customize your workspace, AI assistant personality, and data security to optimize your teacher dashboard experience.
                                 </p>
                             </div>
@@ -397,12 +397,12 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, user }) 
                                         <button
                                             key={tab.id}
                                             onClick={() => setActiveTab(tab.id)}
-                                            className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-all outline-none ${isActive ? 'bg-slate-50 text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50/50'}`}
+                                            className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-all outline-none ${isActive ? 'bg-muted text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'}`}
                                         >
-                                            <Icon size={18} className={isActive ? 'text-indigo-500' : 'text-slate-400 group-hover:text-slate-600'} />
+                                            <Icon size={18} className={isActive ? 'text-primary-custom' : 'text-muted-foreground'} />
                                             <span className="text-[13px] font-bold tracking-tight">{tab.label}</span>
                                             {tab.badge && (
-                                                <span className="ml-auto text-[9px] font-black text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded-full uppercase tracking-widest border border-indigo-100">
+                                                <span className="ml-auto text-[9px] font-black text-primary-custom bg-primary-custom/10 px-2 py-0.5 rounded-full uppercase tracking-widest border border-primary-custom/20">
                                                     {tab.badge}
                                                 </span>
                                             )}
@@ -412,25 +412,25 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, user }) 
                             </nav>
 
                             <div className="mt-auto px-1">
-                                <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition-all font-bold text-[13px] outline-none">
+                                <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-muted-foreground hover:text-rose-500 hover:bg-rose-500/10 transition-all font-bold text-[13px] outline-none">
                                     <LogOut size={18} />
                                     <span>Terminate Session</span>
                                 </button>
                                 <div className="mt-6 flex items-center justify-between mb-2">
-                                    <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em]">Build v2.4.0</span>
+                                    <span className="text-[10px] font-black text-muted-foreground/30 uppercase tracking-[0.2em]">Build v2.4.0</span>
                                 </div>
                             </div>
                         </aside>
 
                         {/* Content Area - Floating Card Look */}
-                        <main className="flex-1 flex flex-col min-w-0 bg-[#f8f9fa] m-3 rounded-[1.5rem] border border-slate-200 overflow-hidden">
+                        <main className="flex-1 flex flex-col min-w-0 bg-muted m-3 rounded-[1.5rem] border border-border overflow-hidden">
                             <div className="p-8 pb-4 flex items-center justify-between">
-                                <h3 className="text-xl font-bold text-slate-800 tracking-tight">
+                                <h3 className="text-xl font-bold text-foreground tracking-tight">
                                     {tabs.find(t => t.id === activeTab)?.label}
                                 </h3>
                                 <button
                                     onClick={onClose}
-                                    className="w-8 h-8 rounded-full hover:bg-slate-200 text-slate-400 flex items-center justify-center transition-all bg-white border border-slate-100 outline-none active:scale-90"
+                                    className="w-8 h-8 rounded-full hover:bg-muted text-muted-foreground flex items-center justify-center transition-all bg-card-bg border border-border outline-none active:scale-90"
                                 >
                                     <X size={16} />
                                 </button>
@@ -447,14 +447,14 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, user }) 
                                 </motion.div>
                             </div>
 
-                            <div className="p-6 bg-[#f8f9fa] border-t border-slate-200/50 flex items-center justify-between">
-                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest pl-3 italic">Changes effect localized machine state</p>
+                            <div className="p-6 bg-muted border-t border-border/50 flex items-center justify-between">
+                                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest pl-3 italic">Changes effect localized machine state</p>
                                 <div className="flex gap-3">
-                                    <button onClick={onClose} className="px-6 py-2.5 text-xs font-bold text-slate-500 hover:text-slate-800 transition-all border border-slate-200 rounded-xl bg-white outline-none">Discard</button>
+                                    <button onClick={onClose} className="px-6 py-2.5 text-xs font-bold text-muted-foreground hover:text-foreground transition-all border border-border rounded-xl bg-card-bg outline-none">Discard</button>
                                     <button
                                         onClick={handleSave}
                                         disabled={isSaving}
-                                        className="px-8 py-2.5 bg-slate-900 text-white text-xs font-bold rounded-xl shadow-lg shadow-slate-900/10 hover:bg-indigo-600 hover:shadow-indigo-600/20 transition-all active:scale-[0.98] disabled:opacity-50 flex items-center gap-2 outline-none"
+                                        className="px-8 py-2.5 bg-foreground text-background text-xs font-bold rounded-xl shadow-lg hover:shadow-primary-custom/20 hover:bg-primary-custom transition-all active:scale-[0.98] disabled:opacity-50 flex items-center gap-2 outline-none"
                                     >
                                         {isSaving ? 'Syncing...' : 'Save Changes'}
                                     </button>

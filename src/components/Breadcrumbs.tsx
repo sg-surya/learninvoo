@@ -12,10 +12,10 @@ const Breadcrumbs = () => {
     if (pathname === '/dashboard') return null;
 
     return (
-        <nav className="flex items-center gap-1.5 px-8 pt-6 pb-4 bg-white sticky top-0 z-20 border-b border-gray-50/50">
+        <nav className="flex items-center gap-1.5 px-8 pt-6 pb-4 bg-card-bg sticky top-0 z-20 border-b border-border/50">
             <Link
                 href="/dashboard"
-                className="flex items-center gap-1.5 text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-lime-600 transition-colors group"
+                className="flex items-center gap-1.5 text-[10px] font-black text-muted-foreground uppercase tracking-widest hover:text-primary-custom transition-colors group"
             >
                 <Home size={12} className="group-hover:scale-110 transition-transform" />
                 DASHBOARD
@@ -30,10 +30,10 @@ const Breadcrumbs = () => {
 
                 return (
                     <React.Fragment key={path}>
-                        <ChevronRight size={10} className="text-slate-200" />
+                        <ChevronRight size={10} className="text-border" />
                         <Link
                             href={path}
-                            className={`text-[10px] font-black uppercase tracking-widest transition-colors ${isLast ? 'text-lime-500' : 'text-slate-400 hover:text-slate-600'
+                            className={`text-[10px] font-black uppercase tracking-widest transition-colors ${isLast ? 'text-primary-custom' : 'text-muted-foreground hover:text-foreground'
                                 }`}
                         >
                             {segment.replace(/-/g, ' ')}
