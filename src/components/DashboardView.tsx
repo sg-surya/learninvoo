@@ -106,7 +106,7 @@ const DashboardView: React.FC = () => {
 
     return (
         <motion.div
-            className="p-8 w-full min-h-screen bg-transparent text-foreground"
+            className="p-8 w-full bg-transparent text-foreground"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
         >
@@ -135,7 +135,7 @@ const DashboardView: React.FC = () => {
                     {/* Active Session & Quick Graph */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {/* Session Card */}
-                        <div className="bg-card-bg/80 backdrop-blur-2xl p-8 rounded-[2.5rem] border border-border shadow-sm relative overflow-hidden group hover:bg-card-bg transition-all duration-500">
+                        <div className="bg-card-bg/80 backdrop-blur-2xl p-8 rounded-3xl border border-border shadow-sm relative overflow-hidden group hover:bg-card-bg transition-all duration-500">
                             <div className="absolute top-0 right-0 p-4">
                                 <span className="px-3 py-1 bg-primary-custom/10 text-primary-custom text-[10px] font-black rounded-full border border-primary-custom/20 uppercase tracking-widest">In Session</span>
                             </div>
@@ -161,7 +161,7 @@ const DashboardView: React.FC = () => {
                         </div>
 
                         {/* Performance Graph Card */}
-                        <div className="bg-card-bg/80 backdrop-blur-2xl p-8 rounded-[2.5rem] border border-border shadow-sm flex flex-col justify-between">
+                        <div className="bg-card-bg/80 backdrop-blur-2xl p-8 rounded-3xl border border-border shadow-sm flex flex-col justify-between">
                             <div>
                                 <div className="flex justify-between items-start mb-2">
                                     <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Class Performance</p>
@@ -191,7 +191,7 @@ const DashboardView: React.FC = () => {
                     </div>
 
                     {/* Minimalist Progress Section */}
-                    <div className="bg-card-bg/40 backdrop-blur-md rounded-[2.5rem] p-8 border border-border/60">
+                    <div className="bg-card-bg/40 backdrop-blur-md rounded-3xl p-8 border border-border/60">
                         <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em] mb-8">Syllabus Milestones</h3>
                         <div className="space-y-8">
                             {[
@@ -223,7 +223,7 @@ const DashboardView: React.FC = () => {
                 {/* Sidebar Column */}
                 <div className="col-span-12 lg:col-span-4 space-y-8">
                     {/* Tasks Panel */}
-                    <div className="bg-card-bg border border-border rounded-[2.5rem] p-8 relative overflow-hidden shadow-sm">
+                    <div className="bg-card-bg border border-border rounded-3xl p-8 relative overflow-hidden shadow-sm">
                         <div className="absolute top-[-10%] right-[-10%] w-40 h-40 bg-primary-custom/10 rounded-full blur-[40px]" />
                         <div className="relative z-10">
                             <h3 className="text-xs font-black uppercase tracking-[0.3em] text-primary-custom mb-6 flex items-center gap-2">
@@ -253,7 +253,7 @@ const DashboardView: React.FC = () => {
                     </div>
 
                     {/* Up Next / AI Suggestion */}
-                    <div className="bg-card-bg/80 backdrop-blur-2xl p-8 rounded-[2.5rem] border border-border shadow-sm flex flex-col gap-6">
+                    <div className="bg-card-bg/80 backdrop-blur-2xl p-8 rounded-3xl border border-border shadow-sm flex flex-col gap-6">
                         <div className="flex items-center gap-4">
                             <div className="w-12 h-12 bg-sky-500/10 text-sky-500 rounded-2xl flex items-center justify-center">
                                 <Sparkles size={24} />

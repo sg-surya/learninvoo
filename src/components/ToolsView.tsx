@@ -47,7 +47,7 @@ const ToolsView: React.FC = () => {
     }, []);
 
     return (
-        <div className="p-8 w-full bg-transparent min-h-screen">
+        <div className="p-8 w-full bg-transparent">
             {/* Header Section */}
             <div className="bg-gradient-to-r from-primary-custom/10 to-emerald-500/10 rounded-[2.5rem] p-10 mb-12 relative overflow-hidden border border-primary-custom/10">
                 <div className="relative z-10">
@@ -101,32 +101,53 @@ const ToolsView: React.FC = () => {
             </div>
 
             {/* AI Tools Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-20">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-6">
                 {TOOLS.map((tool, idx) => {
                     const slug = tool.label.toLowerCase().replace(/[\/\s]+/g, '-');
                     return (
                         <div
                             key={idx}
                             onClick={() => router.push(`/tools/${slug}`)}
-                            className="bg-card-bg rounded-2xl p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-border hover:shadow-xl hover:shadow-primary-custom/10 hover:border-primary-custom/50 transition-all duration-300 cursor-pointer flex flex-col items-start group relative h-64 overflow-hidden"
+                            className="group relative flex flex-col h-72 p-8 rounded-3xl bg-card-bg/40 border border-border/50 backdrop-blur-md transition-all duration-500 hover:-translate-y-2 cursor-pointer overflow-hidden shadow-soft hover:shadow-2xl hover:shadow-primary-custom/5 hover:border-primary-custom/30"
                         >
-                            {/* Hover Gradient Background */}
-                            <div className="absolute inset-0 bg-gradient-to-br from-primary-custom/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                            {/* Sophisticated Glow Background */}
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary-custom/10 to-transparent rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
-                            <div className="relative z-10 w-full flex flex-col h-full">
-                                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${tool.bg} ${tool.color} mb-5 group-hover:scale-110 transition-transform duration-300 shadow-sm`}>
-                                    <tool.icon size={26} />
+                            <div className="relative z-10 flex flex-col h-full">
+                                {/* Icon Pedestal */}
+                                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${tool.bg} ${tool.color} mb-8 shadow-inner relative group-hover:scale-110 transition-transform duration-500`}>
+                                    <tool.icon size={26} strokeWidth={1.5} />
+                                    {/* Subtle pulse under icon on hover */}
+                                    <div className="absolute inset-0 bg-current opacity-0 group-hover:opacity-20 rounded-2xl blur-xl transition-opacity duration-500" />
                                 </div>
-                                <h3 className="text-lg font-bold text-foreground mb-2 group-hover:text-primary-custom transition-colors">{tool.label}</h3>
-                                <p className="text-muted-foreground text-sm leading-relaxed mb-4">{tool.desc}</p>
 
-                                <div className="mt-auto w-full flex items-center justify-between pt-4 border-t border-border group-hover:border-primary-custom/20 transition-colors">
-                                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest group-hover:text-primary-custom transition-colors">Launch Tool</span>
-                                    <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center group-hover:bg-primary-custom group-hover:text-white transition-all duration-300">
-                                        <ArrowRight size={14} className="-rotate-45 group-hover:rotate-0 transition-transform duration-300" />
+                                <div className="space-y-3">
+                                    <h3 className="text-xl font-black text-foreground font-display tracking-tight uppercase italic leading-none group-hover:text-primary-custom transition-colors">
+                                        {tool.label}
+                                    </h3>
+                                    <p className="text-xs font-bold text-muted-foreground/60 leading-relaxed uppercase tracking-wide">
+                                        {tool.desc}
+                                    </p>
+                                </div>
+
+                                <div className="mt-auto flex items-center justify-between">
+                                    <div className="flex flex-col">
+                                        <span className="text-[10px] font-black text-primary-custom uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0 duration-300">
+                                            Open Tool
+                                        </span>
+                                        <span className="text-[10px] font-black text-muted-foreground/30 uppercase tracking-[0.2em] group-hover:opacity-0 transition-all duration-300">
+                                            Interactive
+                                        </span>
+                                    </div>
+
+                                    <div className="w-12 h-12 rounded-2xl border border-border group-hover:border-primary-custom flex items-center justify-center group-hover:bg-primary-custom group-hover:text-white transition-all duration-500 group-hover:shadow-lg group-hover:shadow-primary-custom/20">
+                                        <ArrowRight size={18} className="-rotate-45 group-hover:rotate-0 transition-transform duration-500" />
                                     </div>
                                 </div>
                             </div>
+
+                            {/* Decorative line reveal */}
+                            <div className="absolute bottom-0 left-0 h-1 w-0 bg-gradient-to-r from-primary-custom to-emerald-500 group-hover:w-full transition-all duration-700 delay-100" />
                         </div>
                     )
                 })}
