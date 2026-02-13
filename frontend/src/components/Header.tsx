@@ -353,120 +353,108 @@ const Header: React.FC = () => {
                     </AnimatePresence>
                 </div>
 
-                {/* Profile Section with Dropdown */}
-                <div className="relative" ref={dropdownRef}>
-                    <motion.div
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                        className="ml-1 px-2 py-1 flex items-center gap-2 bg-card-bg rounded-full border border-border shadow-sm cursor-pointer transition-all"
+                {/* Profile Section - Click to Profile, with Dropdown Info */}
+                <div className="relative" ref={dropdownRef} onMouseEnter={() => setIsDropdownOpen(true)} onMouseLeave={() => setIsDropdownOpen(false)}>
+                    <Link
+                        href="/profile"
+                        className={`group flex items-center gap-2.5 px-3 py-1.5 bg-white/40 dark:bg-black/20 backdrop-blur-xl rounded-full border border-white/40 dark:border-white/10 shadow-sm cursor-pointer transition-all hover:bg-white/60 ${isDropdownOpen ? 'ring-2 ring-primary-custom/20 border-primary-custom/30' : ''}`}
                     >
-                        <div className="w-7 h-7 rounded-full overflow-hidden border border-border bg-muted">
-                            {user?.profileImage ? (
-                                <img
-                                    src={user.profileImage}
-                                    alt="User"
-                                    className="w-full h-full object-cover"
-                                />
-                            ) : (
-                                <img
-                                    src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.fullName || 'User'}`}
-                                    alt="User"
-                                    className="w-full h-full object-cover"
-                                />
-                            )}
+                        <div className="relative">
+                            <div className="w-8 h-8 rounded-full overflow-hidden border border-white/60 bg-muted shadow-sm flex-shrink-0">
+                                {user?.profileImage ? (
+                                    <img src={user.profileImage} alt="User" className="w-full h-full object-cover" />
+                                ) : (
+                                    <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.fullName || 'User'}`} alt="User" className="w-full h-full object-cover" />
+                                )}
+                            </div>
+                            <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full ring-1 ring-emerald-500/20"></div>
                         </div>
-                        <ChevronDown size={14} className={`text-muted-foreground transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
-                    </motion.div>
+                        <div className="flex flex-col items-start pr-1 max-w-[100px]">
+                            <span className="text-[13px] font-bold text-slate-800 dark:text-slate-100 leading-none mb-0.5 truncate w-full transition-colors">
+                                {user?.fullName || 'User'}
+                            </span>
+                            <span className="text-[10px] font-medium text-slate-500/70 dark:text-slate-400/60 leading-none transition-colors">Free plan</span>
+                        </div>
+                        <div className="text-muted-foreground/30 group-hover:text-primary-custom transition-all duration-300">
+                            <ChevronDown size={14} className={`transition-transform duration-300 ${isDropdownOpen ? 'rotate-180 text-primary-custom' : ''}`} />
+                        </div>
+                    </Link>
 
                     <AnimatePresence>
                         {isDropdownOpen && (
                             <motion.div
-                                initial={{ opacity: 0, y: 15, scale: 0.95 }}
+                                initial={{ opacity: 0, y: 8, scale: 0.98 }}
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
-                                exit={{ opacity: 0, y: 15, scale: 0.95 }}
-                                transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                                className="absolute right-0 mt-4 w-64 bg-card-bg rounded-[1.8rem] shadow-2xl border border-border p-1.5 overflow-hidden z-[100]"
+                                exit={{ opacity: 0, y: 8, scale: 0.98 }}
+                                transition={{ duration: 0.15, ease: "easeOut" }}
+                                style={{ boxShadow: '0 15px 35px rgba(0,0,0,0.1)' }}
+                                className="absolute right-0 mt-2.5 w-[230px] bg-white/70 dark:bg-slate-900/80 backdrop-blur-3xl rounded-[1.25rem] border border-white/60 dark:border-white/10 p-2.5 z-[100] overflow-hidden transition-colors"
                             >
-                                {/* User Info Header - Now Clickable Link */}
+                                {/* Compact User Info Header */}
                                 <Link
                                     href="/profile"
-                                    onClick={() => setIsDropdownOpen(false)}
-                                    className="block px-3 py-2.5 mb-1 bg-muted/50 rounded-[1.2rem] border border-border transition-all hover:bg-primary-custom/10 group/card"
+                                    className="block px-2.5 py-2 mb-1.5 bg-white/40 dark:bg-white/5 rounded-[1rem] border border-white/50 dark:border-white/5 shadow-sm hover:bg-white/60 dark:hover:bg-white/10 transition-all group/card"
                                 >
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-9 h-9 rounded-xl border-2 border-card-bg shadow-sm overflow-hidden bg-card-bg shrink-0 group-hover/card:scale-105 transition-transform">
-                                            {user?.profileImage ? (
-                                                <img
-                                                    src={user.profileImage}
-                                                    alt="User"
-                                                    className="w-full h-full object-cover"
-                                                />
-                                            ) : (
-                                                <img
-                                                    src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.fullName || 'User'}`}
-                                                    alt="User"
-                                                    className="w-full h-full object-cover"
-                                                />
-                                            )}
+                                    <div className="flex items-center gap-2.5">
+                                        <div className="relative">
+                                            <div className="w-9 h-9 rounded-xl border border-white/60 dark:border-white/10 shadow-sm overflow-hidden bg-white dark:bg-slate-800">
+                                                {user?.profileImage ? (
+                                                    <img src={user.profileImage} alt="User" className="w-full h-full object-cover" />
+                                                ) : (
+                                                    <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.fullName || 'User'}`} alt="User" className="w-full h-full object-cover" />
+                                                )}
+                                            </div>
+                                            <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-500 border-2 border-white dark:border-slate-900 rounded-full"></div>
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <h4 className="text-[12px] font-display font-bold text-foreground truncate italic uppercase tracking-tight group-hover/card:text-primary-custom transition-colors leading-tight">{user?.fullName || 'Educator'}</h4>
-                                            <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest leading-tight">@{user?.username || 'user'}</p>
+                                            <h4 className="text-[13px] font-black text-slate-800 dark:text-slate-100 leading-tight tracking-tight uppercase italic truncate group-hover/card:text-primary-custom transition-colors">
+                                                {user?.fullName || 'User'}
+                                            </h4>
+                                            <p className="text-[9px] font-bold text-slate-500/70 dark:text-slate-400/60 leading-tight uppercase tracking-widest truncate">
+                                                {user?.username ? `@${user.username}` : (user?.email || 'FREE PLAN')}
+                                            </p>
                                         </div>
                                     </div>
                                 </Link>
 
                                 {/* Menu Items */}
                                 <div className="space-y-0.5">
-                                    <button className="w-full flex items-center justify-between px-3 py-2 text-[13px] font-bold text-muted-foreground hover:text-foreground hover:bg-muted rounded-xl transition-all group">
-                                        <div className="flex items-center gap-3">
-                                            <Users size={16} className="text-muted-foreground group-hover:text-primary-custom transition-colors" />
-                                            <span>Community</span>
-                                        </div>
+                                    <button className="w-full flex items-center gap-2.5 px-2.5 py-2 text-[12px] font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-white/5 rounded-lg transition-all group">
+                                        <CreditCard size={15} className="text-slate-400 dark:text-slate-500 group-hover:text-primary-custom" />
+                                        <span>Upgrade plan</span>
                                     </button>
 
-                                    <button className="w-full flex items-center justify-between px-3 py-2 text-[13px] font-bold text-muted-foreground hover:text-foreground hover:bg-muted rounded-xl transition-all group">
-                                        <div className="flex items-center gap-3">
-                                            <CreditCard size={16} className="text-muted-foreground group-hover:text-primary-custom transition-colors" />
-                                            <span>Subscription</span>
-                                        </div>
-                                        <div className="flex items-center gap-1.5 px-2 py-0.5 bg-fuchsia-500/10 text-fuchsia-500 rounded-md text-[8px] font-black uppercase italic tracking-tighter">
-                                            <Zap size={9} fill="currentColor" />
-                                            PRO
-                                        </div>
+                                    {/* Activity Highlighted Item */}
+                                    <button className="w-full flex items-center gap-2.5 px-2.5 py-2 text-[12px] font-bold text-primary-custom bg-primary-custom/10 border border-primary-custom/10 rounded-lg transition-all relative overflow-hidden group">
+                                        <Zap size={15} className="text-primary-custom" fill="currentColor" />
+                                        <span>Activity</span>
+                                        <div className="absolute right-2.5 w-1 h-1 bg-primary-custom rounded-full animate-pulse"></div>
                                     </button>
 
                                     <button
-                                        onClick={() => {
-                                            setIsDropdownOpen(false);
-                                            setIsSettingsOpen(true);
-                                        }}
-                                        className="w-full flex items-center justify-between px-3 py-2 text-[13px] font-bold text-muted-foreground hover:text-foreground hover:bg-muted rounded-xl transition-all group"
+                                        onClick={() => { setIsDropdownOpen(false); setIsSettingsOpen(true); }}
+                                        className="w-full flex items-center gap-2.5 px-2.5 py-2 text-[12px] font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-white/5 rounded-lg transition-all group"
                                     >
-                                        <div className="flex items-center gap-3">
-                                            <Settings size={16} className="text-muted-foreground group-hover:text-primary-custom transition-colors" />
-                                            <span>Settings</span>
-                                        </div>
+                                        <Settings size={15} className="text-slate-400 dark:text-slate-500 group-hover:text-primary-custom" />
+                                        <span>Settings</span>
                                     </button>
 
-                                    <div className="h-px bg-border my-1 mx-3"></div>
+                                    <div className="h-px bg-slate-900/[0.05] dark:bg-white/[0.05] my-1 mx-1.5"></div>
 
-                                    <button className="w-full flex items-center justify-between px-3 py-2 text-[13px] font-bold text-muted-foreground hover:text-foreground hover:bg-muted rounded-xl transition-all group">
-                                        <div className="flex items-center gap-3">
-                                            <Info size={16} className="text-muted-foreground group-hover:text-primary-custom transition-colors" />
-                                            <span>Help center</span>
+                                    <button className="w-full flex items-center justify-between px-2.5 py-2 text-[12px] font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-white/5 rounded-lg transition-all group">
+                                        <div className="flex items-center gap-2.5">
+                                            <Info size={15} className="text-slate-400 dark:text-slate-500 group-hover:text-primary-custom" />
+                                            <span>Help</span>
                                         </div>
+                                        <ChevronDown size={12} className="text-slate-300 dark:text-slate-600 -rotate-90" />
                                     </button>
 
                                     <button
                                         onClick={handleLogout}
-                                        className="w-full flex items-center justify-between px-3 py-2 text-[13px] font-bold text-muted-foreground hover:bg-red-500/10 hover:text-red-500 rounded-xl transition-all group"
+                                        className="w-full flex items-center gap-2.5 px-2.5 py-2 text-[12px] font-bold text-slate-600 dark:text-slate-400 hover:text-red-600 hover:bg-red-50/50 dark:hover:bg-red-500/10 rounded-lg transition-all group"
                                     >
-                                        <div className="flex items-center gap-3">
-                                            <LogOut size={16} className="text-muted-foreground group-hover:text-red-500 transition-colors" />
-                                            <span>Sign out</span>
-                                        </div>
+                                        <LogOut size={15} className="text-slate-400 dark:text-slate-500 group-hover:text-red-500" />
+                                        <span>Log out</span>
                                     </button>
                                 </div>
                             </motion.div>
