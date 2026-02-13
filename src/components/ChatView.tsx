@@ -87,6 +87,10 @@ const ChatView = () => {
         setInput('');
     };
 
+    const handleSessionSelect = (id: string) => {
+        setActiveSessionId(id);
+    };
+
     const handleSend = async (text?: string) => {
         const messageText = text || input.trim();
         if (!messageText || isLoading) return;
@@ -183,7 +187,6 @@ const ChatView = () => {
                                 {[
                                     { icon: Globe, label: 'Explore Assistant' },
                                     { icon: BookOpen, label: 'Knowledge Base' },
-                                    { icon: Layout, label: 'Templates' },
                                 ].map((item, i) => (
                                     <button key={i} className="w-full flex items-center gap-3 px-3 py-2.5 text-[13px] font-bold text-gray-600 hover:bg-white hover:text-lime-600 rounded-xl transition-all group">
                                         <item.icon size={18} className="text-gray-400 group-hover:text-lime-600 transition-colors" />
@@ -194,44 +197,30 @@ const ChatView = () => {
 
                             {/* History Section */}
                             <div className="flex-1 overflow-y-auto no-scrollbar space-y-8">
-                                {['TODAY', 'YESTERDAY', 'AUGUST'].map((cat) => (
-                                    <div key={cat}>
-                                        <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4 px-3">{cat}</h3>
-                                        <div className="space-y-1">
-                                            {sessions.filter(s => s.category === cat).map((session) => (
-                                                <button
-                                                    key={session.id}
-                                                    onClick={() => handleSessionSelect(session.id)}
-                                                    className={`w-full text-left px-3 py-2.5 rounded-xl transition-all text-nowrap ${activeSessionId === session.id ? 'bg-white shadow-sm font-bold text-lime-600 border border-gray-100' : 'text-gray-500 hover:bg-white/50'}`}
-                                                >
-                                                    <p className="text-[13px] truncate">{session.title}</p>
-                                                </button>
-                                            ))}
-                                            {sessions.filter(s => s.category === cat).length === 0 && (
-                                                <p className="px-3 text-[12px] text-gray-300 italic font-medium">No activity yet</p>
-                                            )}
+                                {['TODAY', 'YESTERDAY', 'AUGUST']
+                                    .filter(cat => sessions.some(s => s.category === cat))
+                                    .map((cat) => (
+                                        <div key={cat}>
+                                            <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4 px-3">{cat}</h3>
+                                            <div className="space-y-1">
+                                                {sessions.filter(s => s.category === cat).map((session) => (
+                                                    <button
+                                                        key={session.id}
+                                                        onClick={() => handleSessionSelect(session.id)}
+                                                        className={`w-full text-left px-3 py-2.5 rounded-xl transition-all text-nowrap ${activeSessionId === session.id ? 'bg-white shadow-sm font-bold text-lime-600 border border-gray-100' : 'text-gray-500 hover:bg-white/50'}`}
+                                                    >
+                                                        <p className="text-[13px] truncate">{session.title}</p>
+                                                    </button>
+                                                ))}
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    ))}
                             </div>
 
                             {/* Footer Nav */}
-                            <div className="mt-auto space-y-1 pt-6 text-nowrap">
-                                <button className="w-full flex items-center gap-3 px-3 py-2.5 text-[13px] font-bold text-gray-600 hover:bg-white rounded-xl transition-all group">
-                                    <Settings size={18} className="text-gray-400" />
-                                    Settings
-                                </button>
-                                <div className="p-2.5 bg-white rounded-2xl border border-gray-100 flex items-center gap-3 shadow-sm hover:shadow-md transition-all cursor-pointer group">
-                                    <div className="w-10 h-10 rounded-xl bg-lime-50 border border-lime-100 overflow-hidden flex-shrink-0">
-                                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Teacher" alt="pfp" />
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <p className="text-[13px] font-bold text-gray-800 leading-none mb-1">Educator Space</p>
-                                        <p className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest leading-none">Online</p>
-                                    </div>
-                                    <ChevronDown size={14} className="text-gray-300 group-hover:text-lime-600" />
-                                </div>
-                            </div>
+                            <button className="w-full flex items-center gap-3 px-3 py-3 text-[13px] font-bold text-gray-600 hover:bg-white rounded-xl transition-all group border border-transparent hover:border-gray-100 shadow-sm hover:shadow-md">
+                                <Settings size={18} className="text-gray-400 group-hover:text-lime-600" />
+                            </button>
                         </div>
                     </motion.div>
                 )}
@@ -255,14 +244,6 @@ const ChatView = () => {
                             <ChevronDown size={14} className="text-gray-400 group-hover:text-gray-600" />
                         </button>
                     </div>
-                    <div className="flex items-center gap-1">
-                        <button className="p-2 text-gray-400 hover:text-gray-900 rounded-lg hover:bg-gray-50 transition-all"><MoreHorizontal size={20} /></button>
-                        <button className="p-2 text-gray-400 hover:text-gray-900 rounded-lg hover:bg-gray-50 transition-all"><LinkIcon size={20} /></button>
-                        <button className="flex items-center gap-2 px-4 py-2 bg-white hover:bg-gray-50 text-gray-700 rounded-xl border border-gray-200 transition-all font-bold text-sm ml-2">
-                            <Share2 size={16} />
-                            Share
-                        </button>
-                    </div>
                 </div>
 
                 {/* Content Area */}
@@ -270,7 +251,7 @@ const ChatView = () => {
                     ref={scrollContainerRef}
                     className="flex-1 overflow-y-auto no-scrollbar scroll-smooth bg-gray-50/10"
                 >
-                    <div className="max-w-4xl mx-auto p-8 lg:p-12 min-h-full flex flex-col relative">
+                    <div className="max-w-[1400px] mx-auto p-8 lg:p-12 min-h-full flex flex-col relative w-full">
                         {messages.length === 0 ? (
                             <div className="flex-1 flex flex-col items-center justify-center -mt-10">
                                 {/* Theme Consistent Badge */}
@@ -296,7 +277,7 @@ const ChatView = () => {
                                 <h1 className="text-4xl font-display font-medium text-gray-900 mb-12 tracking-tight">Let's start a smart conversation</h1>
 
                                 {/* Input Container - Centered for Empty State */}
-                                <div className="w-full max-w-3xl space-y-4">
+                                <div className="w-full max-w-5xl space-y-4">
                                     <div className="relative bg-white border border-gray-100 rounded-[2.5rem] p-4 flex flex-col gap-4 shadow-[0_20px_80px_rgba(0,0,0,0.06)] focus-within:border-lime-200 transition-all group ring-8 ring-gray-50/50">
                                         <textarea
                                             ref={textareaRef}
@@ -353,18 +334,20 @@ const ChatView = () => {
                                 </div>
 
                                 {/* Suggestion Cards Section */}
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl mt-16 scale-95">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-5 w-full max-w-5xl mt-16 px-4">
                                     {suggestActions.map((action, i) => (
                                         <button
                                             key={i}
                                             onClick={() => handleSend(action.title)}
-                                            className="p-8 bg-white border border-gray-50 hover:border-lime-200 shadow-sm hover:shadow-xl hover:shadow-lime-100/20 rounded-[2rem] text-left transition-all group"
+                                            className="p-6 bg-white border border-gray-100 hover:border-lime-200 shadow-sm hover:shadow-xl hover:shadow-lime-100/30 rounded-[2rem] text-left transition-all duration-300 group flex flex-col h-full"
                                         >
-                                            <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center text-gray-400 group-hover:bg-lime-50 group-hover:text-lime-600 mb-6 transition-all duration-300">
-                                                <action.icon size={20} />
+                                            <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center text-gray-400 group-hover:bg-lime-50 group-hover:text-lime-600 mb-5 transition-all duration-300 transform group-hover:scale-110 group-hover:rotate-3">
+                                                <action.icon size={24} />
                                             </div>
-                                            <h4 className="text-[15px] font-bold text-gray-800 mb-2 truncate">{action.title}</h4>
-                                            <p className="text-[12px] font-medium text-gray-400 leading-relaxed group-hover:text-gray-500 transition-colors uppercase tracking-tight">{action.desc}</p>
+                                            <h4 className="text-[16px] font-bold text-gray-800 mb-2 truncate">{action.title}</h4>
+                                            <p className="text-[13px] font-medium text-gray-500 leading-relaxed transition-colors line-clamp-2">
+                                                {action.desc}
+                                            </p>
                                         </button>
                                     ))}
                                 </div>
@@ -382,19 +365,30 @@ const ChatView = () => {
                                         <div className={`w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center shadow-md transform transition-all ${msg.role === 'user' ? 'bg-gray-800 text-white' : 'bg-lime-600 text-white shadow-lime-100'}`}>
                                             {msg.role === 'user' ? <User size={18} /> : <Bot size={22} />}
                                         </div>
-                                        <div className={`flex flex-col max-w-[80%] ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
-                                            <div className={`p-6 rounded-[1.8rem] shadow-sm border ${msg.role === 'user' ? 'bg-white border-gray-100 text-gray-800' : 'bg-lime-600 text-white border-lime-500 shadow-sm'}`}>
+                                        <div className={`flex flex-col max-w-[85%] group ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
+                                            <div className={`relative p-5 px-6 rounded-[2.2rem] shadow-sm transition-all duration-300 ${msg.role === 'user'
+                                                ? 'bg-gray-900 text-white rounded-tr-none shadow-md'
+                                                : 'bg-white border border-gray-100 text-gray-800 rounded-tl-none shadow-lg shadow-lime-100/20 border-l-[4px] border-l-lime-500'
+                                                }`}>
                                                 <p className="text-[15px] font-medium leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+
                                                 {msg.role === 'assistant' && (
-                                                    <div className="mt-4 pt-4 border-t border-white/10 flex items-center gap-4">
-                                                        <button className="p-1.5 hover:bg-white/10 rounded-lg transition-colors" title="Copy"><Copy size={12} /></button>
-                                                        <button className="p-1.5 hover:bg-white/10 rounded-lg transition-colors" title="Regenerate"><RefreshCw size={12} /></button>
+                                                    <div className="mt-4 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                        <button className="p-2 hover:bg-lime-50 text-gray-400 hover:text-lime-600 rounded-xl transition-all active:scale-90 flex items-center gap-1.5 text-[11px] font-bold" title="Copy">
+                                                            <Copy size={13} /> Copy
+                                                        </button>
+                                                        <button className="p-2 hover:bg-lime-50 text-gray-400 hover:text-lime-600 rounded-xl transition-all active:scale-90 flex items-center gap-1.5 text-[11px] font-bold" title="Regenerate">
+                                                            <RefreshCw size={13} /> Retry
+                                                        </button>
                                                     </div>
                                                 )}
                                             </div>
-                                            <span className="mt-2 text-[10px] font-bold text-gray-300 uppercase tracking-widest px-2">
-                                                {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                            </span>
+
+                                            <div className="flex items-center gap-2 mt-1.5 px-2">
+                                                <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                                    {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                </span>
+                                            </div>
                                         </div>
                                     </motion.div>
                                 ))}
@@ -418,7 +412,7 @@ const ChatView = () => {
                 {/* Bottom Input - Only visible when not in empty state */}
                 {messages.length > 0 && (
                     <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-white via-white/95 to-transparent flex justify-center z-10 pointer-events-none">
-                        <div className="w-full max-w-[850px] relative mt-10 pointer-events-auto">
+                        <div className="w-full max-w-[1100px] relative mt-10 pointer-events-auto">
                             <div className="relative bg-white border border-gray-100 rounded-[2.5rem] p-3 shadow-[0_20px_60px_rgba(0,0,0,0.06)] group focus-within:border-lime-200 transition-all flex items-end gap-2 ring-8 ring-gray-50/50">
                                 <button className="p-3 text-gray-400 hover:text-lime-600 hover:bg-lime-50 rounded-[1.2rem] transition-all"><Paperclip size={20} /></button>
                                 <textarea

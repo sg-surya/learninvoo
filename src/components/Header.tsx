@@ -17,6 +17,7 @@ import {
     LogOut,
     Settings,
     User,
+    Bot,
     ChevronDown,
     Users,
     CreditCard,
@@ -65,7 +66,7 @@ const Header: React.FC = () => {
         { href: '/workspace', label: 'Workspace', icon: Briefcase },
         { href: '/schedule', label: 'Schedule', icon: CalendarIcon },
         { href: '/notes', label: 'Notes', icon: FileText },
-        { href: '/classes', label: 'Classes', icon: GraduationCap },
+        { href: '/chat', label: 'AI Bot', icon: Bot },
     ];
 
     const [searchQuery, setSearchQuery] = useState('');
@@ -254,12 +255,12 @@ const Header: React.FC = () => {
                 {/* Shine Effect */}
                 <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 dark:via-white/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out pointer-events-none z-0" />
 
-                {navItems.map((item) => {
+                {navItems.map((item, idx) => {
                     const active = isActive(item.href);
                     const IconComponent = item.icon;
 
                     return (
-                        <div key={item.href} className="relative z-10">
+                        <div key={`${item.href}-${idx}`} className="relative z-10">
                             <Link
                                 href={item.href}
                                 className={`flex items-center gap-2 px-3.5 py-2 rounded-full transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] ${active
