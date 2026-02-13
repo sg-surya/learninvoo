@@ -47,18 +47,18 @@ const CustomDropdown = ({
 
     return (
         <div className="relative" ref={dropdownRef}>
-            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">{label}</label>
+            <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2 ml-1">{label}</label>
             <button
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
-                className={`w-full flex items-center justify-between bg-white border-2 
-                    ${isOpen ? 'border-purple-500 shadow-[0_0_0_4px_rgba(168,85,247,0.1)]' : 'border-slate-100'} 
-                    px-4 py-3 rounded-2xl text-sm font-bold transition-all cursor-pointer text-left hover:border-purple-300 group`}
+                className={`w-full flex items-center justify-between bg-card-bg border-2 
+                    ${isOpen ? 'border-primary-custom shadow-[0_0_0_4px_rgba(var(--primary-rgb),0.1)]' : 'border-border'} 
+                    px-5 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer text-left hover:border-primary-custom group shadow-soft`}
             >
-                <span className={value ? 'text-slate-800' : 'text-slate-400'}>
+                <span className={value ? 'text-foreground' : 'text-muted-foreground/50'}>
                     {value || placeholder}
                 </span>
-                <ChevronDown size={16} className={`text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180 text-purple-500' : ''}`} />
+                <ChevronDown size={16} className={`text-muted-foreground transition-transform duration-300 ${isOpen ? 'rotate-180 text-primary-custom' : ''}`} />
             </button>
             <AnimatePresence>
                 {isOpen && (
@@ -66,18 +66,18 @@ const CustomDropdown = ({
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 10 }}
-                        className="absolute z-50 mt-2 w-full bg-white rounded-2xl shadow-2xl border border-slate-100 py-2 max-h-[200px] overflow-y-auto"
+                        className="absolute z-50 mt-2 w-full bg-card-bg rounded-2xl shadow-2xl border border-border py-2 max-h-[250px] overflow-y-auto backdrop-blur-xl"
                     >
                         {options.map((option) => (
                             <button
                                 key={option}
                                 type="button"
                                 onClick={() => { onChange(option); setIsOpen(false); }}
-                                className={`w-full px-4 py-2.5 text-left text-sm font-bold transition-all flex items-center justify-between
-                                    ${value === option ? 'bg-purple-50 text-purple-700' : 'text-slate-700 hover:bg-slate-50'}`}
+                                className={`w-full px-5 py-3 text-left text-sm font-bold transition-all flex items-center justify-between
+                                    ${value === option ? 'bg-primary-custom/10 text-primary-custom' : 'text-foreground hover:bg-primary-custom/5'}`}
                             >
                                 <span>{option}</span>
-                                {value === option && <Check size={14} className="text-purple-600" />}
+                                {value === option && <Check size={14} className="text-primary-custom" />}
                             </button>
                         ))}
                     </motion.div>
@@ -163,84 +163,94 @@ const QuizExamGeneratorView: React.FC = () => {
 
     if (viewState === 'form') {
         return (
-            <div className="min-h-screen bg-slate-50 flex flex-col items-center p-8 relative overflow-hidden">
-                {/* Decorative Elements */}
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-200/30 rounded-full blur-[120px] -mr-48 -mt-48" />
-                <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-indigo-200/30 rounded-full blur-[120px] -ml-48 -mb-48" />
+            <div className="min-h-screen bg-transparent flex flex-col items-center p-8 relative overflow-hidden">
+                {/* Dynamic Background Elements */}
+                <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+                    <div className="absolute top-[-10%] left-[-5%] w-[600px] h-[600px] bg-primary-custom/10 rounded-full blur-[100px]" />
+                    <div className="absolute bottom-[-10%] right-[-5%] w-[500px] h-[500px] bg-primary-custom/5 rounded-full blur-[100px]" />
+                </div>
 
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="w-full max-w-4xl relative z-10"
                 >
-                    <div className="flex items-center gap-4 mb-10">
-                        <div className="w-14 h-14 bg-purple-600 rounded-[1.5rem] flex items-center justify-center shadow-xl shadow-purple-200">
-                            <CheckSquare size={28} className="text-white" />
+                    <div className="flex items-center gap-6 mb-12">
+                        <div className="w-16 h-16 bg-primary-custom rounded-[2rem] flex items-center justify-center shadow-lg shadow-primary-custom/20">
+                            <CheckSquare size={32} className="text-white" />
                         </div>
                         <div>
-                            <h1 className="text-3xl font-black text-slate-900 tracking-tight leading-none mb-1">Quiz Generator</h1>
-                            <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">AI Assessment Tool</p>
+                            <h1 className="text-4xl font-black text-foreground tracking-tighter leading-none mb-1 uppercase italic">Quiz Generator</h1>
+                            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em]">AI Assessment Intelligence</p>
                         </div>
                     </div>
 
-                    <div className="bg-white/70 backdrop-blur-2xl rounded-[3rem] p-12 border border-white shadow-[0_20px_50px_rgba(0,0,0,0.05)]">
-                        <div className="flex flex-col items-center mb-10">
-                            <div className="inline-flex bg-slate-100 p-1.5 rounded-full mb-8">
+                    <div className="bg-card-bg/60 backdrop-blur-[40px] rounded-[3.5rem] p-16 border border-border shadow-[0_32px_120px_-20px_rgba(0,0,0,0.15)] relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-primary-custom/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+
+                        <div className="flex flex-col items-center mb-16 relative z-10">
+                            <div className="inline-flex bg-muted p-1.5 rounded-full mb-10 border border-border">
                                 <button
                                     onClick={() => setSourceMode('topic')}
-                                    className={`px-8 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-all ${sourceMode === 'topic' ? 'bg-white text-purple-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                                    className={`px-10 py-3 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${sourceMode === 'topic' ? 'bg-card-bg text-primary-custom shadow-md' : 'text-muted-foreground hover:text-foreground'}`}
                                 >
                                     Topic Mode
                                 </button>
                                 <button
                                     onClick={() => setSourceMode('book')}
-                                    className={`px-8 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-all ${sourceMode === 'book' ? 'bg-white text-purple-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                                    className={`px-10 py-3 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${sourceMode === 'book' ? 'bg-card-bg text-primary-custom shadow-md' : 'text-muted-foreground hover:text-foreground'}`}
                                 >
                                     Library Mode
                                 </button>
                             </div>
-                            <h2 className="text-4xl font-extrabold text-slate-900 text-center leading-tight">Create engaging <span className="text-purple-600 italic font-serif">assessments</span> in seconds.</h2>
+                            <h2 className="text-5xl font-black text-foreground text-center leading-[1.1] tracking-tighter uppercase italic">
+                                Design rigorous <br />
+                                <span className="text-primary-custom">assessments</span> in seconds.
+                            </h2>
                         </div>
 
-                        <div className="space-y-8">
-                            <div className="relative">
-                                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Topic or Curriculum Area</label>
-                                <input
-                                    type="text"
-                                    value={topic}
-                                    onChange={(e) => setTopic(e.target.value)}
-                                    placeholder="e.g. Ancient Greek Mythology, Quantum Mechanics, Algebra..."
-                                    className="w-full bg-white border-2 border-slate-100 focus:border-purple-500 focus:shadow-[0_0_0_4px_rgba(168,85,247,0.1)] rounded-[2rem] px-8 py-5 text-lg font-bold transition-all outline-none placeholder:text-slate-300"
-                                />
-                                <div className="absolute right-6 top-[54px] text-slate-300">
-                                    <Sparkles size={24} />
+                        <div className="space-y-10 relative z-10">
+                            <div className="relative group/input">
+                                <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-3 ml-1">Topic or Curriculum Area</label>
+                                <div className="relative">
+                                    <input
+                                        type="text"
+                                        value={topic}
+                                        onChange={(e) => setTopic(e.target.value)}
+                                        placeholder="e.g. Ancient Greek Mythology, Quantum Mechanics, Algebra..."
+                                        className="w-full bg-muted/30 border-2 border-border focus:border-primary-custom focus:bg-card-bg rounded-[2.5rem] px-10 py-6 text-xl font-bold transition-all outline-none placeholder:text-muted-foreground/30 text-foreground"
+                                    />
+                                    <div className="absolute right-8 top-1/2 -translate-y-1/2 text-primary-custom/20 group-hover/input:text-primary-custom group-hover/input:rotate-12 transition-all">
+                                        <Sparkles size={28} />
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                                 <CustomDropdown label="Grade Level" value={grade} onChange={setGrade} options={gradeOptions} placeholder="Select..." />
                                 <CustomDropdown label="Difficulty" value={difficulty} onChange={setDifficulty} options={difficultyOptions} placeholder="Select..." />
                                 <div className="relative">
-                                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Quantity</label>
+                                    <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2 ml-1">Quantity</label>
                                     <input
                                         type="number"
                                         value={questionCount}
                                         onChange={(e) => setQuestionCount(e.target.value)}
-                                        className="w-full bg-white border-2 border-slate-100 focus:border-purple-500 rounded-2xl px-4 py-3 text-sm font-bold transition-all outline-none"
+                                        className="w-full bg-card-bg border-2 border-border focus:border-primary-custom rounded-2xl px-5 py-3.5 text-sm font-bold transition-all outline-none text-foreground shadow-soft"
                                     />
                                 </div>
                                 <CustomDropdown label="Quiz Style" value={quizType} onChange={setQuizType} options={typeOptions} placeholder="Select..." />
                             </div>
                         </div>
 
-                        <div className="mt-12 flex justify-center">
+                        <div className="mt-16 flex justify-center relative z-10">
                             <button
                                 onClick={handleGenerate}
                                 disabled={!topic}
-                                className="group px-12 py-5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-full font-black uppercase tracking-[0.2em] shadow-2xl shadow-purple-300/40 hover:shadow-purple-400/50 transition-all hover:-translate-y-1 active:scale-95 disabled:opacity-50 disabled:translate-y-0 disabled:shadow-none"
+                                className="group px-14 py-6 bg-foreground text-background rounded-full font-black uppercase tracking-[0.3em] text-xs shadow-[0_20px_60px_rgba(0,0,0,0.3)] hover:shadow-[0_20px_60px_rgba(0,0,0,0.4)] transition-all hover:-translate-y-1 active:scale-95 disabled:opacity-30 disabled:translate-y-0 disabled:shadow-none overflow-hidden relative"
                             >
-                                <div className="flex items-center gap-3">
-                                    <Wand2 size={20} className="group-hover:rotate-12 transition-transform" />
+                                <div className="absolute inset-0 bg-gradient-to-r from-primary-custom/20 to-transparent translate-x-full group-hover:translate-x-0 transition-transform duration-700 pointer-events-none" />
+                                <div className="flex items-center gap-4 relative z-10">
+                                    <Wand2 size={24} className="group-hover:rotate-12 transition-transform" />
                                     Generate Assessment
                                 </div>
                             </button>
@@ -253,109 +263,120 @@ const QuizExamGeneratorView: React.FC = () => {
 
     if (viewState === 'generating') {
         return (
-            <div className="h-screen w-full flex flex-col items-center justify-center bg-white p-8">
-                <div className="relative w-32 h-32 mb-10">
+            <div className="h-screen w-full flex flex-col items-center justify-center bg-background p-8 overflow-hidden relative">
+                {/* Background Glow */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-custom/10 rounded-full blur-[120px] pointer-events-none" />
+
+                <div className="relative w-40 h-40 mb-12">
                     <motion.div
                         animate={{ rotate: 360 }}
                         transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-                        className="absolute inset-0 rounded-[2.5rem] border-4 border-purple-500/20"
+                        className="absolute inset-0 rounded-[3rem] border-4 border-primary-custom/10"
                     />
                     <motion.div
                         animate={{ rotate: -360 }}
                         transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                        className="absolute inset-4 rounded-[1.5rem] border-4 border-indigo-500/30 border-t-indigo-500"
+                        className="absolute inset-4 rounded-[2rem] border-4 border-primary-custom/30 border-t-primary-custom"
                     />
-                    <div className="absolute inset-0 flex items-center justify-center text-purple-600">
-                        <Sparkles size={40} className="animate-pulse" />
+                    <div className="absolute inset-0 flex items-center justify-center text-primary-custom">
+                        <Sparkles size={48} className="animate-pulse" />
                     </div>
                 </div>
-                <h2 className="text-4xl font-black text-slate-900 mb-2">Analyzing Curriculum...</h2>
-                <p className="text-slate-400 font-bold uppercase tracking-widest animate-pulse">Designing rigorous questions</p>
+                <h2 className="text-4xl font-black text-foreground mb-4 uppercase italic tracking-tighter">Analyzing Curriculum...</h2>
+                <div className="flex items-center gap-4 text-primary-custom font-black uppercase tracking-[0.4em] text-[10px]">
+                    <div className="w-2 h-2 rounded-full bg-primary-custom animate-ping" />
+                    Designing Rigorous Questions
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 flex flex-col">
-            <header className="bg-white/80 backdrop-blur-xl border-b border-slate-100 p-4 px-8 flex items-center justify-between sticky top-0 z-50">
-                <div className="flex items-center gap-4">
+        <div className="min-h-screen bg-transparent flex flex-col text-foreground">
+            <header className="bg-background/80 backdrop-blur-[20px] border-b border-border p-5 px-10 flex items-center justify-between sticky top-0 z-50">
+                <div className="flex items-center gap-6">
                     <button
                         onClick={() => setViewState('form')}
-                        className="w-10 h-10 flex items-center justify-center bg-slate-100 hover:bg-slate-200 text-slate-500 rounded-full transition-all"
+                        className="w-10 h-10 flex items-center justify-center bg-muted rounded-xl text-muted-foreground hover:text-primary-custom hover:bg-primary-custom/10 transition-all border border-transparent hover:border-primary-custom/20 group"
                     >
-                        <ArrowLeft size={20} />
+                        <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
                     </button>
                     <div>
-                        <h1 className="text-lg font-black text-slate-900 leading-tight">{generatedQuiz?.title}</h1>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{grade} • {difficulty} • {quizType}</p>
+                        <h1 className="text-xl font-black uppercase italic tracking-tighter leading-none">{generatedQuiz?.title}</h1>
+                        <p className="text-[10px] font-black text-primary-custom uppercase tracking-[0.3em] mt-1.5">{grade} • {difficulty} • {quizType}</p>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-4">
                     <button
                         onClick={() => setShowAnswers(!showAnswers)}
-                        className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-xs transition-all ${showAnswers ? 'bg-purple-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                        className={`flex items-center gap-3 px-6 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all border ${showAnswers ? 'bg-primary-custom text-white border-primary-custom shadow-lg shadow-primary-custom/20' : 'bg-background text-foreground border-border hover:border-primary-custom hover:text-primary-custom'}`}
                     >
                         {showAnswers ? <EyeOff size={16} /> : <Eye size={16} />}
                         {showAnswers ? 'Hide Key' : 'Answer Key'}
                     </button>
-                    <div className="w-px h-8 bg-slate-100 mx-2" />
-                    <button className="flex items-center gap-2 px-5 py-2.5 bg-white border border-slate-200 text-slate-700 rounded-xl font-bold text-xs hover:bg-slate-50 shadow-sm">
-                        <Download size={16} /> Export PDF
+                    <div className="w-px h-8 bg-border mx-2" />
+                    <button className="flex items-center gap-3 px-6 py-3 bg-muted text-foreground rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-primary-custom/5 hover:text-primary-custom border border-transparent hover:border-primary-custom/20 transition-all group">
+                        <Download size={16} className="group-hover:translate-y-0.5 transition-transform" /> Export PDF
                     </button>
                     <button
                         onClick={handleSave}
-                        className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-xs shadow-lg transition-all ${isSaved ? 'bg-green-500 text-white' : 'bg-slate-900 text-white hover:bg-slate-800 shadow-slate-200'}`}
+                        className={`flex items-center gap-3 px-8 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl transition-all ${isSaved ? 'bg-green-500 text-white shadow-green-500/20' : 'bg-foreground text-background hover:bg-foreground/90 shadow-black/10'}`}
                     >
-                        {isSaved ? <Check size={16} /> : <Save size={16} />}
-                        {isSaved ? 'Saved!' : 'Save to Library'}
+                        {isSaved ? <Check size={18} /> : <Save size={18} />}
+                        {isSaved ? 'Saved' : 'Save to Docs'}
                     </button>
                 </div>
             </header>
 
-            <main className="flex-1 max-w-5xl mx-auto w-full p-10">
-                <div className="bg-white rounded-[40px] shadow-2xl shadow-slate-200/50 p-16 border border-white">
-                    <div className="text-center mb-16 pb-12 border-b-2 border-slate-50">
-                        <h1 className="text-5xl font-black text-slate-900 mb-4 tracking-tighter">{generatedQuiz?.title}</h1>
-                        <div className="flex justify-center gap-8">
-                            <div className="flex flex-col items-center">
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Grade Level</span>
-                                <span className="text-sm font-bold text-slate-800">{grade}</span>
-                            </div>
-                            <div className="w-px h-8 bg-slate-100" />
-                            <div className="flex flex-col items-center">
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Questions</span>
-                                <span className="text-sm font-bold text-slate-800">{generatedQuiz?.questions.length} Total</span>
-                            </div>
-                            <div className="w-px h-8 bg-slate-100" />
-                            <div className="flex flex-col items-center">
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Time Limit</span>
-                                <span className="text-sm font-bold text-slate-800">30 Mins</span>
-                            </div>
+            <main className="flex-1 max-w-5xl mx-auto w-full p-12">
+                <div className="bg-card-bg rounded-[3.5rem] shadow-[0_32px_120px_-20px_rgba(0,0,0,0.1)] p-16 border border-border relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-primary-custom/5 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+
+                    <div className="text-center mb-20 pb-16 border-b border-border relative z-10">
+                        <h1 className="text-5xl md:text-6xl font-black text-foreground mb-8 tracking-tighter uppercase italic leading-none">{generatedQuiz?.title}</h1>
+                        <div className="flex justify-center flex-wrap gap-10">
+                            {[
+                                { label: "Grade Level", value: grade },
+                                { label: "Questions", value: `${generatedQuiz?.questions.length} Total` },
+                                { label: "Time Limit", value: "30 Mins" }
+                            ].map((stat, i) => (
+                                <div key={i} className="flex flex-col items-center">
+                                    <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mb-3">{stat.label}</span>
+                                    <span className="text-sm font-black text-foreground uppercase tracking-tight">{stat.value}</span>
+                                </div>
+                            ))}
                         </div>
                     </div>
 
-                    <div className="space-y-12">
+                    <div className="space-y-16 relative z-10">
                         {generatedQuiz?.questions.map((q, idx) => (
                             <motion.div
                                 key={q.id}
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: idx * 0.1 }}
-                                className="group"
+                                className="group/q"
                             >
-                                <div className="flex gap-6">
-                                    <div className="w-10 h-10 rounded-2xl bg-slate-100 text-slate-400 font-black flex items-center justify-center shrink-0 group-hover:bg-purple-100 group-hover:text-purple-600 transition-colors">
+                                <div className="flex gap-8">
+                                    <div className="w-12 h-12 rounded-2xl bg-muted text-muted-foreground font-black flex items-center justify-center shrink-0 group-hover/q:bg-primary-custom group-hover/q:text-white transition-all duration-500 shadow-soft group-hover/q:shadow-lg group-hover/q:shadow-primary-custom/20">
                                         {idx + 1}
                                     </div>
-                                    <div className="flex-1 pt-1.5">
-                                        <h3 className="text-xl font-bold text-slate-800 leading-snug mb-6">{q.text}</h3>
+                                    <div className="flex-1 pt-2">
+                                        <h3 className="text-2xl font-black text-foreground leading-snug mb-10 tracking-tight uppercase italic">{q.text}</h3>
 
                                         {q.options && (
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
                                                 {q.options.map((opt, i) => (
-                                                    <div key={i} className={`px-6 py-4 rounded-2xl border-2 font-bold text-sm transition-all ${showAnswers && opt === q.answer ? 'bg-green-50 border-green-200 text-green-700' : 'bg-slate-50 border-transparent text-slate-600'}`}>
-                                                        <span className="text-slate-400 mr-3">{String.fromCharCode(65 + i)})</span> {opt}
+                                                    <div
+                                                        key={i}
+                                                        className={`px-8 py-6 rounded-[2rem] border-2 font-bold text-sm transition-all duration-500
+                                                            ${showAnswers && opt === q.answer
+                                                                ? 'bg-green-500/10 border-green-500 text-green-600 shadow-lg shadow-green-500/10'
+                                                                : 'bg-muted/30 border-transparent text-muted-foreground group-hover/q:border-border'}`}
+                                                    >
+                                                        <span className="text-primary-custom/40 mr-4 font-black">{String.fromCharCode(65 + i)}</span>
+                                                        <span className="uppercase tracking-tight">{opt}</span>
                                                     </div>
                                                 ))}
                                             </div>
@@ -367,15 +388,18 @@ const QuizExamGeneratorView: React.FC = () => {
                                                     initial={{ opacity: 0, height: 0 }}
                                                     animate={{ opacity: 1, height: 'auto' }}
                                                     exit={{ opacity: 0, height: 0 }}
-                                                    className="mt-6 pt-6 border-t border-dashed border-green-200 overflow-hidden"
+                                                    className="mt-8 pt-8 border-t border-dashed border-border"
                                                 >
-                                                    <div className="bg-green-50 p-5 rounded-2xl">
-                                                        <div className="flex items-center gap-2 text-green-700 font-black text-[10px] uppercase tracking-widest mb-2">
-                                                            <Check size={14} /> Correct Answer: <span className="text-xs">{q.answer}</span>
+                                                    <div className="bg-primary-custom/5 p-8 rounded-[2rem] border border-primary-custom/10 relative overflow-hidden group/ans">
+                                                        <div className="absolute top-0 right-0 p-6 opacity-10"><HelpCircle size={32} className="text-primary-custom" /></div>
+                                                        <div className="relative z-10">
+                                                            <div className="flex items-center gap-3 text-primary-custom font-black text-[10px] uppercase tracking-[0.3em] mb-4">
+                                                                <Check size={18} /> Correct Answer: <span className="text-xs ml-2 text-foreground">{q.answer}</span>
+                                                            </div>
+                                                            <p className="text-muted-foreground text-base font-bold leading-relaxed italic uppercase tracking-tight">
+                                                                "{q.explanation}"
+                                                            </p>
                                                         </div>
-                                                        <p className="text-green-800/70 text-sm font-medium leading-relaxed italic">
-                                                            "{q.explanation}"
-                                                        </p>
                                                     </div>
                                                 </motion.div>
                                             )}
@@ -386,23 +410,25 @@ const QuizExamGeneratorView: React.FC = () => {
                         ))}
                     </div>
 
-                    <div className="mt-20 pt-10 border-t-2 border-slate-50 flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center">
-                                <Bot size={20} className="text-slate-400" />
+                    <div className="mt-24 pt-12 border-t border-border flex flex-col md:flex-row items-center justify-between gap-8 relative z-10">
+                        <div className="flex items-center gap-5">
+                            <div className="w-16 h-16 rounded-[1.5rem] bg-muted flex items-center justify-center shadow-inner group-hover:bg-primary-custom/5 transition-colors">
+                                <Bot size={28} className="text-primary-custom/40 group-hover:text-primary-custom transition-colors" />
                             </div>
                             <div>
-                                <p className="text-xs font-bold text-slate-900">Quiz finalized by AI.</p>
-                                <p className="text-[10px] font-bold text-slate-400 uppercase">Balanced Difficulty Verified</p>
+                                <p className="text-sm font-black text-foreground uppercase italic tracking-tighter">Quiz finalized by AI intelligence.</p>
+                                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em] mt-1">Balanced Difficulty Verified</p>
                             </div>
                         </div>
                         <div className="flex gap-4">
-                            <button className="p-3 bg-slate-100 hover:bg-slate-200 text-slate-500 rounded-xl transition-all">
-                                <Share2 size={20} />
-                            </button>
-                            <button className="p-3 bg-slate-100 hover:bg-slate-200 text-slate-500 rounded-xl transition-all">
-                                <Copy size={20} />
-                            </button>
+                            {[
+                                { icon: <Share2 size={20} />, label: "Share" },
+                                { icon: <Copy size={20} />, label: "Copy" }
+                            ].map((action, i) => (
+                                <button key={i} className="w-12 h-12 flex items-center justify-center bg-muted hover:bg-primary-custom/10 text-muted-foreground hover:text-primary-custom rounded-xl transition-all border border-transparent hover:border-primary-custom/20 shadow-soft">
+                                    {action.icon}
+                                </button>
+                            ))}
                         </div>
                     </div>
                 </div>

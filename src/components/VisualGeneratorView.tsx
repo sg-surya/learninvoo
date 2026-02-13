@@ -7,6 +7,7 @@ import {
     Send, Mic, Bot, Zap, Brush, PenTool, Frame, ImagePlus, BookOpen, Search, Layers, Maximize2
 } from 'lucide-react';
 import { saveGeneratedContent, generateId } from '@/lib/storage';
+import { motion, AnimatePresence } from 'framer-motion';
 
 type ViewState = 'form' | 'generating' | 'result';
 type SourceMode = 'topic' | 'book';
@@ -35,7 +36,6 @@ interface Book {
     chapters?: Chapter[];
 }
 
-// Custom Dropdown Component - Underline Style like LessonPlanner
 const CustomDropdown = ({
     label, value, onChange, options, placeholder
 }: {
@@ -56,39 +56,45 @@ const CustomDropdown = ({
 
     return (
         <div className="relative" ref={dropdownRef}>
-            <label className="block text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-2">{label}</label>
+            <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2 ml-1">{label}</label>
             <button
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
-                className={`w-full flex items-center justify-between bg-transparent border-0 border-b-2 
-                    ${isOpen ? 'border-emerald-500' : 'border-slate-200'} 
-                    px-0 py-2.5 text-sm font-medium transition-all cursor-pointer text-left hover:border-emerald-400`}
+                className={`w-full flex items-center justify-between bg-card-bg border-2 
+                    ${isOpen ? 'border-primary-custom shadow-[0_0_0_4px_rgba(var(--primary-rgb),0.1)]' : 'border-border'} 
+                    px-5 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer text-left hover:border-primary-custom group shadow-soft`}
             >
-                <span className={value ? 'text-slate-800 text-sm font-semibold' : 'text-slate-400 text-sm'}>
+                <span className={value ? 'text-foreground' : 'text-muted-foreground/50'}>
                     {value || placeholder}
                 </span>
-                <ChevronDown size={16} className={`text-slate-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown size={16} className={`text-muted-foreground transition-transform duration-300 ${isOpen ? 'rotate-180 text-primary-custom' : ''}`} />
             </button>
-            {isOpen && (
-                <div className="absolute z-50 mt-2 w-full bg-white rounded-xl shadow-xl border border-slate-100 py-1 max-h-[200px] overflow-y-auto animate-fadeIn">
-                    {options.map((option) => (
-                        <button
-                            key={option}
-                            type="button"
-                            onClick={() => { onChange(option); setIsOpen(false); }}
-                            className={`w-full px-4 py-2.5 text-left text-sm font-medium transition-all flex items-center justify-between
-                                ${value === option ? 'bg-emerald-50 text-emerald-700' : 'text-slate-700 hover:bg-slate-50'}`}
-                        >
-                            <span>{option}</span>
-                            {value === option && <Check size={14} className="text-emerald-600" />}
-                        </button>
-                    ))}
-                </div>
-            )}
+            <AnimatePresence>
+                {isOpen && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        className="absolute z-50 mt-2 w-full bg-card-bg rounded-2xl shadow-2xl border border-border py-2 max-h-[250px] overflow-y-auto backdrop-blur-xl"
+                    >
+                        {options.map((option) => (
+                            <button
+                                key={option}
+                                type="button"
+                                onClick={() => { onChange(option); setIsOpen(false); }}
+                                className={`w-full px-5 py-3 text-left text-sm font-bold transition-all flex items-center justify-between
+                                    ${value === option ? 'bg-primary-custom/10 text-primary-custom' : 'text-foreground hover:bg-primary-custom/5'}`}
+                            >
+                                <span>{option}</span>
+                                {value === option && <Check size={14} className="text-primary-custom" />}
+                            </button>
+                        ))}
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };
-
 
 const VisualGeneratorView: React.FC = () => {
     const [viewState, setViewState] = useState<ViewState>('form');
@@ -199,93 +205,96 @@ const VisualGeneratorView: React.FC = () => {
         setTimeout(() => setIsSaved(false), 3000);
     };
 
-    // FORM VIEW - Premium Glass Design
     if (viewState === 'form') {
         return (
-            <div className="h-full w-full flex items-center justify-center relative bg-slate-50 overflow-hidden">
-                {/* Floating Orbs */}
-                <div className="absolute w-[500px] h-[500px] bg-lime-300 rounded-full blur-[100px] top-[-10%] left-[-5%] opacity-50 pointer-events-none" />
-                <div className="absolute w-[600px] h-[600px] bg-emerald-200 rounded-full blur-[100px] bottom-[-15%] right-[-5%] opacity-50 pointer-events-none" />
-                <div className="absolute w-[400px] h-[400px] bg-teal-100 rounded-full blur-[100px] top-[20%] right-[10%] opacity-50 pointer-events-none" />
-
-                {/* Tool Name - Top Left */}
-                <div className="absolute top-6 left-8 flex items-center gap-3 z-20">
-                    <div className="w-12 h-12 bg-gradient-to-br from-lime-400 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-200">
-                        <ImageIcon size={24} className="text-white" />
-                    </div>
-                    <div>
-                        <h2 className="text-lg font-bold text-slate-800">Visuals Generator</h2>
-                        <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">AI Powered</p>
-                    </div>
+            <div className="h-full w-full flex items-center justify-center relative bg-transparent overflow-hidden">
+                {/* Dynamic Background Elements */}
+                <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+                    <div className="absolute top-[-10%] left-[-5%] w-[600px] h-[600px] bg-primary-custom/10 rounded-full blur-[100px]" />
+                    <div className="absolute bottom-[-10%] right-[-5%] w-[500px] h-[500px] bg-primary-custom/5 rounded-full blur-[100px]" />
                 </div>
 
-                {/* Main Content - Vertically Centered */}
-                <main className="relative z-10 w-full max-w-3xl px-6 flex flex-col items-center justify-center">
-                    {/* Toggle */}
-                    <div className="relative bg-slate-200/50 backdrop-blur-md p-1 rounded-full w-56 flex items-center mb-6 border border-white/50">
-                        <div
-                            className={`absolute h-[calc(100%-8px)] top-1 bg-white rounded-full shadow-lg transition-all duration-300 ease-out ${sourceMode === 'topic' ? 'left-1 w-[calc(50%-4px)]' : 'left-[calc(50%+2px)] w-[calc(50%-4px)]'
-                                }`}
-                        />
-                        <button
-                            onClick={() => setSourceMode('topic')}
-                            className={`relative z-10 flex-1 text-center py-2 text-[10px] font-bold uppercase tracking-widest cursor-pointer transition-colors ${sourceMode === 'topic' ? 'text-slate-800' : 'text-slate-400'
-                                }`}
-                        >
-                            By Topic
-                        </button>
-                        <button
-                            onClick={() => setSourceMode('book')}
-                            className={`relative z-10 flex-1 text-center py-2 text-[10px] font-bold uppercase tracking-widest cursor-pointer transition-colors ${sourceMode === 'book' ? 'text-slate-800' : 'text-slate-400'
-                                }`}
-                        >
-                            By Book
-                        </button>
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="w-full max-w-4xl relative z-10 px-6"
+                >
+                    <div className="flex items-center gap-6 mb-12">
+                        <div className="w-16 h-16 bg-primary-custom rounded-[2rem] flex items-center justify-center shadow-lg shadow-primary-custom/20">
+                            <ImageIcon size={32} className="text-white" />
+                        </div>
+                        <div>
+                            <h1 className="text-4xl font-black text-foreground tracking-tighter leading-none mb-1 uppercase italic">Visuals Studio</h1>
+                            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em]">AI Asset Generator</p>
+                        </div>
                     </div>
 
-                    {/* Heading - Changes based on mode */}
-                    <h1 className="text-4xl md:text-5xl font-serif italic text-slate-900 mb-3 text-center whitespace-nowrap" style={{ fontFamily: "'Georgia', serif" }}>
-                        {sourceMode === 'topic' ? (
-                            <>What are we <span className="text-emerald-600">visualizing</span> today?</>
-                        ) : (
-                            <>Which book are we <span className="text-emerald-600">illustrating</span> today?</>
-                        )}
-                    </h1>
-                    <p className="text-slate-500 font-light text-base tracking-tight mb-8">
-                        {sourceMode === 'topic'
-                            ? 'AI-powered education, rendered with precision.'
-                            : 'Extract precision visuals from your favorite textbooks.'
-                        }
-                    </p>
+                    <div className="bg-card-bg/60 backdrop-blur-[40px] rounded-[3.5rem] p-16 border border-border shadow-[0_32px_120px_-20px_rgba(0,0,0,0.15)] relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-primary-custom/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
 
-                    {/* Glass Panel - Compact */}
-                    <div className="w-full bg-white/45 backdrop-blur-[20px] rounded-[40px] p-8 md:p-10 relative border border-white/60 shadow-[0_4px_24px_-1px_rgba(0,0,0,0.05),0_40px_80px_-20px_rgba(0,0,0,0.1),inset_0_0_0_1px_rgba(255,255,255,0.4)]">
-                        <div className="space-y-6">
+                        <div className="flex flex-col items-center mb-16 relative z-10">
+                            {/* Toggle Mode */}
+                            <div className="bg-muted/50 p-1 rounded-full flex items-center mb-8 border border-border shadow-inner">
+                                <button
+                                    onClick={() => setSourceMode('topic')}
+                                    className={`px-8 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${sourceMode === 'topic' ? 'bg-card-bg text-primary-custom shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                                >
+                                    By Prompt
+                                </button>
+                                <button
+                                    onClick={() => setSourceMode('book')}
+                                    className={`px-8 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${sourceMode === 'book' ? 'bg-card-bg text-primary-custom shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                                >
+                                    By Book
+                                </button>
+                            </div>
+
+                            <h2 className="text-5xl font-black text-foreground leading-[1.1] tracking-tighter uppercase italic text-center">
+                                {sourceMode === 'topic' ? (
+                                    <>What are we <span className="text-primary-custom">visualizing</span> today?</>
+                                ) : (
+                                    <>Which book are we <span className="text-primary-custom">illustrating</span> today?</>
+                                )}
+                            </h2>
+                            <p className="text-muted-foreground font-bold uppercase tracking-[0.2em] mt-6 text-center text-[10px] opacity-60">
+                                {sourceMode === 'topic'
+                                    ? 'AI-powered education, rendered with precision.'
+                                    : 'Extract precision visuals from your favorite textbooks.'
+                                }
+                            </p>
+                        </div>
+
+                        <div className="space-y-10 relative z-10">
                             {/* Topic Mode - Input */}
                             {sourceMode === 'topic' && (
-                                <div>
-                                    <label className="block text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-2">
+                                <div className="space-y-4">
+                                    <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">
                                         Topic or Description
                                     </label>
-                                    <input
-                                        type="text"
-                                        value={topic}
-                                        onChange={(e) => setTopic(e.target.value)}
-                                        className="w-full bg-transparent border-0 border-b-2 border-slate-200 px-0 py-3 text-lg font-medium text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 transition-all"
-                                        placeholder="e.g., Water cycle, Solar system, Cell division..."
-                                    />
+                                    <div className="relative group/input">
+                                        <input
+                                            type="text"
+                                            value={topic}
+                                            onChange={(e) => setTopic(e.target.value)}
+                                            className="w-full bg-muted/30 border-2 border-border px-8 py-5 rounded-3xl text-xl font-bold text-foreground placeholder:text-muted-foreground/30 focus:outline-none focus:border-primary-custom focus:bg-card-bg transition-all shadow-inner"
+                                            placeholder="e.g., Water cycle, Solar system, Cell division..."
+                                        />
+                                        <div className="absolute right-6 top-1/2 -translate-y-1/2 text-primary-custom/30 group-focus-within/input:text-primary-custom transition-colors">
+                                            <PenTool size={20} />
+                                        </div>
+                                    </div>
                                 </div>
                             )}
 
                             {/* Book Mode - Clean Inline Design */}
                             {sourceMode === 'book' && (
-                                <div className="space-y-6">
+                                <div className="space-y-10">
                                     {/* Book Search */}
                                     <div className="relative" ref={dropdownRef}>
-                                        <label className="block text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-2">
+                                        <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-4 ml-1">
                                             Book Title or ISBN
                                         </label>
-                                        <div className="relative">
+                                        <div className="relative group/input">
                                             <input
                                                 type="text"
                                                 value={selectedBook ? selectedBook.title : bookSearchQuery}
@@ -298,112 +307,124 @@ const VisualGeneratorView: React.FC = () => {
                                                 }}
                                                 onFocus={() => !selectedBook && setIsDropdownOpen(true)}
                                                 placeholder="Search for Campbell Biology, University Physics..."
-                                                className={`w-full bg-transparent border-0 border-b-2 px-0 py-3 text-lg font-medium placeholder:text-slate-400 focus:outline-none transition-all pr-10 ${selectedBook ? 'border-emerald-500 text-emerald-700' : 'border-slate-200 text-slate-800 focus:border-emerald-500'
-                                                    }`}
+                                                className={`w-full bg-muted/30 border-2 px-8 py-5 rounded-3xl text-xl font-bold placeholder:text-muted-foreground/30 focus:outline-none transition-all pr-16 shadow-inner ${selectedBook ? 'border-primary-custom text-primary-custom bg-card-bg' : 'border-border text-foreground focus:border-primary-custom focus:bg-card-bg'}`}
                                             />
-                                            <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                                            <div className="absolute right-6 top-1/2 -translate-y-1/2 flex items-center gap-3">
                                                 {selectedBook && (
-                                                    <button onClick={clearBookSelection} className="p-1 text-slate-400 hover:text-red-500 transition-all">
-                                                        <X size={16} />
+                                                    <button onClick={clearBookSelection} className="p-2 text-muted-foreground hover:text-destructive transition-all">
+                                                        <X size={20} />
                                                     </button>
                                                 )}
-                                                <Search size={18} className="text-slate-400" />
+                                                <Search size={22} className="text-muted-foreground/30" />
                                             </div>
                                         </div>
 
                                         {/* Book Dropdown */}
-                                        {isDropdownOpen && !selectedBook && filteredBooks.length > 0 && (
-                                            <div className="absolute z-50 mt-2 w-full bg-white rounded-2xl shadow-xl border border-slate-100 py-2 max-h-[200px] overflow-y-auto">
-                                                {filteredBooks.slice(0, 5).map((book) => (
-                                                    <button key={book.id} onClick={() => handleBookSelect(book)} className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-emerald-50 transition-all text-left group">
-                                                        <div className={`w-8 h-10 rounded-lg ${book.cover ? '' : book.color} flex items-center justify-center overflow-hidden shadow-sm`}>
-                                                            {book.cover ? <img src={book.cover} alt="" className="w-full h-full object-cover" /> : <BookOpen size={14} className={book.iconColor} />}
-                                                        </div>
-                                                        <div className="flex-1 min-w-0">
-                                                            <h4 className="font-bold text-sm text-slate-800 group-hover:text-emerald-700 truncate">{book.title}</h4>
-                                                            <p className="text-[10px] text-slate-500">{book.author}</p>
-                                                        </div>
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        )}
+                                        <AnimatePresence>
+                                            {isDropdownOpen && !selectedBook && filteredBooks.length > 0 && (
+                                                <motion.div
+                                                    initial={{ opacity: 0, y: 10 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    exit={{ opacity: 0, y: 10 }}
+                                                    className="absolute z-50 mt-4 w-full bg-card-bg rounded-[2.5rem] shadow-2xl border border-border p-3 max-h-[300px] overflow-y-auto backdrop-blur-xl"
+                                                >
+                                                    {filteredBooks.slice(0, 5).map((book) => (
+                                                        <button key={book.id} onClick={() => handleBookSelect(book)} className="w-full flex items-center gap-4 px-5 py-4 hover:bg-primary-custom/5 rounded-2xl transition-all text-left group">
+                                                            <div className={`w-12 h-16 rounded-xl ${book.cover ? '' : book.color} flex items-center justify-center overflow-hidden shadow-soft border border-border group-hover:scale-105 transition-transform`}>
+                                                                {book.cover ? <img src={book.cover} alt="" className="w-full h-full object-cover" /> : <BookOpen size={20} className={book.iconColor} />}
+                                                            </div>
+                                                            <div className="flex-1 min-w-0">
+                                                                <h4 className="font-black text-sm text-foreground group-hover:text-primary-custom truncate">{book.title}</h4>
+                                                                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1">{book.author}</p>
+                                                            </div>
+                                                        </button>
+                                                    ))}
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
                                     </div>
 
                                     {/* Chapter & Topic Dropdowns - Side by Side */}
-                                    <div className="grid grid-cols-2 gap-8">
+                                    <div className="grid grid-cols-2 gap-10">
                                         {/* Select Chapter Dropdown */}
                                         <div className="relative" ref={chapterDropdownRef}>
-                                            <label className="block text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-2">
+                                            <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-4 ml-1">
                                                 Select Chapter
                                             </label>
                                             <button
                                                 onClick={() => selectedBook && setIsChapterDropdownOpen(!isChapterDropdownOpen)}
                                                 disabled={!selectedBook}
-                                                className={`w-full flex items-center justify-between border-0 border-b-2 px-0 py-3 text-left transition-all ${!selectedBook
-                                                    ? 'border-slate-200 cursor-not-allowed'
+                                                className={`w-full flex items-center justify-between border-2 px-8 py-5 rounded-3xl text-left transition-all shadow-inner ${!selectedBook
+                                                    ? 'bg-muted/10 border-border/50 cursor-not-allowed opacity-50'
                                                     : selectedChapters.size > 0
-                                                        ? 'border-emerald-500'
-                                                        : 'border-slate-200 hover:border-slate-300'
+                                                        ? 'bg-card-bg border-primary-custom'
+                                                        : 'bg-muted/30 border-border hover:border-primary-custom/50'
                                                     }`}
                                             >
-                                                <span className={`text-lg font-medium ${selectedChapters.size > 0 ? 'text-emerald-700' : 'text-slate-400'
-                                                    }`}>
+                                                <span className={`text-lg font-bold ${selectedChapters.size > 0 ? 'text-primary-custom' : 'text-muted-foreground/30'}`}>
                                                     {selectedChapters.size > 0
-                                                        ? `${selectedChapters.size} chapter${selectedChapters.size > 1 ? 's' : ''} selected`
-                                                        : 'Select a chapter...'
+                                                        ? `${selectedChapters.size} selected`
+                                                        : 'Choose Chapters'
                                                     }
                                                 </span>
-                                                <ChevronDown size={16} className={`text-slate-400 transition-transform duration-200 ${isChapterDropdownOpen ? 'rotate-180' : ''}`} />
+                                                <ChevronDown size={20} className={`text-muted-foreground transition-transform duration-300 ${isChapterDropdownOpen ? 'rotate-180 text-primary-custom' : ''}`} />
                                             </button>
 
                                             {/* Chapter Dropdown List */}
-                                            {isChapterDropdownOpen && selectedBook && selectedBook.chapters && (
-                                                <div className="absolute z-50 mt-2 w-full bg-white rounded-xl shadow-xl border border-slate-100 py-1 max-h-[200px] overflow-y-auto animate-fadeIn">
-                                                    {selectedBook.chapters.length > 0 ? (
-                                                        selectedBook.chapters.map((chapter, idx) => (
-                                                            <button
-                                                                key={chapter.id}
-                                                                type="button"
-                                                                onClick={() => toggleChapter(chapter.id)}
-                                                                className={`w-full px-4 py-2.5 text-left text-sm font-medium transition-all flex items-center gap-3
-                                                                    ${selectedChapters.has(chapter.id) ? 'bg-emerald-50 text-emerald-700' : 'text-slate-700 hover:bg-slate-50'}`}
-                                                            >
-                                                                <span className={`w-6 h-6 rounded-md text-xs font-bold flex items-center justify-center shrink-0 ${selectedChapters.has(chapter.id) ? 'bg-emerald-500 text-white' : 'bg-slate-100 text-slate-500'
-                                                                    }`}>
-                                                                    {idx + 1}
-                                                                </span>
-                                                                <span className="flex-1 truncate">{chapter.title}</span>
-                                                                {selectedChapters.has(chapter.id) && <Check size={14} className="text-emerald-600 shrink-0" />}
-                                                            </button>
-                                                        ))
-                                                    ) : (
-                                                        <div className="px-4 py-3 text-sm text-slate-400 text-center">No chapters available</div>
-                                                    )}
-                                                </div>
-                                            )}
+                                            <AnimatePresence>
+                                                {isChapterDropdownOpen && selectedBook && selectedBook.chapters && (
+                                                    <motion.div
+                                                        initial={{ opacity: 0, y: 10 }}
+                                                        animate={{ opacity: 1, y: 0 }}
+                                                        exit={{ opacity: 0, y: 10 }}
+                                                        className="absolute z-50 mt-4 w-full bg-card-bg rounded-[2.5rem] shadow-2xl border border-border p-3 max-h-[300px] overflow-y-auto backdrop-blur-xl"
+                                                    >
+                                                        {selectedBook.chapters.length > 0 ? (
+                                                            selectedBook.chapters.map((chapter, idx) => (
+                                                                <button
+                                                                    key={chapter.id}
+                                                                    type="button"
+                                                                    onClick={() => toggleChapter(chapter.id)}
+                                                                    className={`w-full px-5 py-4 rounded-2xl text-left text-sm font-bold transition-all flex items-center gap-4
+                                                                        ${selectedChapters.has(chapter.id) ? 'bg-primary-custom text-white shadow-lg shadow-primary-custom/20' : 'text-foreground hover:bg-primary-custom/5'}`}
+                                                                >
+                                                                    <span className={`w-8 h-8 rounded-lg text-xs font-black flex items-center justify-center shrink-0 ${selectedChapters.has(chapter.id) ? 'bg-white/20' : 'bg-muted'}`}>
+                                                                        {idx + 1}
+                                                                    </span>
+                                                                    <span className="flex-1 truncate">{chapter.title}</span>
+                                                                    {selectedChapters.has(chapter.id) && <Check size={16} className="shrink-0" />}
+                                                                </button>
+                                                            ))
+                                                        ) : (
+                                                            <div className="px-5 py-8 text-[10px] font-black uppercase text-muted-foreground tracking-widest text-center">No chapters found</div>
+                                                        )}
+                                                    </motion.div>
+                                                )}
+                                            </AnimatePresence>
                                         </div>
 
                                         {/* Topic/Concept Dropdown */}
-                                        <div>
-                                            <label className="block text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-2">
-                                                Topic/Concept
+                                        <div className="space-y-4">
+                                            <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">
+                                                Concept to Illustrate
                                             </label>
-                                            <div className="relative">
+                                            <div className="relative group/input">
                                                 <input
                                                     type="text"
                                                     value={topic}
                                                     onChange={(e) => setTopic(e.target.value)}
                                                     disabled={!selectedBook || selectedChapters.size === 0}
-                                                    placeholder="Choose a concept..."
-                                                    className={`w-full bg-transparent border-0 border-b-2 px-0 py-3 text-lg font-medium placeholder:text-slate-400 focus:outline-none transition-all pr-8 ${!selectedBook || selectedChapters.size === 0
-                                                        ? 'border-slate-200 cursor-not-allowed text-slate-300'
+                                                    placeholder="Specify concept..."
+                                                    className={`w-full border-2 px-8 py-5 rounded-3xl text-lg font-bold placeholder:text-muted-foreground/30 focus:outline-none transition-all pr-12 shadow-inner ${!selectedBook || selectedChapters.size === 0
+                                                        ? 'bg-muted/10 border-border/50 cursor-not-allowed text-muted-foreground/20'
                                                         : topic.trim()
-                                                            ? 'border-emerald-500 text-emerald-700'
-                                                            : 'border-slate-200 text-slate-800 focus:border-emerald-500'
+                                                            ? 'bg-card-bg border-primary-custom text-primary-custom'
+                                                            : 'bg-muted/30 border-border text-foreground focus:border-primary-custom'
                                                         }`}
                                                 />
-                                                <div className={`absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 rounded ${selectedBook && selectedChapters.size > 0 ? 'bg-emerald-100' : 'bg-slate-100'
-                                                    }`} />
+                                                <div className="absolute right-6 top-1/2 -translate-y-1/2 text-primary-custom/30">
+                                                    <Zap size={20} className={topic.trim() ? 'text-primary-custom' : ''} />
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -412,358 +433,208 @@ const VisualGeneratorView: React.FC = () => {
 
                             {/* Grade & Style Dropdowns - Only show for Topic mode */}
                             {sourceMode === 'topic' && (
-                                <div className="grid grid-cols-2 gap-8">
+                                <div className="grid grid-cols-2 gap-10">
                                     <CustomDropdown
-                                        label="Grade Level"
+                                        label="Target Grade"
                                         value={grade}
                                         onChange={setGrade}
                                         options={gradeOptions}
-                                        placeholder="Select grade"
+                                        placeholder="Select Grade"
                                     />
                                     <CustomDropdown
-                                        label="Visual Style"
+                                        label="Artistic Style"
                                         value={visualStyle}
                                         onChange={setVisualStyle}
                                         options={styleOptions}
-                                        placeholder="Select style"
+                                        placeholder="Select Style"
                                     />
                                 </div>
                             )}
                         </div>
 
                         {/* Magic Button */}
-                        <div className="absolute -bottom-10 left-1/2 -translate-x-1/2">
+                        <div className="mt-16 flex flex-col items-center gap-6 relative z-10">
                             <button
                                 onClick={handleGenerate}
-                                disabled={sourceMode === 'topic' ? !topic.trim() : !selectedBook}
-                                className="w-20 h-20 bg-gradient-to-br from-lime-400 to-emerald-500 rounded-full flex items-center justify-center text-white relative group transition-all duration-400 hover:scale-110 hover:shadow-[0_20px_40px_-5px_rgba(16,185,129,0.4)] disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-none"
+                                disabled={sourceMode === 'topic' ? !topic.trim() : (!selectedBook || selectedChapters.size === 0)}
+                                className="group relative"
                             >
-                                <Sparkles size={32} className="drop-shadow-md" />
-                                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-lime-400 to-emerald-500 blur-2xl opacity-40 group-hover:opacity-60 transition-opacity -z-10" />
-                            </button>
-                        </div>
-                    </div>
-
-
-                </main>
-
-                {/* Chapter/Book Picker Modal */}
-                {isBookPickerOpen && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-                        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-xl max-h-[70vh] overflow-hidden animate-fadeIn">
-                            <div className="p-4 border-b border-slate-100 flex items-center justify-between">
-                                <h3 className="text-lg font-bold text-slate-800">
-                                    {selectedBook ? 'Select Chapters' : 'Select Book'}
-                                </h3>
-                                <button onClick={() => setIsBookPickerOpen(false)} className="p-2 text-slate-400 hover:text-slate-600 rounded-xl">
-                                    <X size={18} />
-                                </button>
-                            </div>
-
-                            {/* Show chapters if book is selected */}
-                            {selectedBook ? (
-                                <div className="p-4">
-                                    {/* Selected Book Info */}
-                                    <div className="flex items-center gap-3 bg-emerald-50 rounded-xl p-3 mb-4 border border-emerald-200">
-                                        <div className={`w-10 h-12 rounded-lg ${selectedBook.cover ? '' : selectedBook.color} flex items-center justify-center overflow-hidden shadow-sm`}>
-                                            {selectedBook.cover ? <img src={selectedBook.cover} alt="" className="w-full h-full object-cover" /> : <BookOpen size={16} className={selectedBook.iconColor} />}
-                                        </div>
-                                        <div className="flex-1">
-                                            <h4 className="font-bold text-sm text-slate-800">{selectedBook.title}</h4>
-                                            <p className="text-xs text-slate-500">{selectedBook.author}</p>
-                                        </div>
-                                    </div>
-
-                                    {/* Chapters Grid */}
-                                    {selectedBook.chapters && selectedBook.chapters.length > 0 ? (
-                                        <div className="grid grid-cols-1 gap-2 max-h-[300px] overflow-y-auto">
-                                            {selectedBook.chapters.map((chapter, idx) => (
-                                                <button
-                                                    key={chapter.id}
-                                                    onClick={() => toggleChapter(chapter.id)}
-                                                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all text-left ${selectedChapters.has(chapter.id)
-                                                        ? 'bg-emerald-500 text-white shadow-md'
-                                                        : 'bg-slate-50 text-slate-700 hover:bg-emerald-50 border border-slate-200'
-                                                        }`}
-                                                >
-                                                    <span className={`w-7 h-7 rounded-lg text-xs font-bold flex items-center justify-center shrink-0 ${selectedChapters.has(chapter.id) ? 'bg-white/20' : 'bg-white'
-                                                        }`}>
-                                                        {idx + 1}
-                                                    </span>
-                                                    <span className="flex-1">{chapter.title}</span>
-                                                    {selectedChapters.has(chapter.id) && <Check size={16} />}
-                                                </button>
-                                            ))}
-                                        </div>
-                                    ) : (
-                                        <div className="text-center py-8 text-slate-400">
-                                            <Layers size={32} className="mx-auto mb-2 opacity-50" />
-                                            <p className="text-sm">No chapters available</p>
-                                        </div>
-                                    )}
-
-                                    {/* Done Button */}
-                                    <button
-                                        onClick={() => setIsBookPickerOpen(false)}
-                                        className="w-full mt-4 py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-bold text-sm transition-all"
-                                    >
-                                        Done ({selectedChapters.size} selected)
-                                    </button>
+                                <div className="absolute inset-0 bg-primary-custom blur-2xl opacity-20 group-hover:opacity-40 transition-opacity" />
+                                <div className="relative bg-foreground text-background px-12 py-5 rounded-[2.5rem] font-black text-sm uppercase tracking-[0.3em] flex items-center gap-4 hover:scale-105 active:scale-95 transition-all disabled:opacity-30 disabled:hover:scale-100 shadow-2xl">
+                                    {sourceMode === 'topic' ? <Sparkles size={20} /> : <ImageIcon size={20} />}
+                                    Generate Assets
+                                    <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
                                 </div>
-                            ) : (
-                                <>
-                                    <div className="p-3 border-b border-slate-100">
-                                        <div className="relative">
-                                            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                                            <input
-                                                type="text"
-                                                value={bookSearchQuery}
-                                                onChange={(e) => setBookSearchQuery(e.target.value)}
-                                                placeholder="Search..."
-                                                className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 focus:outline-none"
-                                                autoFocus
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="overflow-y-auto max-h-[400px] divide-y divide-slate-100">
-                                        {filteredBooks.length > 0 ? (
-                                            filteredBooks.map((book) => (
-                                                <button key={book.id} onClick={() => handleBookSelect(book)} className="w-full flex items-center gap-3 p-3 hover:bg-emerald-50 text-left group">
-                                                    <div className={`w-10 h-12 rounded-lg ${book.cover ? '' : book.color} flex items-center justify-center overflow-hidden shadow-sm`}>
-                                                        {book.cover ? <img src={book.cover} alt="" className="w-full h-full object-cover" /> : <BookOpen size={16} className={book.iconColor} />}
-                                                    </div>
-                                                    <div className="flex-1">
-                                                        <h4 className="font-bold text-sm text-slate-800 group-hover:text-emerald-700">{book.title}</h4>
-                                                        <p className="text-xs text-slate-500">{book.author} • {book.classLevel}</p>
-                                                    </div>
-                                                </button>
-                                            ))
-                                        ) : (
-                                            <div className="p-8 text-center text-slate-400">
-                                                <BookOpen size={32} className="mx-auto mb-2 opacity-50" />
-                                                <p className="text-sm">No books found in library</p>
-                                            </div>
-                                        )}
-                                    </div>
-                                </>
-                            )}
+                            </button>
+                            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Uses GPT-4o + DALL-E 3</p>
                         </div>
                     </div>
-                )}
+                </motion.div>
             </div>
         );
     }
+
     // GENERATING VIEW - Premium Orbital Design
     if (viewState === 'generating') {
         return (
-            <div className="h-full w-full flex items-center justify-center bg-slate-50 relative overflow-hidden">
-                {/* Background Orbs */}
-                <div className="absolute w-[600px] h-[600px] bg-lime-200/40 rounded-full blur-[100px] top-[-10%] left-[-5%] pointer-events-none" />
-                <div className="absolute w-[700px] h-[700px] bg-emerald-100/40 rounded-full blur-[100px] bottom-[-15%] right-[-5%] pointer-events-none" />
-                <div className="absolute w-[500px] h-[500px] bg-teal-50 rounded-full blur-[100px] top-[20%] right-[10%] pointer-events-none" />
+            <div className="h-full w-full flex items-center justify-center relative bg-transparent overflow-hidden">
+                {/* Dynamic Background Elements */}
+                <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+                    <div className="absolute top-[-10%] left-[-5%] w-[600px] h-[600px] bg-primary-custom/10 rounded-full blur-[100px]" />
+                    <div className="absolute bottom-[-10%] right-[-5%] w-[500px] h-[500px] bg-primary-custom/5 rounded-full blur-[100px]" />
+                </div>
 
-                <main className="relative z-10 w-full flex flex-col items-center">
-                    {/* Heading */}
-                    <div className="text-center mb-12 animate-fadeIn">
-                        <h1 className="text-4xl md:text-5xl font-serif italic text-slate-900 mb-4 leading-tight" style={{ fontFamily: "'Georgia', serif" }}>
-                            Bringing your <span className="text-emerald-600">vision</span> to life...
+                <div className="relative z-10 w-full flex flex-col items-center">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="text-center mb-16"
+                    >
+                        <h1 className="text-5xl font-black text-foreground tracking-tighter uppercase italic mb-4">
+                            Bringing <span className="text-primary-custom">context</span> to life
                         </h1>
-                        <p className="text-slate-400 font-light text-lg tracking-wide">Synthesizing multi-layered visual context</p>
-                    </div>
+                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em]">Synthesizing multi-layered visual assets</p>
+                    </motion.div>
 
                     {/* Central Orb Container */}
-                    <div className="relative w-[320px] h-[320px] flex items-center justify-center mb-10">
-                        {/* Orbit Ring */}
-                        <div className="absolute w-full h-full border border-emerald-500/10 rounded-full animate-spin" style={{ animationDuration: '20s' }} />
+                    <div className="relative w-[400px] h-[400px] flex items-center justify-center mb-16">
+                        {/* Audit Rings */}
+                        <div className="absolute inset-0 border-2 border-primary-custom/10 rounded-full animate-spin-slow" />
+                        <div className="absolute inset-8 border border-primary-custom/5 rounded-full animate-reverse-spin-slow" />
 
                         {/* Orbiting Particles */}
-                        <div className="absolute top-[8%] left-[18%] text-emerald-600/50 text-lg font-light animate-pulse">∫</div>
-                        <div className="absolute top-[0%] left-[48%] text-emerald-600/50 animate-pulse" style={{ animationDelay: '0.2s' }}>
-                            <Sparkles size={14} />
-                        </div>
-                        <div className="absolute top-[12%] right-[12%] text-emerald-600/50 text-lg font-light animate-pulse" style={{ animationDelay: '0.4s' }}>φ</div>
-                        <div className="absolute bottom-[18%] right-[8%] text-emerald-600/50 text-lg font-light animate-pulse" style={{ animationDelay: '0.6s' }}>π</div>
-                        <div className="absolute bottom-[0%] left-[45%] text-emerald-600/50 animate-pulse" style={{ animationDelay: '0.8s' }}>
-                            <Zap size={14} />
-                        </div>
-                        <div className="absolute bottom-[22%] left-[5%] text-emerald-600/50 text-lg font-light animate-pulse" style={{ animationDelay: '1s' }}>√</div>
+                        <motion.div
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                            className="absolute inset-0"
+                        >
+                            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3 h-3 bg-primary-custom rounded-full shadow-[0_0_15px_rgba(var(--primary-rgb),0.5)]" />
+                        </motion.div>
 
                         {/* Main Glass Orb */}
-                        <div
-                            className="w-[200px] h-[200px] rounded-full flex items-center justify-center relative z-20"
-                            style={{
-                                background: 'radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.2))',
-                                backdropFilter: 'blur(30px)',
-                                border: '1px solid rgba(255, 255, 255, 0.8)',
-                                boxShadow: '0 0 80px rgba(190, 242, 100, 0.6), inset 0 0 40px rgba(16, 185, 129, 0.2), 0 20px 50px rgba(0, 0, 0, 0.1)'
-                            }}
-                        >
-                            {/* Internal Glow */}
-                            <div
-                                className="w-[100px] h-[100px] rounded-full animate-pulse"
-                                style={{
-                                    background: 'radial-gradient(circle, #bef264 0%, #10b981 100%)',
-                                    filter: 'blur(30px)',
-                                    opacity: 0.6
+                        <div className="w-56 h-56 bg-card-bg/40 backdrop-blur-3xl rounded-full border-2 border-white/20 shadow-2xl flex items-center justify-center relative overflow-hidden group">
+                            <div className="absolute inset-0 bg-gradient-to-br from-primary-custom/20 to-transparent" />
+                            <motion.div
+                                animate={{
+                                    scale: [1, 1.1, 1],
+                                    opacity: [0.3, 0.6, 0.3]
                                 }}
+                                transition={{ duration: 3, repeat: Infinity }}
+                                className="w-32 h-32 bg-primary-custom/30 rounded-full blur-3xl"
                             />
-                            {/* Center Icon */}
-                            <div className="absolute inset-0 flex items-center justify-center">
-                                <Sparkles size={48} className="text-emerald-600/30" />
-                            </div>
+                            <Sparkles size={64} className="text-primary-custom relative z-10 drop-shadow-2xl" />
                         </div>
                     </div>
 
                     {/* Progress Section */}
-                    <div className="flex flex-col items-center space-y-5 animate-fadeIn" style={{ animationDelay: '0.3s' }}>
-                        {/* Progress Bar */}
-                        <div className="w-72 h-0.5 bg-emerald-500/10 rounded-full overflow-hidden relative">
-                            <div
-                                className="absolute left-0 top-0 h-full bg-gradient-to-r from-lime-400 to-emerald-500 rounded-full animate-progress"
-                                style={{
-                                    boxShadow: '0 0 10px #bef264',
-                                    animation: 'progressFill 2.5s ease-in-out forwards'
-                                }}
+                    <div className="flex flex-col items-center space-y-8 w-full max-w-sm">
+                        <div className="w-full h-1.5 bg-muted/30 rounded-full overflow-hidden relative">
+                            <motion.div
+                                initial={{ width: "0%" }}
+                                animate={{ width: "100%" }}
+                                transition={{ duration: 2.5, ease: "easeInOut" }}
+                                className="absolute left-0 top-0 h-full bg-primary-custom rounded-full shadow-[0_0_15px_rgba(var(--primary-rgb),0.5)]"
                             />
                         </div>
 
-                        {/* Status Steps */}
-                        <div className="flex items-center gap-6 text-[10px] uppercase tracking-[0.15em] font-bold">
-                            <div className="flex items-center gap-2 text-slate-400">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                                <span>Analyzing</span>
-                            </div>
-                            <div className="flex items-center gap-2 text-emerald-600">
-                                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-                                <span>Generating</span>
-                            </div>
-                            <div className="flex items-center gap-2 text-slate-300">
-                                <span className="w-1.5 h-1.5 rounded-full bg-slate-300" />
-                                <span>Finalizing</span>
-                            </div>
+                        <div className="flex justify-between w-full text-[10px] font-black uppercase tracking-widest">
+                            <span className="text-primary-custom">Analyzing</span>
+                            <span className="animate-pulse text-foreground">Rendering</span>
+                            <span className="text-muted-foreground/30">Finalizing</span>
                         </div>
                     </div>
-
-                    {/* Neural Processor Badge */}
-                    <div className="mt-12 animate-fadeIn" style={{ animationDelay: '0.6s' }}>
-                        <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-white/60 text-slate-500 text-[9px] uppercase tracking-widest font-bold bg-white/30 backdrop-blur-md shadow-sm">
-                            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" style={{ boxShadow: '0 0 8px rgba(16, 185, 129, 0.5)' }} />
-                            Neural Processor Active
-                        </div>
-                    </div>
-                </main>
-
-                {/* CSS Keyframes */}
-                <style jsx>{`
-                    @keyframes fadeIn {
-                        from { opacity: 0; transform: translateY(20px); }
-                        to { opacity: 1; transform: translateY(0); }
-                    }
-                    @keyframes progressFill {
-                        0% { width: 0%; }
-                        30% { width: 30%; }
-                        60% { width: 65%; }
-                        100% { width: 100%; }
-                    }
-                    .animate-fadeIn {
-                        animation: fadeIn 1s ease-out forwards;
-                    }
-                    .animate-progress {
-                        animation: progressFill 2.5s ease-in-out forwards;
-                    }
-                `}</style>
+                </div>
             </div>
         );
     }
 
     // RESULT VIEW - Premium Workspace Design
     return (
-        <div className="h-full w-full flex flex-col relative overflow-hidden" style={{ background: 'radial-gradient(circle at top left, #f0fdf4, #dcfce7, #f8fafc)' }}>
-            {/* Background Orbs */}
-            <div className="absolute w-[800px] h-[800px] bg-lime-200/40 rounded-full blur-[120px] top-[-20%] left-[-10%] pointer-events-none animate-pulse" style={{ animationDuration: '4s' }} />
-            <div className="absolute w-[700px] h-[700px] bg-emerald-100/50 rounded-full blur-[120px] bottom-[-10%] right-[-5%] pointer-events-none" />
+        <div className="h-full w-full flex flex-col relative overflow-hidden bg-transparent">
+            {/* Dynamic Background Elements */}
+            <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+                <div className="absolute top-[-10%] left-[-5%] w-[800px] h-[800px] bg-primary-custom/10 rounded-full blur-[120px]" />
+                <div className="absolute bottom-[-10%] right-[-5%] w-[600px] h-[600px] bg-primary-custom/5 rounded-full blur-[100px]" />
+            </div>
 
             {/* Header */}
-            <header className="z-20 px-6 py-4 flex items-center justify-between shrink-0">
-                <div className="flex items-center gap-4">
-                    <button onClick={() => setViewState('form')} className="p-2 text-slate-500 hover:text-slate-700 hover:bg-white/50 rounded-xl transition-all">
-                        <ArrowLeft size={20} />
+            <header className="z-20 px-8 py-6 flex items-center justify-between shrink-0 bg-card-bg/40 backdrop-blur-xl border-b border-border">
+                <div className="flex items-center gap-6">
+                    <button
+                        onClick={() => setViewState('form')}
+                        className="p-3 text-muted-foreground hover:text-primary-custom hover:bg-primary-custom/5 rounded-2xl transition-all group"
+                    >
+                        <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
                     </button>
-                    <div className="w-10 h-10 bg-gradient-to-tr from-lime-400 to-emerald-500 rounded-xl flex items-center justify-center text-white shadow-lg">
-                        <Sparkles size={20} />
-                    </div>
-                    <div>
-                        <h2 className="text-sm font-bold uppercase tracking-widest text-slate-800">Workspace</h2>
-                        <p className="text-[10px] text-emerald-600 font-bold uppercase tracking-tight">Draft v1.0 • {visualStyle}</p>
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-primary-custom rounded-2xl flex items-center justify-center text-white shadow-lg shadow-primary-custom/20">
+                            <Layers size={24} />
+                        </div>
+                        <div>
+                            <h2 className="text-lg font-black text-foreground tracking-tight uppercase italic leading-none">Visual Identity</h2>
+                            <p className="text-[10px] text-primary-custom font-black uppercase tracking-widest mt-1">Draft v1.0 • {visualStyle}</p>
+                        </div>
                     </div>
                 </div>
-                <div className="flex items-center gap-3">
-                    <button className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/50 border border-white/80 text-xs font-semibold text-slate-600 hover:bg-white transition-all">
-                        <RefreshCw size={14} />
-                        Version History
-                        <ChevronDown size={14} />
-                    </button>
-                    <div className="h-8 w-px bg-slate-200" />
-                    <div className="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center">
-                        <Bot size={18} />
+
+                <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2 px-4 py-2 bg-muted/50 rounded-full border border-border">
+                        <div className="w-2 h-2 bg-primary-custom rounded-full animate-pulse" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Connected to GPT-4o</span>
                     </div>
+                    <div className="h-8 w-px bg-border" />
+                    <button className="w-12 h-12 rounded-2xl bg-foreground text-background flex items-center justify-center hover:scale-105 transition-all shadow-xl">
+                        <Bot size={22} />
+                    </button>
                 </div>
             </header>
 
             {/* Main Content */}
-            <main className="flex-1 flex overflow-hidden px-6 pb-6 gap-6">
+            <main className="flex-1 flex overflow-hidden p-8 gap-8 relative z-10">
                 {/* Left - Image Viewer */}
-                <div className="flex-1 flex flex-col gap-4 overflow-hidden">
+                <div className="flex-1 flex flex-col gap-6 overflow-hidden">
                     {/* Glass Image Panel */}
-                    <div
-                        className="flex-1 rounded-[32px] relative overflow-hidden flex items-center justify-center group"
-                        style={{
-                            background: 'rgba(255, 255, 255, 0.6)',
-                            backdropFilter: 'blur(24px)',
-                            border: '1px solid rgba(255, 255, 255, 0.7)',
-                            boxShadow: '0 4px 24px -1px rgba(0, 0, 0, 0.04), 0 40px 80px -20px rgba(0, 0, 0, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.5), 0 0 40px rgba(190, 242, 100, 0.1)'
-                        }}
-                    >
-                        {/* Overlay Gradient */}
-                        <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent pointer-events-none" />
-
+                    <div className="flex-1 bg-card-bg/60 backdrop-blur-[40px] rounded-[3.5rem] border border-border shadow-2xl relative overflow-hidden flex items-center justify-center group/viewer">
                         {/* Image Container */}
-                        <div className="relative w-full h-full p-6">
-                            <div className="w-full h-full rounded-2xl bg-white/40 shadow-inner flex items-center justify-center relative overflow-hidden">
+                        <div className="relative w-full h-full p-12">
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                className="w-full h-full rounded-2xl flex items-center justify-center relative overflow-hidden"
+                            >
                                 <img
                                     src={generatedVisuals[selectedVisual]?.url}
                                     alt={topic}
-                                    className="w-full h-full object-contain rounded-xl transition-transform duration-700 group-hover:scale-[1.02]"
+                                    className="w-full h-full object-contain rounded-xl transition-transform duration-700 group-hover/viewer:scale-[1.02]"
                                     style={{ transform: `scale(${zoom / 100})` }}
                                 />
 
                                 {/* Hover Zoom Controls */}
-                                <div className="absolute bottom-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button onClick={() => setZoom(Math.min(200, zoom + 25))} className="w-10 h-10 bg-white/90 backdrop-blur rounded-full shadow-lg flex items-center justify-center text-slate-700 hover:bg-white">
-                                        <ZoomIn size={18} />
+                                <div className="absolute bottom-6 right-6 flex flex-col gap-3 opacity-0 group-hover/viewer:opacity-100 transition-all translate-y-4 group-hover/viewer:translate-y-0">
+                                    <button onClick={() => setZoom(Math.min(200, zoom + 25))} className="w-12 h-12 bg-card-bg/90 backdrop-blur-xl border border-border rounded-2xl shadow-xl flex items-center justify-center text-foreground hover:bg-primary-custom hover:text-white transition-all">
+                                        <ZoomIn size={20} />
                                     </button>
-                                    <button onClick={() => setZoom(Math.max(50, zoom - 25))} className="w-10 h-10 bg-white/90 backdrop-blur rounded-full shadow-lg flex items-center justify-center text-slate-700 hover:bg-white">
-                                        <ZoomOut size={18} />
+                                    <button onClick={() => setZoom(Math.max(50, zoom - 25))} className="w-12 h-12 bg-card-bg/90 backdrop-blur-xl border border-border rounded-2xl shadow-xl flex items-center justify-center text-foreground hover:bg-primary-custom hover:text-white transition-all">
+                                        <ZoomOut size={20} />
                                     </button>
-                                    <button onClick={() => setZoom(100)} className="w-10 h-10 bg-white/90 backdrop-blur rounded-full shadow-lg flex items-center justify-center text-slate-700 hover:bg-white">
-                                        <RotateCcw size={18} />
+                                    <button onClick={() => setZoom(100)} className="w-12 h-12 bg-card-bg/90 backdrop-blur-xl border border-border rounded-2xl shadow-xl flex items-center justify-center text-foreground hover:bg-primary-custom hover:text-white transition-all">
+                                        <RotateCcw size={20} />
                                     </button>
                                 </div>
-                            </div>
+                            </motion.div>
                         </div>
                     </div>
 
                     {/* Bottom Actions Bar */}
-                    <div className="flex items-center justify-between gap-4 flex-wrap">
+                    <div className="flex items-center justify-between gap-6">
                         {/* Download & Save Buttons */}
-                        <div className="flex items-center gap-3">
-                            <div className="flex rounded-2xl overflow-hidden shadow-sm border border-emerald-100">
-                                <button className="bg-emerald-600 text-white px-5 py-3 text-sm font-bold flex items-center gap-2 hover:bg-emerald-700 transition-all">
-                                    <Download size={18} />
-                                    Download High-Res
+                        <div className="flex items-center gap-4">
+                            <div className="flex items-center bg-foreground text-background rounded-[2rem] overflow-hidden shadow-2xl">
+                                <button className="px-8 py-4 text-xs font-black uppercase tracking-[0.2em] flex items-center gap-3 hover:bg-white/10 transition-all border-r border-background/10">
+                                    <Download size={20} />
+                                    Export Asset
                                 </button>
-                                <div className="bg-emerald-700 w-px" />
-                                <select className="bg-emerald-600 text-white border-none text-xs font-bold px-3 focus:ring-0 cursor-pointer hover:bg-emerald-700">
+                                <select className="bg-transparent border-none text-[10px] font-black uppercase px-4 py-4 focus:ring-0 cursor-pointer hover:bg-white/10">
                                     <option>PNG</option>
                                     <option>SVG</option>
                                     <option>PDF</option>
@@ -771,32 +642,31 @@ const VisualGeneratorView: React.FC = () => {
                             </div>
                             <button
                                 onClick={handleSave}
-                                className={`px-5 py-3 border rounded-2xl text-sm font-bold flex items-center gap-2 shadow-sm transition-all ${isSaved
-                                    ? 'bg-emerald-500 text-white border-emerald-500'
-                                    : 'bg-white border-slate-200 text-slate-700 hover:border-emerald-200 hover:bg-emerald-50'
+                                className={`px-8 py-4 rounded-[2rem] text-xs font-black uppercase tracking-[0.2em] flex items-center gap-3 shadow-xl transition-all ${isSaved
+                                    ? 'bg-primary-custom text-white'
+                                    : 'bg-card-bg border-2 border-border text-foreground hover:border-primary-custom/50'
                                     }`}
                             >
-                                {isSaved ? <CheckCircle2 size={18} /> : <BookOpen size={18} />}
-                                {isSaved ? 'Saved!' : 'Save to Workspace'}
+                                {isSaved ? <Check size={20} /> : <BookOpen size={20} />}
+                                {isSaved ? 'Archived' : 'Archive to Library'}
                             </button>
                         </div>
 
                         {/* Style Transfer */}
-                        <div className="flex items-center gap-3 bg-white/40 backdrop-blur-md p-2 rounded-2xl border border-white/60">
-                            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-2">Style Transfer</span>
+                        <div className="flex items-center gap-4 bg-card-bg/40 backdrop-blur-xl p-2.5 rounded-[2.5rem] border border-border shadow-soft">
+                            <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest ml-4">Variants</span>
                             <div className="flex gap-2">
                                 {generatedVisuals.map((visual, idx) => (
                                     <button
                                         key={visual.id}
                                         onClick={() => setSelectedVisual(idx)}
-                                        className={`w-11 h-11 rounded-xl overflow-hidden transition-all hover:-translate-y-1 hover:shadow-lg ${selectedVisual === idx ? 'ring-2 ring-emerald-500 ring-offset-2' : 'border-2 border-transparent'
-                                            }`}
+                                        className={`w-14 h-14 rounded-2xl overflow-hidden transition-all hover:-translate-y-1 hover:shadow-lg border-2 ${selectedVisual === idx ? 'border-primary-custom scale-105 shadow-lg shadow-primary-custom/20' : 'border-transparent'}`}
                                     >
                                         <img src={visual.url} alt="" className="w-full h-full object-cover" />
                                     </button>
                                 ))}
-                                <button className="w-11 h-11 rounded-xl bg-white border-2 border-transparent flex items-center justify-center hover:bg-slate-50">
-                                    <ChevronRight size={16} className="text-slate-400" />
+                                <button className="w-14 h-14 rounded-2xl bg-muted/30 border-2 border-transparent flex items-center justify-center hover:bg-muted/50 transition-colors">
+                                    <RefreshCw size={20} className="text-muted-foreground" />
                                 </button>
                             </div>
                         </div>
@@ -804,64 +674,60 @@ const VisualGeneratorView: React.FC = () => {
                 </div>
 
                 {/* Right Sidebar - AI Refinement */}
-                <aside
-                    className="w-[340px] rounded-[32px] flex flex-col overflow-hidden shadow-2xl shrink-0 hidden lg:flex"
-                    style={{
-                        background: 'rgba(255, 255, 255, 0.4)',
-                        backdropFilter: 'blur(16px)',
-                        borderLeft: '1px solid rgba(255, 255, 255, 0.7)'
-                    }}
-                >
+                <aside className="w-[400px] bg-card-bg/40 backdrop-blur-[40px] rounded-[3.5rem] border border-border flex flex-col overflow-hidden shadow-2xl shrink-0 hidden lg:flex">
                     {/* Sidebar Header */}
-                    <div className="p-6 border-b border-white/40">
-                        <div className="flex items-center gap-3 mb-2">
-                            <Zap size={20} className="text-emerald-600" />
-                            <h3 className="font-bold text-slate-800">AI Refinement</h3>
+                    <div className="p-8 border-b border-border">
+                        <div className="flex items-center gap-4 mb-4">
+                            <div className="w-10 h-10 bg-primary-custom/10 rounded-xl flex items-center justify-center text-primary-custom">
+                                <Zap size={22} />
+                            </div>
+                            <h3 className="font-black text-foreground uppercase tracking-tighter">Asset Refinement</h3>
                         </div>
-                        <p className="text-sm text-slate-500 leading-relaxed">Modify labels, colors, or add specific details to your visual.</p>
+                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest leading-relaxed">Modify labels, shift perspective, or adjust rendering engine.</p>
                     </div>
 
                     {/* Chat Messages */}
-                    <div className="flex-1 overflow-y-auto p-6 space-y-4">
-                        {/* User Message */}
-                        <div className="flex flex-col gap-1 items-end">
-                            <div className="bg-emerald-600 text-white text-sm p-4 rounded-2xl rounded-tr-none shadow-sm max-w-[90%]">
-                                Can you make the colors more vibrant and add labels?
+                    <div className="flex-1 overflow-y-auto p-8 space-y-8">
+                        <div className="flex flex-col gap-2 items-end">
+                            <div className="bg-primary-custom text-white text-xs font-bold p-5 rounded-[2rem] rounded-tr-none shadow-lg shadow-primary-custom/20 max-w-[90%]">
+                                Can you make the labels more technical?
                             </div>
-                            <span className="text-[9px] text-slate-400 font-bold uppercase">Just now</span>
+                            <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest mr-2">Teacher</span>
                         </div>
 
-                        {/* AI Response */}
-                        <div className="flex flex-col gap-1 items-start">
-                            <div className="bg-white/80 border border-white p-4 rounded-2xl rounded-tl-none shadow-sm max-w-[90%] flex gap-3">
-                                <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
-                                    <Bot size={12} className="text-emerald-600" />
+                        <div className="flex flex-col gap-2 items-start">
+                            <div className="bg-muted/30 text-foreground text-xs font-bold p-5 rounded-[2rem] rounded-tl-none border border-border max-w-[90%] flex gap-4">
+                                <div className="w-8 h-8 rounded-full bg-primary-custom/10 flex items-center justify-center shrink-0">
+                                    <Bot size={16} className="text-primary-custom" />
                                 </div>
-                                <p className="text-sm text-slate-700">Of course! I'm enhancing the colors and adding descriptive labels. Version 2 will be ready in seconds.</p>
+                                <p className="leading-relaxed">Applying academic nomenclature to components. Regenerating with focus on scientific precision.</p>
                             </div>
+                            <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest ml-2">Learnivo AI</span>
                         </div>
                     </div>
 
                     {/* Chat Input */}
-                    <div className="p-5 bg-white/30 backdrop-blur-xl border-t border-white/50">
-                        <div className="relative">
+                    <div className="p-8 bg-card-bg/60 border-t border-border">
+                        <div className="relative group/input">
                             <textarea
                                 value={chatMessage}
                                 onChange={(e) => setChatMessage(e.target.value)}
-                                className="w-full bg-white/80 border border-slate-200 rounded-2xl p-4 pr-14 text-sm text-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none resize-none"
-                                placeholder="Describe your changes..."
+                                className="w-full bg-muted/30 border-2 border-border rounded-[2rem] p-6 pr-16 text-sm font-bold text-foreground placeholder:text-muted-foreground/30 focus:outline-none focus:border-primary-custom focus:bg-card-bg transition-all shadow-inner resize-none overflow-hidden"
+                                placeholder="Refine visual..."
                                 rows={2}
                             />
-                            <button className="absolute bottom-4 right-4 w-9 h-9 bg-emerald-600 text-white rounded-xl flex items-center justify-center shadow-lg hover:bg-emerald-700 transition-colors">
-                                <Send size={16} />
+                            <button className="absolute bottom-4 right-4 w-12 h-12 bg-foreground text-background rounded-2xl flex items-center justify-center shadow-xl hover:scale-110 active:scale-90 transition-all">
+                                <Send size={20} />
                             </button>
                         </div>
 
                         {/* Quick Suggestions */}
-                        <div className="mt-3 flex flex-wrap gap-2">
-                            <button className="px-3 py-1.5 rounded-full bg-white/60 border border-slate-200 text-[10px] font-bold text-slate-500 hover:bg-white transition-all">Add Legend</button>
-                            <button className="px-3 py-1.5 rounded-full bg-white/60 border border-slate-200 text-[10px] font-bold text-slate-500 hover:bg-white transition-all">Change Palette</button>
-                            <button className="px-3 py-1.5 rounded-full bg-white/60 border border-slate-200 text-[10px] font-bold text-slate-500 hover:bg-white transition-all">More Detailed</button>
+                        <div className="mt-6 flex flex-wrap gap-2">
+                            {['Add Legend', 'Night Mode', 'Isometric'].map(s => (
+                                <button key={s} className="px-4 py-2 rounded-full bg-muted/30 border border-border text-[9px] font-black text-muted-foreground uppercase tracking-widest hover:border-primary-custom hover:text-primary-custom transition-all">
+                                    {s}
+                                </button>
+                            ))}
                         </div>
                     </div>
                 </aside>

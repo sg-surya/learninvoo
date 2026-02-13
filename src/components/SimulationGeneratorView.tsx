@@ -50,18 +50,18 @@ const CustomDropdown = ({
 
     return (
         <div className="relative" ref={dropdownRef}>
-            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">{label}</label>
+            <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2 ml-1">{label}</label>
             <button
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
-                className={`w-full flex items-center justify-between bg-white border-2 
-                    ${isOpen ? 'border-sky-500 shadow-[0_0_0_4px_rgba(14,165,233,0.1)]' : 'border-slate-100'} 
-                    px-4 py-3 rounded-2xl text-sm font-bold transition-all cursor-pointer text-left hover:border-sky-300 group`}
+                className={`w-full flex items-center justify-between bg-card-bg border-2 
+                    ${isOpen ? 'border-primary-custom shadow-[0_0_0_4px_rgba(var(--primary-rgb),0.1)]' : 'border-border'} 
+                    px-5 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer text-left hover:border-primary-custom group shadow-soft`}
             >
-                <span className={value ? 'text-slate-800' : 'text-slate-400'}>
+                <span className={value ? 'text-foreground' : 'text-muted-foreground/50'}>
                     {value || placeholder}
                 </span>
-                <ChevronDown size={16} className={`text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180 text-sky-500' : ''}`} />
+                <ChevronDown size={16} className={`text-muted-foreground transition-transform duration-300 ${isOpen ? 'rotate-180 text-primary-custom' : ''}`} />
             </button>
             <AnimatePresence>
                 {isOpen && (
@@ -69,18 +69,18 @@ const CustomDropdown = ({
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 10 }}
-                        className="absolute z-50 mt-2 w-full bg-white rounded-2xl shadow-2xl border border-slate-100 py-2 max-h-[200px] overflow-y-auto"
+                        className="absolute z-50 mt-2 w-full bg-card-bg rounded-2xl shadow-2xl border border-border py-2 max-h-[250px] overflow-y-auto backdrop-blur-xl"
                     >
                         {options.map((option) => (
                             <button
                                 key={option}
                                 type="button"
                                 onClick={() => { onChange(option); setIsOpen(false); }}
-                                className={`w-full px-4 py-2.5 text-left text-sm font-bold transition-all flex items-center justify-between
-                                    ${value === option ? 'bg-sky-50 text-sky-700' : 'text-slate-700 hover:bg-slate-50'}`}
+                                className={`w-full px-5 py-3 text-left text-sm font-bold transition-all flex items-center justify-between
+                                    ${value === option ? 'bg-primary-custom/10 text-primary-custom' : 'text-foreground hover:bg-primary-custom/5'}`}
                             >
                                 <span>{option}</span>
-                                {value === option && <Check size={14} className="text-sky-600" />}
+                                {value === option && <Check size={14} className="text-primary-custom" />}
                             </button>
                         ))}
                     </motion.div>
@@ -147,45 +147,50 @@ const SimulationGeneratorView: React.FC = () => {
 
     if (viewState === 'form') {
         return (
-            <div className="min-h-screen bg-[#f8fafc] flex flex-col items-center p-8 relative overflow-hidden">
-                {/* Tech Grid Background */}
-                <div className="absolute inset-0 opacity-[0.05] pointer-events-none"
-                    style={{ backgroundImage: 'radial-gradient(#0ea5e9 1px, transparent 1px)', backgroundSize: '40px 40px' }}
-                />
+            <div className="min-h-screen bg-transparent flex flex-col items-center p-8 relative overflow-hidden">
+                {/* Dynamic Background Elements */}
+                <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+                    <div className="absolute top-[-10%] left-[-5%] w-[600px] h-[600px] bg-primary-custom/10 rounded-full blur-[100px]" />
+                    <div className="absolute bottom-[-10%] right-[-5%] w-[500px] h-[500px] bg-primary-custom/5 rounded-full blur-[100px]" />
+                </div>
 
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="w-full max-w-4xl relative z-10"
                 >
-                    <div className="flex items-center gap-4 mb-12">
-                        <div className="w-16 h-16 bg-sky-600 rounded-3xl flex items-center justify-center shadow-2xl shadow-sky-200">
+                    <div className="flex items-center gap-6 mb-12">
+                        <div className="w-16 h-16 bg-primary-custom rounded-[2rem] flex items-center justify-center shadow-lg shadow-primary-custom/20">
                             <Cpu size={32} className="text-white" />
                         </div>
                         <div>
-                            <h1 className="text-4xl font-black text-slate-900 tracking-tighter leading-none mb-2 text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-indigo-600">Simulation Generator</h1>
-                            <p className="text-[10px] font-black text-sky-600 uppercase tracking-[0.4em] ml-1">Virtual Lab Engine</p>
+                            <h1 className="text-4xl font-black text-foreground tracking-tighter leading-none mb-1 uppercase italic">Simulation Engine</h1>
+                            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em]">Interactive World Builder</p>
                         </div>
                     </div>
 
-                    <div className="bg-white/80 backdrop-blur-2xl rounded-[3.5rem] p-16 border border-white shadow-[0_40px_80px_rgba(0,0,0,0.06)]">
-                        <div className="text-center mb-16">
-                            <h2 className="text-5xl font-black text-slate-900 leading-[1.1] mb-4">Build <span className="text-sky-500 italic">interactive</span> worlds.</h2>
-                            <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">Transform equations into interactive experiences</p>
+                    <div className="bg-card-bg/60 backdrop-blur-[40px] rounded-[3.5rem] p-16 border border-border shadow-[0_32px_120px_-20px_rgba(0,0,0,0.15)] relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-primary-custom/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+
+                        <div className="text-center mb-16 relative z-10">
+                            <h2 className="text-5xl font-black text-foreground leading-[1.1] tracking-tighter uppercase italic mb-4">Build <span className="text-primary-custom">interactive</span> worlds.</h2>
+                            <p className="text-muted-foreground font-bold uppercase tracking-widest text-xs">Transform equations into immersive virtual laboratory experiences</p>
                         </div>
 
-                        <div className="space-y-12">
-                            <div className="relative group">
-                                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-2">What concept are we simulating?</label>
-                                <input
-                                    type="text"
-                                    value={topic}
-                                    onChange={(e) => setTopic(e.target.value)}
-                                    placeholder="e.g. Pendulum Swing, Greenhouse Effect, Supply & Demand..."
-                                    className="w-full bg-slate-50 border-2 border-slate-100 focus:border-sky-500 focus:bg-white rounded-3xl px-10 py-7 text-xl font-bold transition-all outline-none placeholder:text-slate-300"
-                                />
-                                <div className="absolute right-8 top-[60px] text-sky-200 group-hover:text-sky-400 transition-colors">
-                                    <Activity size={32} />
+                        <div className="space-y-10 relative z-10">
+                            <div className="relative group/input">
+                                <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-3 ml-1">What concept are we simulating?</label>
+                                <div className="relative">
+                                    <input
+                                        type="text"
+                                        value={topic}
+                                        onChange={(e) => setTopic(e.target.value)}
+                                        placeholder="e.g. Pendulum Swing, Greenhouse Effect, Supply & Demand..."
+                                        className="w-full bg-muted/30 border-2 border-border focus:border-primary-custom focus:bg-card-bg rounded-[2.5rem] px-10 py-6 text-xl font-bold transition-all outline-none placeholder:text-muted-foreground/30 text-foreground shadow-soft"
+                                    />
+                                    <div className="absolute right-8 top-1/2 -translate-y-1/2 text-primary-custom/20 group-hover/input:text-primary-custom group-hover/input:rotate-12 transition-all">
+                                        <Activity size={28} />
+                                    </div>
                                 </div>
                             </div>
 
@@ -193,23 +198,24 @@ const SimulationGeneratorView: React.FC = () => {
                                 <CustomDropdown label="Grade Level" value={grade} onChange={setGrade} options={['Elementary', 'Middle School', 'High School', 'University']} placeholder="Select..." />
                                 <CustomDropdown label="Complexity" value={complexity} onChange={setComplexity} options={['Simplified', 'Standard', 'Rigorous Scientific']} placeholder="Select..." />
                                 <div className="relative">
-                                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Engine</label>
-                                    <div className="w-full px-4 py-3 bg-slate-100 rounded-2xl flex items-center justify-between">
-                                        <span className="text-xs font-black text-slate-500">Learnivo Core 2.0</span>
-                                        <Zap size={14} className="text-amber-500" />
+                                    <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2 ml-1">Engine Core</label>
+                                    <div className="w-full px-5 py-3.5 bg-muted/50 rounded-2xl flex items-center justify-between border border-border">
+                                        <span className="text-xs font-black text-foreground uppercase tracking-tight">Learnivo 2.0</span>
+                                        <Zap size={14} className="text-orange-500 fill-orange-500/20" />
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="mt-16 flex justify-center">
+                        <div className="mt-16 flex justify-center relative z-10">
                             <button
                                 onClick={handleGenerate}
                                 disabled={!topic}
-                                className="group px-14 py-6 bg-slate-900 text-white rounded-full font-black uppercase tracking-[0.2em] text-sm transition-all hover:bg-sky-600 hover:scale-105 active:scale-95 disabled:opacity-50 shadow-2xl shadow-slate-900/10"
+                                className="group px-14 py-6 bg-foreground text-background rounded-full font-black uppercase tracking-[0.3em] text-xs shadow-[0_20px_60px_rgba(0,0,0,0.3)] hover:shadow-[0_20px_60px_rgba(0,0,0,0.4)] transition-all hover:-translate-y-1 active:scale-95 disabled:opacity-30 disabled:translate-y-0 disabled:shadow-none overflow-hidden relative"
                             >
-                                <div className="flex items-center gap-3">
-                                    <Sparkles size={20} className="text-sky-400 group-hover:rotate-12 transition-transform" />
+                                <div className="absolute inset-0 bg-gradient-to-r from-primary-custom/20 to-transparent translate-x-full group-hover:translate-x-0 transition-transform duration-700 pointer-events-none" />
+                                <div className="flex items-center gap-4 relative z-10">
+                                    <Sparkles size={24} className="group-hover:rotate-12 transition-transform text-primary-custom" />
                                     Launch Virtual Lab
                                 </div>
                             </button>
@@ -222,59 +228,65 @@ const SimulationGeneratorView: React.FC = () => {
 
     if (viewState === 'generating') {
         return (
-            <div className="h-screen w-full flex flex-col items-center justify-center bg-slate-50">
-                <div className="relative w-40 h-40">
+            <div className="h-screen w-full flex flex-col items-center justify-center bg-background p-8 overflow-hidden relative">
+                {/* Background Glow */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-custom/10 rounded-full blur-[120px] pointer-events-none" />
+
+                <div className="relative w-48 h-48">
                     <motion.div
                         animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
                         transition={{ duration: 2, repeat: Infinity }}
-                        className="absolute inset-0 bg-sky-200 rounded-full blur-3xl"
+                        className="absolute inset-0 bg-primary-custom/20 rounded-full blur-3xl shadow-[0_0_100px_rgba(var(--primary-rgb),0.2)]"
                     />
                     <div className="absolute inset-0 flex items-center justify-center">
-                        <Cpu size={64} className="text-sky-600 animate-pulse" />
+                        <Cpu size={80} className="text-primary-custom animate-pulse drop-shadow-[0_0_20px_rgba(var(--primary-rgb),0.5)]" />
                     </div>
                     <svg className="absolute inset-0 w-full h-full rotate-[-90deg]">
                         <motion.circle
-                            cx="80" cy="80" r="70"
-                            fill="none" stroke="currentColor" strokeWidth="8"
-                            className="text-sky-100"
+                            cx="96" cy="96" r="86"
+                            fill="none" stroke="currentColor" strokeWidth="6"
+                            className="text-muted/30"
                         />
                         <motion.circle
-                            cx="80" cy="80" r="70"
-                            fill="none" stroke="currentColor" strokeWidth="8"
-                            strokeDasharray="440"
-                            animate={{ strokeDashoffset: [440, 0] }}
+                            cx="96" cy="96" r="86"
+                            fill="none" stroke="currentColor" strokeWidth="6"
+                            strokeDasharray="540"
+                            animate={{ strokeDashoffset: [540, 0] }}
                             transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                            className="text-sky-500"
+                            className="text-primary-custom"
                             strokeLinecap="round"
                         />
                     </svg>
                 </div>
-                <h2 className="text-4xl font-black text-slate-900 mt-12 mb-3">Synthesizing Logic...</h2>
-                <p className="text-slate-400 font-bold uppercase tracking-[0.4em] text-xs">Calibrating Physics & Interactions</p>
+                <h2 className="text-4xl font-black text-foreground mt-16 mb-4 uppercase italic tracking-tighter">Synthesizing Logic...</h2>
+                <div className="flex items-center gap-4 text-primary-custom font-black uppercase tracking-[0.4em] text-[10px]">
+                    <div className="w-2 h-2 rounded-full bg-primary-custom animate-ping" />
+                    Calibrating Physics & Interactions
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-[#f1f5f9] flex flex-col">
-            <header className="bg-white border-b border-slate-200 p-4 px-8 flex items-center justify-between sticky top-0 z-50">
+        <div className="min-h-screen bg-transparent flex flex-col text-foreground">
+            <header className="bg-background/80 backdrop-blur-[20px] border-b border-border p-5 px-10 flex items-center justify-between sticky top-0 z-50">
                 <div className="flex items-center gap-6">
-                    <button onClick={() => setViewState('form')} className="p-2 bg-slate-50 text-slate-400 hover:text-sky-600 rounded-xl transition-all">
-                        <ArrowLeft size={24} />
+                    <button onClick={() => setViewState('form')} className="w-10 h-10 flex items-center justify-center bg-muted rounded-xl text-muted-foreground hover:text-primary-custom hover:bg-primary-custom/10 transition-all border border-transparent hover:border-primary-custom/20 group">
+                        <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
                     </button>
                     <div>
-                        <h1 className="text-xl font-black text-slate-900 tracking-tight leading-none">{generatedSim?.title}</h1>
-                        <p className="text-[10px] font-black text-sky-600 uppercase tracking-widest mt-1">Status: Operational • {complexity}</p>
+                        <h1 className="text-xl font-black uppercase italic tracking-tighter leading-none">{generatedSim?.title}</h1>
+                        <p className="text-[10px] font-black text-primary-custom uppercase tracking-[0.3em] mt-1.5">Status: Operational • {complexity}</p>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-3">
-                    <button className="flex items-center gap-2 px-6 py-2.5 bg-slate-100 text-slate-600 rounded-xl font-bold text-xs hover:bg-slate-200 transition-all">
-                        <Share2 size={16} /> Share Link
+                <div className="flex items-center gap-4">
+                    <button className="flex items-center gap-3 px-6 py-3 bg-muted text-foreground rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-primary-custom/5 hover:text-primary-custom border border-transparent hover:border-primary-custom/20 transition-all group">
+                        <Share2 size={16} className="group-hover:rotate-12 transition-transform" /> Share Link
                     </button>
                     <button
                         onClick={handleSave}
-                        className={`flex items-center gap-2 px-8 py-2.5 rounded-xl font-bold text-xs shadow-lg transition-all ${isSaved ? 'bg-green-600 text-white' : 'bg-sky-600 text-white hover:bg-sky-700 shadow-sky-500/20'}`}
+                        className={`flex items-center gap-3 px-8 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl transition-all ${isSaved ? 'bg-green-500 text-white shadow-green-500/20' : 'bg-foreground text-background hover:bg-foreground/90 shadow-black/10'}`}
                     >
                         {isSaved ? <Check size={18} /> : <Save size={18} />}
                         {isSaved ? 'Deployed' : 'Deploy to Class'}
@@ -282,34 +294,40 @@ const SimulationGeneratorView: React.FC = () => {
                 </div>
             </header>
 
-            <main className="flex-1 p-8 grid grid-cols-12 gap-8 overflow-hidden">
+            <main className="flex-1 p-8 grid grid-cols-12 gap-10 overflow-hidden">
                 {/* Simulation Control Panel */}
-                <aside className="col-span-12 lg:col-span-3 space-y-6 overflow-y-auto pr-2">
-                    <div className="bg-white rounded-[2.5rem] p-8 border border-slate-200 shadow-sm">
-                        <div className="flex items-center gap-3 mb-8">
-                            <Sliders size={20} className="text-sky-500" />
-                            <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest">Lab Controls</h3>
+                <aside className="col-span-12 lg:col-span-3 space-y-8 overflow-y-auto pr-2 custom-scrollbar">
+                    <div className="bg-card-bg rounded-[2.5rem] p-10 border border-border shadow-soft relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-primary-custom/5 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+
+                        <div className="flex items-center gap-4 mb-10 relative z-10">
+                            <div className="p-2.5 bg-primary-custom/10 rounded-xl text-primary-custom">
+                                <Sliders size={20} />
+                            </div>
+                            <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">Lab Controls</h3>
                         </div>
 
-                        <div className="space-y-10">
+                        <div className="space-y-12 relative z-10">
                             {generatedSim?.parameters.map((p) => (
                                 <div key={p.id}>
-                                    <div className="flex justify-between items-center mb-4">
-                                        <label className="text-sm font-bold text-slate-700">{p.label}</label>
-                                        <span className="px-3 py-1 bg-sky-50 text-sky-600 rounded-lg text-xs font-black">
+                                    <div className="flex justify-between items-center mb-5">
+                                        <label className="text-xs font-black text-foreground uppercase tracking-tight italic">{p.label}</label>
+                                        <span className="px-4 py-1.5 bg-primary-custom/10 text-primary-custom rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm">
                                             {paramValues[p.id]} {p.unit}
                                         </span>
                                     </div>
-                                    <input
-                                        type="range"
-                                        min={p.min}
-                                        max={p.max}
-                                        step={p.step}
-                                        value={paramValues[p.id]}
-                                        onChange={(e) => setParamValues({ ...paramValues, [p.id]: parseFloat(e.target.value) })}
-                                        className="w-full h-2 bg-slate-100 rounded-full appearance-none cursor-pointer accent-sky-500"
-                                    />
-                                    <div className="flex justify-between mt-2 text-[10px] font-bold text-slate-300">
+                                    <div className="px-1">
+                                        <input
+                                            type="range"
+                                            min={p.min}
+                                            max={p.max}
+                                            step={p.step}
+                                            value={paramValues[p.id]}
+                                            onChange={(e) => setParamValues({ ...paramValues, [p.id]: parseFloat(e.target.value) })}
+                                            className="w-full h-1.5 bg-muted rounded-full appearance-none cursor-pointer accent-primary-custom"
+                                        />
+                                    </div>
+                                    <div className="flex justify-between mt-3 text-[9px] font-black text-muted-foreground uppercase tracking-widest px-1">
                                         <span>{p.min}</span>
                                         <span>{p.max}</span>
                                     </div>
@@ -317,33 +335,35 @@ const SimulationGeneratorView: React.FC = () => {
                             ))}
                         </div>
 
-                        <div className="mt-12 pt-10 border-t border-slate-100">
+                        <div className="mt-14 pt-10 border-t border-border relative z-10">
                             <button
                                 onClick={() => setIsRunning(!isRunning)}
-                                className={`w-full py-5 rounded-[1.5rem] flex items-center justify-center gap-3 font-black text-sm uppercase tracking-widest transition-all ${isRunning ? 'bg-amber-100 text-amber-600' : 'bg-green-600 text-white shadow-xl shadow-green-100'}`}
+                                className={`w-full py-6 rounded-2xl flex items-center justify-center gap-4 font-black text-xs uppercase tracking-[0.3em] transition-all hover:-translate-y-1 active:scale-95 shadow-xl ${isRunning ? 'bg-orange-500 text-white shadow-orange-500/20' : 'bg-green-500 text-white shadow-green-500/20'}`}
                             >
-                                {isRunning ? <Pause size={20} /> : <Play size={20} />}
-                                {isRunning ? 'Stop Simulation' : 'Run Experiment'}
+                                {isRunning ? <motion.div animate={{ rotate: 90 }}><Pause size={20} /></motion.div> : <Play size={20} />}
+                                {isRunning ? 'Stop Sim' : 'Launch Experiment'}
                             </button>
-                            <button className="w-full mt-4 py-4 text-slate-400 font-bold text-xs flex items-center justify-center gap-2 hover:text-slate-600">
-                                <RefreshCw size={14} /> Reset defaults
+                            <button className="w-full mt-6 py-4 text-muted-foreground font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-3 hover:text-primary-custom transition-colors group">
+                                <RefreshCw size={14} className="group-hover:rotate-180 transition-transform duration-500" /> Reset defaults
                             </button>
                         </div>
                     </div>
 
-                    <div className="bg-slate-900 rounded-[2.5rem] p-8 text-white relative overflow-hidden">
+                    <div className="bg-foreground rounded-[2.5rem] p-10 text-background relative overflow-hidden shadow-2xl">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-primary-custom/20 rounded-full blur-[60px] pointer-events-none" />
                         <div className="relative z-10">
-                            <p className="text-[10px] font-black text-sky-400 uppercase tracking-widest mb-2">Live Telemetry</p>
-                            <div className="flex items-baseline gap-1">
-                                <span className="text-3xl font-black">{(paramValues['v'] / paramValues['r']).toFixed(2)}</span>
-                                <span className="text-xs font-bold text-slate-400 uppercase">Amperes</span>
+                            <p className="text-[10px] font-black text-primary-custom uppercase tracking-[0.3em] mb-4">Live Telemetry</p>
+                            <div className="flex items-baseline gap-2">
+                                <span className="text-4xl font-black italic tracking-tighter">{(paramValues['v'] / paramValues['r']).toFixed(2)}</span>
+                                <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Amperes</span>
                             </div>
-                            <div className="mt-4 h-12 w-full bg-white/5 rounded-xl flex items-end gap-1 p-2">
-                                {[...Array(20)].map((_, i) => (
+                            <div className="mt-8 h-16 w-full bg-background/5 rounded-2xl flex items-end gap-1.5 p-3 overflow-hidden border border-background/10">
+                                {[...Array(24)].map((_, i) => (
                                     <motion.div
                                         key={i}
-                                        animate={{ height: isRunning ? [`${Math.random() * 80 + 20}%`, `${Math.random() * 80 + 20}%`] : '20%' }}
-                                        className="flex-1 bg-sky-500/40 rounded-t-sm"
+                                        animate={{ height: isRunning ? [`${Math.random() * 80 + 20}%`, `${Math.random() * 80 + 20}%`] : '15%' }}
+                                        transition={{ duration: 0.5, repeat: Infinity, ease: "linear" }}
+                                        className="flex-1 bg-primary-custom/40 rounded-t-sm"
                                     />
                                 ))}
                             </div>
@@ -352,64 +372,94 @@ const SimulationGeneratorView: React.FC = () => {
                 </aside>
 
                 {/* Main Visualization Area */}
-                <div className="col-span-12 lg:col-span-9 flex flex-col gap-6">
-                    <div className="flex-1 bg-white rounded-[3rem] border border-slate-200 shadow-sm relative overflow-hidden flex items-center justify-center p-20">
+                <div className="col-span-12 lg:col-span-9 flex flex-col gap-8">
+                    <div className="flex-1 bg-card-bg rounded-[3.5rem] border border-border shadow-soft relative overflow-hidden group">
+                        {/* Simulation Background FX */}
+                        <div className="absolute inset-0 z-0 opacity-20 pointer-events-none"
+                            style={{ backgroundImage: 'radial-gradient(var(--border) 1px, transparent 1px)', backgroundSize: '40px 40px' }}
+                        />
+
                         {/* Simulated Canvas View */}
-                        <div className="relative w-full h-full border-4 border-dashed border-slate-100 rounded-[2rem] flex items-center justify-center">
-                            <div className="text-center">
+                        <div className="relative z-10 w-full h-full flex items-center justify-center p-20">
+                            <div className="text-center relative">
+                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-primary-custom/10 rounded-full blur-[80px]" />
+
                                 <motion.div
-                                    animate={isRunning ? { scale: [1, 1 + (paramValues['v'] / 40), 1], rotate: [0, 5, -5, 0] } : {}}
-                                    transition={{ duration: 1, repeat: Infinity, ease: "linear", type: "tween" }}
-                                    className="w-48 h-48 bg-gradient-to-tr from-sky-400 to-indigo-500 rounded-[3rem] shadow-2xl flex items-center justify-center text-white mb-8"
+                                    animate={isRunning ? { scale: [1, 1.05, 1], rotate: [0, 2, -2, 0] } : {}}
+                                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                                    className="relative w-64 h-64 bg-foreground rounded-[4rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.5)] flex items-center justify-center text-primary-custom mb-12 border border-white/10 group-hover:border-primary-custom/50 transition-colors"
                                 >
-                                    <Zap size={64} style={{ opacity: paramValues['v'] / 24 }} />
+                                    <div className="absolute inset-4 rounded-[3rem] border border-primary-custom/20" />
+                                    <Zap
+                                        size={96}
+                                        className="relative z-10 transition-all duration-700"
+                                        style={{
+                                            opacity: 0.2 + (paramValues['v'] / 24) * 0.8,
+                                            filter: `drop-shadow(0 0 ${paramValues['v']}px rgba(var(--primary-rgb), 0.5))`
+                                        }}
+                                    />
                                 </motion.div>
-                                <h3 className="text-2xl font-black text-slate-800 mb-2">Simulation Rendering</h3>
-                                <p className="text-slate-400 font-medium">Interactive {topic} model active.</p>
+                                <h3 className="text-4xl font-black text-foreground mb-4 uppercase italic tracking-tighter leading-none">Simulation Environment</h3>
+                                <p className="text-sm font-bold text-muted-foreground uppercase tracking-[0.2em]">Interactive {topic} model active v2.4</p>
+
                                 {isRunning && (
-                                    <div className="mt-6 inline-flex items-center gap-3 px-6 py-2 bg-emerald-50 text-emerald-600 rounded-full text-xs font-black uppercase tracking-widest border border-emerald-100">
-                                        <div className="w-2 h-2 bg-emerald-500 rounded-full animate-ping" />
-                                        Processing Real-Time Data
-                                    </div>
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        className="mt-10 inline-flex items-center gap-4 px-8 py-3 bg-green-500/10 text-green-500 rounded-full text-[10px] font-black uppercase tracking-[0.3em] border border-green-500/20"
+                                    >
+                                        <div className="w-2.5 h-2.5 bg-green-500 rounded-full animate-ping" />
+                                        Computing Real-Time Interactions
+                                    </motion.div>
                                 )}
                             </div>
 
                             {/* HUD Elements */}
-                            <div className="absolute top-8 left-8 flex flex-col gap-4">
-                                <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">FPS</p>
-                                    <p className="text-sm font-black text-slate-800">60.0</p>
-                                </div>
+                            <div className="absolute top-12 left-12 flex flex-col gap-6">
+                                {[
+                                    { label: "Stability", value: "99.2%", icon: <Activity size={14} /> },
+                                    { label: "Sync-Rate", value: "60.0 Hz", icon: <RefreshCw size={14} /> }
+                                ].map((hud, i) => (
+                                    <div key={i} className="px-6 py-4 bg-muted/30 backdrop-blur-md rounded-2xl border border-border shadow-sm flex items-center gap-4">
+                                        <div className="text-primary-custom">{hud.icon}</div>
+                                        <div>
+                                            <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest leading-none mb-1">{hud.label}</p>
+                                            <p className="text-xs font-black text-foreground">{hud.value}</p>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
 
-                            <div className="absolute bottom-8 right-8 flex gap-3">
-                                <button className="w-12 h-12 bg-white shadow-xl rounded-2xl flex items-center justify-center text-slate-400 hover:text-sky-600 border border-slate-50 transition-all">
-                                    <Maximize2 size={20} />
-                                </button>
-                                <button className="w-12 h-12 bg-white shadow-xl rounded-2xl flex items-center justify-center text-slate-400 hover:text-sky-600 border border-slate-50 transition-all">
-                                    <Gauge size={20} />
-                                </button>
+                            <div className="absolute bottom-12 right-12 flex gap-4">
+                                {[<Maximize2 size={20} />, <Gauge size={20} />, <Layers size={20} />].map((icon, i) => (
+                                    <button key={i} className="w-14 h-14 bg-card-bg/60 backdrop-blur-lg shadow-xl rounded-2xl flex items-center justify-center text-muted-foreground hover:text-primary-custom border border-border transition-all hover:-translate-y-1">
+                                        {icon}
+                                    </button>
+                                ))}
                             </div>
                         </div>
                     </div>
 
-                    <div className="h-48 bg-slate-900 rounded-[2.5rem] p-10 flex items-center gap-12 overflow-hidden relative">
-                        <div className="flex-1">
-                            <h3 className="text-sky-400 text-[10px] font-black uppercase tracking-widest mb-4">Physics Engine Summary</h3>
-                            <p className="text-slate-300 text-sm leading-relaxed max-w-xl font-medium">
-                                This simulation uses <span className="text-white font-bold">Newtonian Dynamics</span> to calculate real-time interactions. Adjusting Voltage increases electron pressure across the resistive barrier, while Resistance modulates current flow.
+                    <div className="h-56 bg-foreground rounded-[3.5rem] p-12 flex items-center gap-16 overflow-hidden relative shadow-2xl">
+                        <div className="absolute top-0 right-0 w-[600px] h-full bg-gradient-to-l from-primary-custom/10 to-transparent pointer-events-none" />
+                        <div className="relative z-10 flex-1">
+                            <h3 className="text-primary-custom text-[10px] font-black uppercase tracking-[0.4em] mb-5">Scientific Methodology Summary</h3>
+                            <p className="text-muted-foreground/80 text-base leading-relaxed max-w-2xl font-bold italic uppercase tracking-tight">
+                                This environment leverages <span className="text-white">Precision Physics Engine 4.0</span> to model real-world interactions. Adjusting parameters modulates the <span className="text-primary-custom">dynamic flow state</span>, ensuring rigorous curriculum alignment with scientific accuracy.
                             </p>
                         </div>
-                        <div className="flex items-center gap-6">
-                            <div className="text-center">
-                                <p className="text-[9px] font-black text-slate-500 uppercase mb-2">Complexity</p>
-                                <div className="text-xl font-black text-white">4.2k <span className="text-[10px] text-slate-500">nodes</span></div>
-                            </div>
-                            <div className="w-px h-12 bg-white/10" />
-                            <div className="text-center">
-                                <p className="text-[9px] font-black text-slate-500 uppercase mb-2">Latency</p>
-                                <div className="text-xl font-black text-white">12ms</div>
-                            </div>
+                        <div className="relative z-10 flex items-center gap-10">
+                            {[
+                                { label: "Complexity", value: "4.2k", unit: "nodes" },
+                                { label: "Latency", value: "12", unit: "ms" }
+                            ].map((stat, i) => (
+                                <div key={i} className="flex flex-col items-center">
+                                    <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mb-3">{stat.label}</p>
+                                    <div className="text-3xl font-black text-white italic tracking-tighter">
+                                        {stat.value}<span className="text-[10px] text-muted-foreground ml-1 uppercase tracking-widest font-black non-italic">{stat.unit}</span>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>

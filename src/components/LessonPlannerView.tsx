@@ -65,31 +65,31 @@ const CustomDropdown = ({
 
     return (
         <div className="relative" ref={dropdownRef}>
-            <label className="block text-xs font-bold text-slate-600 mb-1.5">{label}</label>
+            <label className="block text-xs font-bold text-muted-foreground mb-1.5">{label}</label>
             <button
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
                 className={`w-full flex items-center justify-between bg-transparent border-0 border-b-2 
-                    ${isOpen ? 'border-lime-500' : 'border-slate-200'} 
-                    px-0 py-2 text-sm font-medium transition-all cursor-pointer text-left hover:border-lime-400`}
+                    ${isOpen ? 'border-primary-custom' : 'border-border'} 
+                    px-0 py-2 text-sm font-medium transition-all cursor-pointer text-left hover:border-primary-custom/60`}
             >
-                <span className={value ? 'text-slate-800 text-xs' : 'text-slate-400 text-xs'}>
+                <span className={value ? 'text-foreground text-xs font-bold' : 'text-muted-foreground text-xs'}>
                     {value || placeholder}
                 </span>
-                <ChevronDown size={14} className={`text-slate-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown size={14} className={`text-muted-foreground transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
             </button>
             {isOpen && (
-                <div className="absolute z-50 mt-2 w-full bg-white rounded-xl shadow-xl border border-slate-100 py-1 max-h-[200px] overflow-y-auto animate-fadeIn">
+                <div className="absolute z-50 mt-2 w-full bg-card-bg rounded-xl shadow-xl border border-border py-1 max-h-[200px] overflow-y-auto animate-fadeIn backdrop-blur-xl">
                     {options.map((option) => (
                         <button
                             key={option}
                             type="button"
                             onClick={() => { onChange(option); setIsOpen(false); }}
-                            className={`w-full px-3 py-2 text-left text-xs font-medium transition-all flex items-center justify-between
-                                ${value === option ? 'bg-lime-50 text-lime-700' : 'text-slate-700 hover:bg-slate-50'}`}
+                            className={`w-full px-3 py-2 text-left text-xs font-bold transition-all flex items-center justify-between
+                                ${value === option ? 'bg-primary-custom/10 text-primary-custom' : 'text-foreground hover:bg-muted'}`}
                         >
                             <span>{option}</span>
-                            {value === option && <Check size={12} className="text-lime-600" />}
+                            {value === option && <Check size={12} className="text-primary-custom" />}
                         </button>
                     ))}
                 </div>
@@ -288,35 +288,35 @@ const LessonPlannerView: React.FC = () => {
     // FORM VIEW - Original Layout
     if (viewState === 'form') {
         return (
-            <div className="h-full w-full flex flex-col relative bg-white overflow-hidden">
+            <div className="h-full w-full flex flex-col relative bg-transparent overflow-hidden">
                 <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-                    <div className="absolute top-[-10%] left-[-5%] w-[400px] h-[400px] bg-lime-200 rounded-full blur-[80px] opacity-30" />
-                    <div className="absolute bottom-[-10%] right-[-5%] w-[500px] h-[500px] bg-lime-100 rounded-full blur-[80px] opacity-30" />
+                    <div className="absolute top-[-10%] left-[-5%] w-[400px] h-[400px] bg-primary-custom/10 rounded-full blur-[80px] opacity-30" />
+                    <div className="absolute bottom-[-10%] right-[-5%] w-[500px] h-[500px] bg-primary-custom/5 rounded-full blur-[80px] opacity-30" />
                 </div>
 
                 <div className="relative z-10 px-6 py-4 flex items-center gap-3 shrink-0">
-                    <div className="w-9 h-9 bg-lime-500 rounded-xl flex items-center justify-center shadow-lg shadow-lime-200">
+                    <div className="w-9 h-9 bg-primary-custom rounded-xl flex items-center justify-center shadow-lg shadow-primary-custom/20">
                         <BookOpen size={18} className="text-white" />
                     </div>
-                    <h1 className="text-xl font-extrabold text-slate-800 tracking-tight">Lesson Planner</h1>
+                    <h1 className="text-xl font-extrabold text-foreground tracking-tight italic">Lesson Planner</h1>
                 </div>
 
                 <div className="flex-1 relative z-10 flex flex-col items-center justify-center px-6 pb-6 overflow-y-auto">
                     <div className="text-center mb-6">
-                        <div className="inline-flex items-center p-1 bg-slate-100/80 border border-slate-200/50 rounded-full mb-4">
-                            <button onClick={() => setMode('topic')} className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 ${mode === 'topic' ? 'bg-lime-500 text-white shadow-md shadow-lime-200' : 'text-slate-500 hover:text-slate-700'}`}>By Topic</button>
-                            <button onClick={() => setMode('book')} className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 ${mode === 'book' ? 'bg-lime-500 text-white shadow-md shadow-lime-200' : 'text-slate-500 hover:text-slate-700'}`}>By Book</button>
+                        <div className="inline-flex items-center p-1 bg-muted rounded-full mb-4">
+                            <button onClick={() => setMode('topic')} className={`px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider transition-all duration-300 ${mode === 'topic' ? 'bg-primary-custom text-white shadow-md shadow-primary-custom/20' : 'text-muted-foreground hover:text-foreground'}`}>By Topic</button>
+                            <button onClick={() => setMode('book')} className={`px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider transition-all duration-300 ${mode === 'book' ? 'bg-primary-custom text-white shadow-md shadow-primary-custom/20' : 'text-muted-foreground hover:text-foreground'}`}>By Book</button>
                         </div>
-                        <h2 className="text-2xl md:text-3xl font-black text-slate-900 leading-tight">What are we teaching today?</h2>
+                        <h2 className="text-2xl md:text-3xl font-black text-foreground leading-tight uppercase italic tracking-tighter">What are we teaching today?</h2>
                     </div>
 
-                    <div className="bg-white/70 backdrop-blur-xl border border-white/40 p-6 rounded-2xl shadow-xl shadow-lime-900/5 w-full max-w-3xl">
+                    <div className="bg-card-bg/50 backdrop-blur-xl border border-border p-8 rounded-[2.5rem] shadow-xl shadow-black/5 w-full max-w-3xl">
                         {mode === 'topic' && (
                             <div className="relative mb-4">
-                                <input type="text" value={topic} onChange={(e) => setTopic(e.target.value)} placeholder="Enter your topic here..." className="w-full bg-transparent border-0 border-b-2 border-slate-200 focus:border-lime-500 focus:ring-0 focus:outline-none text-xl md:text-2xl font-medium px-0 py-3 placeholder:text-slate-300 transition-all text-center text-slate-800" />
+                                <input type="text" value={topic} onChange={(e) => setTopic(e.target.value)} placeholder="Enter your topic here..." className="w-full bg-transparent border-0 border-b-2 border-border focus:border-primary-custom focus:ring-0 focus:outline-none text-xl md:text-2xl font-black px-0 py-3 placeholder:text-muted-foreground/30 transition-all text-center text-foreground uppercase italic tracking-tighter" />
                                 <div className="mt-2 flex flex-wrap justify-center gap-2 items-center">
-                                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Suggestions:</span>
-                                    {suggestions.map((s, i) => (<button key={i} onClick={() => setTopic(s)} className="text-xs font-bold text-lime-600 hover:text-lime-700 hover:underline transition-all">{s}</button>))}
+                                    <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Suggestions:</span>
+                                    {suggestions.map((s, i) => (<button key={i} onClick={() => setTopic(s)} className="text-xs font-black text-primary-custom hover:underline transition-all uppercase tracking-tight">{s}</button>))}
                                 </div>
                             </div>
                         )}
@@ -327,17 +327,17 @@ const LessonPlannerView: React.FC = () => {
                                     <div className="relative" ref={dropdownRef}>
                                         <div className="flex items-center gap-2">
                                             <div className="flex-1 relative">
-                                                <Search size={18} className="absolute left-0 top-1/2 -translate-y-1/2 text-slate-400" />
-                                                <input type="text" value={bookSearchQuery} onChange={(e) => { setBookSearchQuery(e.target.value); setIsDropdownOpen(true); }} onFocus={() => setIsDropdownOpen(true)} placeholder="Search your library..." className="w-full bg-transparent border-0 border-b-2 border-slate-200 focus:border-lime-500 focus:ring-0 focus:outline-none text-xl font-medium pl-7 pr-2 py-3 placeholder:text-slate-300 transition-all text-center text-slate-800" />
+                                                <Search size={18} className="absolute left-0 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                                                <input type="text" value={bookSearchQuery} onChange={(e) => { setBookSearchQuery(e.target.value); setIsDropdownOpen(true); }} onFocus={() => setIsDropdownOpen(true)} placeholder="Search your library..." className="w-full bg-transparent border-0 border-b-2 border-border focus:border-primary-custom focus:ring-0 focus:outline-none text-xl font-black pl-7 pr-2 py-3 placeholder:text-muted-foreground/30 transition-all text-center text-foreground uppercase italic tracking-tighter" />
                                             </div>
-                                            <button onClick={() => setIsBookPickerOpen(true)} className="p-3 bg-slate-100 hover:bg-lime-100 rounded-xl text-slate-500 hover:text-lime-600 transition-all"><Maximize2 size={18} /></button>
+                                            <button onClick={() => setIsBookPickerOpen(true)} className="p-3 bg-muted hover:bg-primary-custom/10 rounded-xl text-muted-foreground hover:text-primary-custom transition-all"><Maximize2 size={18} /></button>
                                         </div>
                                         {isDropdownOpen && filteredBooks.length > 0 && (
-                                            <div className="absolute z-50 mt-2 w-full bg-white rounded-2xl shadow-xl border border-slate-100 py-2 max-h-[250px] overflow-y-auto animate-fadeIn">
+                                            <div className="absolute z-50 mt-2 w-full bg-card-bg rounded-2xl shadow-xl border border-border py-2 max-h-[250px] overflow-y-auto animate-fadeIn backdrop-blur-xl">
                                                 {filteredBooks.slice(0, 5).map((book) => (
-                                                    <button key={book.id} onClick={() => handleBookSelect(book)} className="w-full flex items-center gap-3 px-4 py-3 hover:bg-lime-50 transition-all text-left group">
+                                                    <button key={book.id} onClick={() => handleBookSelect(book)} className="w-full flex items-center gap-3 px-4 py-3 hover:bg-primary-custom/5 transition-all text-left group">
                                                         <div className={`w-10 h-12 rounded-lg ${book.cover ? '' : book.color} flex items-center justify-center overflow-hidden shadow-sm`}>{book.cover ? <img src={book.cover} alt="" className="w-full h-full object-cover" /> : <BookOpen size={16} className={book.iconColor} />}</div>
-                                                        <div className="flex-1"><h4 className="font-bold text-sm text-slate-800 group-hover:text-lime-700">{book.title}</h4><p className="text-xs text-slate-500">{book.author} • {book.classLevel}</p></div>
+                                                        <div className="flex-1"><h4 className="font-black text-sm text-foreground group-hover:text-primary-custom uppercase tracking-tight italic">{book.title}</h4><p className="text-[10px] font-bold text-muted-foreground uppercase">{book.author} • {book.classLevel}</p></div>
                                                     </button>
                                                 ))}
                                             </div>
@@ -345,13 +345,13 @@ const LessonPlannerView: React.FC = () => {
                                     </div>
                                 ) : (
                                     <div className="space-y-3">
-                                        <div className="flex items-center gap-3 bg-lime-50 rounded-xl p-3 border border-lime-200">
+                                        <div className="flex items-center gap-3 bg-primary-custom/5 rounded-2xl p-4 border border-primary-custom/20">
                                             <div className={`w-12 h-14 rounded-lg ${selectedBook.cover ? '' : selectedBook.color} flex items-center justify-center overflow-hidden shadow-sm shrink-0`}>{selectedBook.cover ? <img src={selectedBook.cover} alt="" className="w-full h-full object-cover" /> : <BookOpen size={20} className={selectedBook.iconColor} />}</div>
-                                            <div className="flex-1 min-w-0"><h3 className="text-base font-bold text-slate-800 truncate">{selectedBook.title}</h3><p className="text-xs text-slate-500 truncate">by {selectedBook.author}</p></div>
-                                            <button onClick={clearBookSelection} className="p-1.5 text-slate-400 hover:text-red-500 rounded-lg"><X size={16} /></button>
+                                            <div className="flex-1 min-w-0"><h3 className="text-base font-black text-foreground truncate uppercase italic tracking-tight">{selectedBook.title}</h3><p className="text-[10px] font-bold text-muted-foreground uppercase">by {selectedBook.author}</p></div>
+                                            <button onClick={clearBookSelection} className="p-1.5 text-muted-foreground hover:text-rose-500 rounded-lg transition-colors"><X size={16} /></button>
                                         </div>
                                         {selectedBook.chapters && selectedBook.chapters.length > 0 && (
-                                            <div><label className="block text-xs font-bold text-slate-600 mb-2 flex items-center gap-1.5"><Layers size={12} />Select Chapters {selectedChapters.size > 0 && <span className="text-lime-600">({selectedChapters.size})</span>}</label><div className="flex flex-wrap gap-1.5">{selectedBook.chapters.map((chapter, idx) => (<button key={chapter.id} onClick={() => toggleChapter(chapter.id)} className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${selectedChapters.has(chapter.id) ? 'bg-lime-500 text-white shadow-sm' : 'bg-white text-slate-700 hover:bg-slate-50 border border-slate-200'}`}><span className={`w-4 h-4 rounded text-[10px] font-bold flex items-center justify-center ${selectedChapters.has(chapter.id) ? 'bg-white/20' : 'bg-slate-100'}`}>{idx + 1}</span><span className="max-w-[100px] truncate">{chapter.title}</span>{selectedChapters.has(chapter.id) && <Check size={10} />}</button>))}</div></div>
+                                            <div><label className="block text-xs font-black text-muted-foreground mb-3 flex items-center gap-2 uppercase tracking-widest"><Layers size={14} className="text-primary-custom" />Select Chapters {selectedChapters.size > 0 && <span className="text-primary-custom">({selectedChapters.size})</span>}</label><div className="flex flex-wrap gap-2">{selectedBook.chapters.map((chapter, idx) => (<button key={chapter.id} onClick={() => toggleChapter(chapter.id)} className={`flex items-center gap-2 px-3 py-2 rounded-xl text-[10px] font-black uppercase transition-all border ${selectedChapters.has(chapter.id) ? 'bg-primary-custom border-primary-custom text-white shadow-md' : 'bg-card-bg text-foreground hover:bg-muted border-border'}`}><span className={`w-5 h-5 rounded-lg text-[10px] font-black flex items-center justify-center ${selectedChapters.has(chapter.id) ? 'bg-white/20' : 'bg-muted text-muted-foreground'}`}>{idx + 1}</span><span className="max-w-[120px] truncate">{chapter.title}</span>{selectedChapters.has(chapter.id) && <Check size={10} />}</button>))}</div></div>
                                         )}
                                     </div>
                                 )}
@@ -359,7 +359,7 @@ const LessonPlannerView: React.FC = () => {
                         )}
 
                         {/* Options Grid - 5 Columns Original Layout */}
-                        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-6">
+                        <div className="grid grid-cols-2 md:grid-cols-5 gap-6 mt-8">
                             <CustomDropdown label="Grade" value={grade} onChange={setGrade} options={gradeOptions} placeholder="Select..." />
                             <CustomDropdown label="Duration" value={duration} onChange={setDuration} options={durationOptions} placeholder="Per session..." />
                             <CustomDropdown label="Days" value={days} onChange={setDays} options={daysOptions} placeholder="Total..." />
@@ -367,15 +367,15 @@ const LessonPlannerView: React.FC = () => {
                             <CustomDropdown label="Format" value={format} onChange={setFormat} options={formatOptions} placeholder="Select..." />
                         </div>
 
-                        <div className="mt-5">
-                            <label className="block text-xs font-bold text-slate-600 mb-1.5">Learning Objectives (Optional)</label>
-                            <textarea value={objectives} onChange={(e) => setObjectives(e.target.value)} placeholder="Define specific goals for this lesson..." className="w-full bg-transparent border-0 border-b-2 border-slate-200 px-0 py-2 text-sm font-medium text-slate-800 placeholder:text-slate-400 focus:border-lime-500 focus:ring-0 focus:outline-none transition-all resize-none h-[50px]" />
+                        <div className="mt-8">
+                            <label className="block text-[10px] font-black text-muted-foreground mb-2 uppercase tracking-[0.2em]">Learning Objectives (Optional)</label>
+                            <textarea value={objectives} onChange={(e) => setObjectives(e.target.value)} placeholder="Define specific goals for this lesson..." className="w-full bg-transparent border-0 border-b-2 border-border px-0 py-3 text-sm font-bold text-foreground placeholder:text-muted-foreground/40 focus:border-primary-custom focus:ring-0 focus:outline-none transition-all resize-none h-[60px]" />
                         </div>
 
-                        <div className="mt-6 flex justify-center">
-                            <button onClick={handleGenerate} disabled={mode === 'topic' ? !topic : !selectedBook} className="group px-6 py-3 bg-lime-500 hover:bg-lime-600 disabled:bg-slate-300 text-white rounded-full flex items-center gap-2 shadow-lg shadow-lime-300 disabled:shadow-slate-200 transition-all duration-300 hover:shadow-xl hover:scale-105 disabled:hover:scale-100">
+                        <div className="mt-10 flex justify-center">
+                            <button onClick={handleGenerate} disabled={mode === 'topic' ? !topic : !selectedBook} className="group px-8 py-4 bg-primary-custom hover:bg-primary-custom/90 disabled:bg-muted text-white rounded-[2rem] flex items-center gap-3 shadow-xl shadow-primary-custom/20 disabled:shadow-none transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]">
                                 <Sparkles size={18} className="group-hover:animate-pulse" />
-                                <span className="font-bold text-sm">Generate Lesson Plan</span>
+                                <span className="font-black text-xs uppercase tracking-[0.2em]">Generate Lesson Plan</span>
                             </button>
                         </div>
                     </div>
@@ -400,15 +400,15 @@ const LessonPlannerView: React.FC = () => {
     // GENERATING VIEW
     if (viewState === 'generating') {
         return (
-            <div className="h-full w-full flex flex-col items-center justify-center bg-white">
-                <div className="text-center">
-                    <div className="w-20 h-20 bg-lime-500 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl shadow-lime-200 animate-bounce">
-                        <Sparkles size={32} className="text-white animate-pulse" />
+            <div className="h-full w-full flex flex-col items-center justify-center bg-transparent">
+                <div className="text-center animate-in fade-in zoom-in duration-500">
+                    <div className="w-24 h-24 bg-primary-custom rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-primary-custom/20 animate-bounce">
+                        <Sparkles size={40} className="text-white animate-pulse" />
                     </div>
-                    <h2 className="text-2xl font-bold text-slate-800 mb-2">Generating Lesson Plan</h2>
-                    <p className="text-slate-500">AI is crafting your personalized lesson...</p>
-                    <div className="mt-6 flex justify-center gap-1">
-                        {[0, 1, 2].map((i) => (<div key={i} className="w-3 h-3 bg-lime-500 rounded-full animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />))}
+                    <h2 className="text-3xl font-black text-foreground mb-3 uppercase italic tracking-tighter">AI is crafting...</h2>
+                    <p className="text-muted-foreground font-bold uppercase text-[10px] tracking-[0.4em]">Generating your personalized lesson plan</p>
+                    <div className="mt-8 flex justify-center gap-2">
+                        {[0, 1, 2].map((i) => (<div key={i} className="w-2.5 h-2.5 bg-primary-custom rounded-full animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />))}
                     </div>
                 </div>
             </div>
@@ -429,133 +429,263 @@ const LessonPlannerView: React.FC = () => {
     // RESULT VIEW - Premium 3-Panel Layout
     if (documentMode === 'document') {
         return (
-            <div className="h-full w-full flex flex-col bg-white overflow-hidden">
-                <header className="h-16 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 flex items-center justify-between shrink-0 z-50">
-                    <div className="flex items-center gap-4">
-                        <button onClick={() => setViewState('form')} className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-xl"><ArrowLeft size={20} /></button>
-                        <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 bg-lime-500 rounded-xl flex items-center justify-center shadow-md shadow-lime-200"><Sparkles size={18} className="text-white" /></div>
-                            <div><h1 className="text-sm font-bold text-slate-900 leading-none">{mode === 'book' ? selectedBook?.title : topic}</h1><span className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">{grade} • {format || 'Interactive'}</span></div>
+            <div className="h-full w-full flex flex-col bg-transparent overflow-hidden">
+                <header className="h-20 bg-card-bg/80 backdrop-blur-xl border-b border-border px-8 flex items-center justify-between shrink-0 z-50">
+                    <div className="flex items-center gap-6">
+                        <button onClick={() => setViewState('form')} className="p-2.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded-xl transition-all"><ArrowLeft size={20} /></button>
+                        <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 bg-primary-custom rounded-2xl flex items-center justify-center shadow-lg shadow-primary-custom/20"><Sparkles size={20} className="text-white" /></div>
+                            <div><h1 className="text-lg font-black text-foreground leading-none uppercase italic tracking-tighter">{mode === 'book' ? selectedBook?.title : topic}</h1><span className="text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-black">{grade} • {format || 'Interactive'}</span></div>
                         </div>
-                        <div className="hidden md:flex bg-slate-100 p-1 rounded-xl gap-1 ml-4">
-                            <button onClick={() => setDocumentMode('document')} className="flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-semibold bg-white shadow-sm text-slate-900"><FileText size={16} /> Document</button>
-                            <button onClick={() => setDocumentMode('slides')} className="flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-semibold text-slate-500"><Presentation size={16} /> Slide Mode</button>
+                        <div className="hidden md:flex bg-muted p-1 rounded-2xl gap-1 ml-6 border border-border">
+                            <button onClick={() => setDocumentMode('document')} className="flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-black uppercase tracking-widest bg-card-bg shadow-sm text-foreground"><FileText size={16} /> Document</button>
+                            <button onClick={() => setDocumentMode('slides')} className="flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-black uppercase tracking-widest text-muted-foreground hover:text-foreground transition-all"><Presentation size={16} /> Slide Mode</button>
                         </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <button onClick={handleCopy} className="flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-sm font-bold text-slate-700">{isCopied ? <CheckCircle2 size={16} className="text-green-500" /> : <Download size={16} />}{isCopied ? 'Copied!' : 'Export'}</button>
-                        <button onClick={handleSave} className={`flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-bold shadow-lg transition-all ${isSaved ? 'bg-green-500 text-white' : 'bg-lime-500 hover:bg-lime-600 text-white shadow-lime-200'}`}>{isSaved ? <CheckCircle2 size={16} /> : <Zap size={16} />}{isSaved ? 'Saved!' : 'Save'}</button>
+                    <div className="flex items-center gap-3">
+                        <button onClick={handleCopy} className="flex items-center gap-2 px-6 py-2.5 rounded-2xl border border-border hover:bg-muted text-xs font-black uppercase tracking-widest text-foreground transition-all">{isCopied ? <CheckCircle2 size={16} className="text-primary-custom" /> : <Download size={16} />}{isCopied ? 'Copied!' : 'Export'}</button>
+                        <button onClick={handleSave} className={`flex items-center gap-2 px-6 py-2.5 rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg transition-all ${isSaved ? 'bg-emerald-500 text-white' : 'bg-primary-custom hover:bg-primary-custom/90 text-white shadow-primary-custom/20'}`}>{isSaved ? <CheckCircle2 size={16} /> : <Zap size={16} />}{isSaved ? 'Saved!' : 'Save'}</button>
                     </div>
                 </header>
                 <div className="flex flex-1 overflow-hidden">
-                    <aside className="w-56 border-r border-slate-200 bg-white shrink-0 hidden lg:block overflow-y-auto">
-                        <div className="p-5"><h3 className="mb-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Lesson Index</h3><nav className="flex flex-col gap-1">{sidebarLinks.map((link) => (<button key={link.id} onClick={() => setActiveSection(link.id)} className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all text-left ${activeSection === link.id ? 'bg-lime-100 text-lime-700 border-r-4 border-lime-500' : 'text-slate-500 hover:bg-slate-50'}`}><link.icon size={18} />{link.label}</button>))}</nav><div className="mt-10 pt-6 border-t border-slate-100"><div className="bg-slate-50 rounded-2xl p-4"><span className="text-[10px] font-bold text-slate-400 uppercase">Time</span><div className="text-2xl font-bold text-slate-800">{generatedPlan?.duration}</div></div></div></div>
+                    <aside className="w-64 border-r border-border bg-card-bg shrink-0 hidden lg:block overflow-y-auto">
+                        <div className="p-6">
+                            <h3 className="mb-6 text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em]">Lesson Index</h3>
+                            <nav className="flex flex-col gap-2">
+                                {sidebarLinks.map((link) => (
+                                    <button key={link.id} onClick={() => setActiveSection(link.id)} className={`flex items-center gap-3 px-5 py-3.5 rounded-2xl text-xs font-black uppercase tracking-widest transition-all text-left group ${activeSection === link.id ? 'bg-primary-custom/10 text-primary-custom border-r-4 border-primary-custom' : 'text-muted-foreground hover:bg-muted'}`}>
+                                        <link.icon size={18} className={activeSection === link.id ? 'text-primary-custom' : 'text-muted-foreground group-hover:text-foreground'} />
+                                        {link.label}
+                                    </button>
+                                ))}
+                            </nav>
+                            <div className="mt-12 pt-8 border-t border-border">
+                                <div className="bg-muted rounded-[2rem] p-6 border border-border">
+                                    <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Total Duration</span>
+                                    <div className="text-3xl font-black text-foreground mt-1 italic tracking-tighter">{generatedPlan?.duration}</div>
+                                </div>
+                            </div>
+                        </div>
                     </aside>
-                    <main className="flex-1 bg-slate-50/50 overflow-y-auto">
-                        <div className="max-w-3xl mx-auto p-8"><div className="bg-white/95 backdrop-blur-sm rounded-[32px] p-10 shadow-sm border border-slate-100">
-                            <div className="border-b border-slate-100 pb-8 mb-8"><div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-lime-100 text-lime-700 text-[10px] font-black uppercase tracking-wider mb-5"><CheckCircle2 size={12} />Premium AI</div><h2 className="text-4xl font-extrabold text-slate-900 mb-3">{generatedPlan?.title}</h2><p className="text-lg text-slate-500">{generatedPlan?.subtitle}</p></div>
-                            <section className="mb-12"><div className="flex items-center gap-3 mb-5"><div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center"><Info size={20} className="text-slate-600" /></div><h3 className="text-xl font-bold text-slate-800">Lesson Overview</h3></div><p className="text-slate-600 leading-relaxed">{generatedPlan?.overview}</p></section>
-                            <section className="mb-12"><div className="flex items-center gap-3 mb-5"><div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center"><Target size={20} className="text-slate-600" /></div><h3 className="text-xl font-bold text-slate-800">Objectives</h3></div><div className="space-y-3">{generatedPlan?.objectives.map((obj, i) => (<label key={i} onClick={() => toggleObjective(i)} className={`flex items-start gap-4 p-4 rounded-2xl cursor-pointer border ${checkedObjectives.has(i) ? 'bg-lime-50 border-lime-200' : 'hover:bg-slate-50 border-transparent'}`}><div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center shrink-0 ${checkedObjectives.has(i) ? 'bg-lime-500 border-lime-500' : 'border-slate-300'}`}>{checkedObjectives.has(i) && <Check size={14} className="text-white" />}</div><span className={checkedObjectives.has(i) ? 'text-lime-800' : 'text-slate-700'}>{obj}</span></label>))}</div></section>
-                            <section className="mb-12"><div className="flex items-center gap-3 mb-5"><div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center"><Package size={20} className="text-slate-600" /></div><h3 className="text-xl font-bold text-slate-800">Materials</h3></div><div className="grid grid-cols-2 gap-3">{generatedPlan?.materials.map((m, i) => (<div key={i} className="flex items-center gap-3 p-4 bg-white border border-slate-100 rounded-2xl"><div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center"><Lightbulb size={18} className="text-amber-500" /></div><span className="text-slate-700 font-medium text-sm">{m.name}</span></div>))}</div></section>
-                            <section className="mb-12"><div className="flex items-center gap-3 mb-5"><div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center"><Activity size={20} className="text-slate-600" /></div><h3 className="text-xl font-bold text-slate-800">Activities</h3></div><div className="space-y-4">{generatedPlan?.activities.map((a, i) => (<div key={i} className={`p-6 rounded-3xl ${i === 1 ? 'border-2 border-lime-200 bg-white shadow-sm' : 'border border-slate-100 bg-slate-50/50'}`}><div className="flex justify-between items-start mb-3"><h4 className="font-bold text-slate-800 text-lg">{i + 1}. {a.title}</h4><span className="text-xs font-black text-lime-700 bg-lime-100 px-3 py-1 rounded-full">{a.duration}</span></div><p className="text-slate-600">{a.description}</p></div>))}</div></section>
-                            <section><div className="flex items-center gap-3 mb-5"><div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center"><ClipboardCheck size={20} className="text-slate-600" /></div><h3 className="text-xl font-bold text-slate-800">Assessment</h3></div><ul className="space-y-2">{generatedPlan?.assessment.map((a, i) => (<li key={i} className="flex items-start gap-3 text-slate-600"><div className="w-2 h-2 bg-lime-400 rounded-full mt-2" /><span>{a}</span></li>))}</ul></section>
-                        </div></div>
+                    <main className="flex-1 bg-muted/30 overflow-y-auto custom-scrollbar">
+                        <div className="max-w-4xl mx-auto p-12">
+                            <div className="bg-card-bg rounded-[3rem] p-12 shadow-2xl shadow-black/5 border border-border">
+                                <div className="border-b border-border pb-10 mb-10 text-center md:text-left">
+                                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-custom/10 text-primary-custom text-[10px] font-black uppercase tracking-[0.2em] mb-6"><Sparkles size={14} className="fill-primary-custom" /> Premium AI Content</div>
+                                    <h2 className="text-4xl md:text-5xl font-black text-foreground mb-4 uppercase italic tracking-tighter leading-[0.9]">{generatedPlan?.title}</h2>
+                                    <p className="text-lg text-muted-foreground font-bold tracking-tight uppercase opacity-80">{generatedPlan?.subtitle}</p>
+                                </div>
+                                <section className="mb-14 scroll-mt-24" id="overview">
+                                    <div className="flex items-center gap-4 mb-6"><div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center border border-border"><Info size={24} className="text-primary-custom" /></div><h3 className="text-2xl font-black text-foreground uppercase italic tracking-tighter">Lesson Overview</h3></div>
+                                    <p className="text-foreground/80 leading-relaxed text-lg font-medium">{generatedPlan?.overview}</p>
+                                </section>
+                                <section className="mb-14 scroll-mt-24" id="objectives">
+                                    <div className="flex items-center gap-4 mb-6"><div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center border border-border"><Target size={24} className="text-primary-custom" /></div><h3 className="text-2xl font-black text-foreground uppercase italic tracking-tighter">Learning Objectives</h3></div>
+                                    <div className="space-y-4">{generatedPlan?.objectives.map((obj, i) => (<label key={i} onClick={() => toggleObjective(i)} className={`flex items-start gap-5 p-5 rounded-[2rem] cursor-pointer border-2 transition-all ${checkedObjectives.has(i) ? 'bg-primary-custom/5 border-primary-custom shadow-md' : 'hover:bg-muted border-transparent'}`}><div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center shrink-0 mt-0.5 transition-all ${checkedObjectives.has(i) ? 'bg-primary-custom border-primary-custom' : 'border-border'}`}>{checkedObjectives.has(i) && <Check size={14} className="text-white" />}</div><span className={`text-lg font-bold ${checkedObjectives.has(i) ? 'text-foreground' : 'text-foreground/70'}`}>{obj}</span></label>))}</div>
+                                </section>
+                                <section className="mb-14 scroll-mt-24" id="materials">
+                                    <div className="flex items-center gap-4 mb-6"><div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center border border-border"><Package size={24} className="text-primary-custom" /></div><h3 className="text-2xl font-black text-foreground uppercase italic tracking-tighter">Required Materials</h3></div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">{generatedPlan?.materials.map((m, i) => (<div key={i} className="flex items-center gap-4 p-5 bg-muted/50 border border-border rounded-[2rem] group hover:bg-card-bg hover:shadow-lg transition-all"><div className="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center border border-amber-500/20 group-hover:scale-110 transition-transform"><Lightbulb size={22} className="text-amber-500" /></div><span className="text-foreground font-black text-sm uppercase tracking-tight">{m.name}</span></div>))}</div>
+                                </section>
+                                <section className="mb-14 scroll-mt-24" id="activities">
+                                    <div className="flex items-center gap-4 mb-8"><div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center border border-border"><Activity size={24} className="text-primary-custom" /></div><h3 className="text-2xl font-black text-foreground uppercase italic tracking-tighter">Execution Activities</h3></div>
+                                    <div className="space-y-6">{generatedPlan?.activities.map((a, i) => (<div key={i} className={`p-8 rounded-[2.5rem] relative overflow-hidden transition-all ${i === 1 ? 'border-2 border-primary-custom bg-primary-custom/5 shadow-xl shadow-primary-custom/5' : 'border border-border bg-muted/40 hover:bg-muted/60'}`}><div className="flex justify-between items-start mb-6 relative z-10"><h4 className="font-black text-foreground text-xl uppercase italic tracking-tight leading-none">{i + 1}. {a.title}</h4><span className="text-[10px] font-black text-primary-custom bg-primary-custom/10 px-4 py-1.5 rounded-full uppercase tracking-widest border border-primary-custom/20">{a.duration}</span></div><p className="text-foreground/70 text-base font-medium leading-relaxed relative z-10">{a.description}</p>{i === 1 && <div className="absolute top-0 right-0 w-32 h-32 bg-primary-custom/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>}</div>))}</div>
+                                </section>
+                                <section className="scroll-mt-24" id="assessment">
+                                    <div className="flex items-center gap-4 mb-6"><div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center border border-border"><ClipboardCheck size={24} className="text-primary-custom" /></div><h3 className="text-2xl font-black text-foreground uppercase italic tracking-tighter">Assessment & Rubrics</h3></div>
+                                    <div className="grid grid-cols-1 gap-3">{generatedPlan?.assessment.map((a, i) => (<div key={i} className="flex items-start gap-4 p-5 bg-muted/30 border border-border rounded-2xl hover:bg-muted/50 transition-all"><div className="w-2.5 h-2.5 bg-primary-custom rounded-full mt-2.5 shadow-[0_0_10px_rgba(var(--primary-rgb),0.5)]" /><span className="text-foreground/80 font-bold uppercase text-xs tracking-tight">{a}</span></div>))}</div>
+                                </section>
+                            </div>
+                        </div>
                     </main>
-                    <aside className="w-80 border-l border-slate-200 bg-white flex flex-col shrink-0 hidden xl:flex">
-                        <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50"><div className="flex items-center gap-2"><div className="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center"><Zap size={16} className="text-white" /></div><span className="font-bold text-slate-800 text-sm">AI Assistant</span></div><button className="p-1.5 rounded-lg hover:bg-slate-200 text-slate-500"><X size={18} /></button></div>
-                        <div className="flex-1 overflow-y-auto p-4"><div className="flex gap-3"><div className="w-8 h-8 rounded-full bg-lime-100 flex items-center justify-center shrink-0"><Bot size={16} className="text-lime-700" /></div><div className="bg-slate-100 rounded-2xl rounded-tl-none p-4 text-sm text-slate-700">I've drafted your plan! How can I refine it?<div className="mt-4 flex flex-col gap-2"><button className="text-left w-full px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold hover:border-lime-500">"Add more activities"</button><button className="text-left w-full px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold hover:border-lime-500">"Generate a quiz"</button></div></div></div></div>
-                        <div className="p-4 border-t border-slate-100"><div className="relative"><textarea value={chatMessage} onChange={(e) => setChatMessage(e.target.value)} className="w-full border border-slate-200 rounded-2xl pr-12 py-3 px-4 text-sm resize-none" placeholder="Ask AI..." rows={2} /><button className="absolute right-3 bottom-3 w-8 h-8 bg-slate-900 text-white rounded-xl flex items-center justify-center"><Send size={16} /></button></div><div className="mt-3 flex items-center justify-between px-1"><div className="flex gap-2"><Mic size={18} className="text-slate-400" /><Paperclip size={18} className="text-slate-400" /></div><span className="text-[10px] text-slate-400 font-bold uppercase flex items-center gap-1"><div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />Online</span></div></div>
+                    <aside className="w-80 border-l border-border bg-card-bg flex flex-col shrink-0 hidden xl:flex">
+                        <div className="p-5 border-b border-border flex items-center justify-between bg-muted/30">
+                            <div className="flex items-center gap-3">
+                                <div className="w-9 h-9 rounded-xl bg-foreground flex items-center justify-center"><Zap size={18} className="text-background" /></div>
+                                <span className="font-black text-foreground text-xs uppercase tracking-[0.2em]">AI Assistant</span>
+                            </div>
+                            <button className="p-2 rounded-xl hover:bg-muted text-muted-foreground transition-all"><X size={20} /></button>
+                        </div>
+                        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                            <div className="flex gap-4">
+                                <div className="w-10 h-10 rounded-2xl bg-primary-custom/10 flex items-center justify-center shrink-0 border border-primary-custom/20">
+                                    <Bot size={20} className="text-primary-custom" />
+                                </div>
+                                <div className="bg-muted rounded-[2rem] rounded-tl-none p-6 text-sm font-bold text-foreground/80 leading-relaxed border border-border">
+                                    I've drafted your plan! How can I refine it further?
+                                    <div className="mt-6 flex flex-col gap-2.5">
+                                        <button className="text-left w-full px-5 py-3 bg-card-bg border border-border rounded-2xl text-[10px] font-black uppercase tracking-widest hover:border-primary-custom hover:text-primary-custom transition-all shadow-sm">"Add more activities"</button>
+                                        <button className="text-left w-full px-5 py-3 bg-card-bg border border-border rounded-2xl text-[10px] font-black uppercase tracking-widest hover:border-primary-custom hover:text-primary-custom transition-all shadow-sm">"Generate a quiz"</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="p-6 border-t border-border bg-muted/20">
+                            <div className="relative group">
+                                <textarea value={chatMessage} onChange={(e) => setChatMessage(e.target.value)} className="w-full bg-card-bg border border-border rounded-[2rem] pr-14 py-4 px-6 text-sm font-bold text-foreground placeholder:text-muted-foreground/30 focus:border-primary-custom focus:ring-0 focus:outline-none transition-all resize-none shadow-sm hover:border-primary-custom/50" placeholder="Type your request..." rows={2} />
+                                <button className="absolute right-3 bottom-3 w-10 h-10 bg-foreground text-background rounded-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-lg"><Send size={18} /></button>
+                            </div>
+                            <div className="mt-4 flex items-center justify-between px-2">
+                                <div className="flex gap-4">
+                                    <button className="text-muted-foreground hover:text-primary-custom transition-all"><Mic size={20} /></button>
+                                    <button className="text-muted-foreground hover:text-primary-custom transition-all"><Paperclip size={20} /></button>
+                                </div>
+                                <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest flex items-center gap-2">
+                                    <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                                    AI Online
+                                </span>
+                            </div>
+                        </div>
                     </aside>
                 </div>
-            </div>
-        );
+            </div>);
     }
 
     // SLIDE MODE VIEW
     return (
-        <div className="h-full w-full flex flex-col bg-white overflow-hidden">
-            <header className="h-16 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 flex items-center justify-between shrink-0 z-50">
-                <div className="flex items-center gap-4">
-                    <button onClick={() => setViewState('form')} className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-xl"><ArrowLeft size={20} /></button>
-                    <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 bg-lime-500 rounded-xl flex items-center justify-center shadow-md shadow-lime-200"><Sparkles size={18} className="text-white" /></div>
-                        <div><h1 className="text-sm font-bold text-slate-900 leading-none">{mode === 'book' ? selectedBook?.title : topic}</h1><span className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">{grade} • {format || 'Interactive'}</span></div>
+        <div className="h-full w-full flex flex-col bg-transparent overflow-hidden">
+            <header className="h-20 bg-card-bg/80 backdrop-blur-xl border-b border-border px-8 flex items-center justify-between shrink-0 z-50">
+                <div className="flex items-center gap-6">
+                    <button onClick={() => setViewState('form')} className="p-2.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded-xl transition-all"><ArrowLeft size={20} /></button>
+                    <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 bg-primary-custom rounded-2xl flex items-center justify-center shadow-lg shadow-primary-custom/20"><Sparkles size={20} className="text-white" /></div>
+                        <div><h1 className="text-lg font-black text-foreground leading-none uppercase italic tracking-tighter">{mode === 'book' ? selectedBook?.title : topic}</h1><span className="text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-black">{grade} • {format || 'Interactive'}</span></div>
                     </div>
-                    <div className="hidden md:flex bg-slate-100 p-1 rounded-xl gap-1 ml-4">
-                        <button onClick={() => setDocumentMode('document')} className="flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-semibold text-slate-500"><FileText size={16} /> Document</button>
-                        <button onClick={() => setDocumentMode('slides')} className="flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-semibold bg-white shadow-sm text-slate-900"><Presentation size={16} /> Slide Mode</button>
+                    <div className="hidden md:flex bg-muted p-1 rounded-2xl gap-1 ml-6 border border-border">
+                        <button onClick={() => setDocumentMode('document')} className="flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-black uppercase tracking-widest text-muted-foreground hover:text-foreground transition-all"><FileText size={16} /> Document</button>
+                        <button onClick={() => setDocumentMode('slides')} className="flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-black uppercase tracking-widest bg-card-bg shadow-sm text-foreground"><Presentation size={16} /> Slide Mode</button>
                     </div>
                 </div>
-                <div className="flex items-center gap-2">
-                    <button onClick={handleCopy} className="flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-sm font-bold text-slate-700"><Download size={16} /> Export</button>
-                    <button onClick={handleSave} className="flex items-center gap-2 px-5 py-2 rounded-xl bg-lime-500 hover:bg-lime-600 text-white text-sm font-bold shadow-lg shadow-lime-200"><Zap size={16} /> Refine</button>
+                <div className="flex items-center gap-3">
+                    <button onClick={handleCopy} className="flex items-center gap-2 px-6 py-2.5 rounded-2xl border border-border hover:bg-muted text-xs font-black uppercase tracking-widest text-foreground transition-all"><Download size={16} /> Export</button>
+                    <button onClick={handleSave} className="flex items-center gap-2 px-8 py-2.5 rounded-2xl bg-primary-custom hover:bg-primary-custom/90 text-white text-xs font-black uppercase tracking-widest shadow-lg shadow-primary-custom/20">Refine</button>
                 </div>
             </header>
             <div className="flex flex-1 overflow-hidden">
                 {/* Slide Thumbnails */}
-                <aside className="w-56 border-r border-slate-200 bg-white shrink-0 hidden lg:flex flex-col">
-                    <div className="p-4 border-b border-slate-100"><h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Slide Preview</h3></div>
-                    <div className="flex-1 overflow-y-auto p-3 space-y-3">
+                <aside className="w-64 border-r border-border bg-card-bg shrink-0 hidden lg:flex flex-col">
+                    <div className="p-5 border-b border-border flex items-center justify-between bg-muted/20">
+                        <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Slide Preview</h3>
+                        <span className="text-[10px] bg-primary-custom/10 text-primary-custom px-2 py-0.5 rounded font-black">{totalSlides}</span>
+                    </div>
+                    <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
                         {slides.map((slide, idx) => (
-                            <button key={slide.id} onClick={() => setCurrentSlide(idx)} className={`w-full p-2 rounded-xl cursor-pointer transition-all ${currentSlide === idx ? 'border-3 border-lime-500 bg-white shadow-lg shadow-lime-100' : 'border border-transparent hover:border-slate-200'}`}>
-                                <div className={`aspect-video rounded-lg flex items-center justify-center mb-2 ${currentSlide === idx ? 'bg-slate-900' : 'bg-slate-100 border border-slate-200'}`}>
-                                    <slide.icon size={20} className={currentSlide === idx ? 'text-white/40' : 'text-slate-300'} />
+                            <button key={slide.id} onClick={() => setCurrentSlide(idx)} className={`w-full p-2.5 rounded-2xl cursor-pointer transition-all border-2 text-left group ${currentSlide === idx ? 'border-primary-custom bg-primary-custom/5 shadow-lg shadow-primary-custom/5' : 'border-transparent hover:border-border hover:bg-muted'}`}>
+                                <div className={`aspect-video rounded-xl flex items-center justify-center mb-3 overflow-hidden ${currentSlide === idx ? 'bg-foreground' : 'bg-muted border border-border'}`}>
+                                    <slide.icon size={24} className={currentSlide === idx ? 'text-background/40' : 'text-muted-foreground'} />
                                 </div>
                                 <div className="flex justify-between items-center px-1">
-                                    <span className={`text-[10px] font-bold ${currentSlide === idx ? 'text-slate-900' : 'text-slate-500'}`}>{String(idx + 1).padStart(2, '0')} {slide.label}</span>
-                                    <span className="text-[10px] text-slate-400">{slide.type}</span>
+                                    <span className={`text-[10px] font-black uppercase tracking-tight truncate ${currentSlide === idx ? 'text-foreground' : 'text-muted-foreground'}`}>{String(idx + 1).padStart(2, '0')} {slide.label}</span>
+                                    <span className={`text-[8px] font-black uppercase px-2 py-0.5 rounded ${currentSlide === idx ? 'bg-primary-custom text-white' : 'bg-muted text-muted-foreground'}`}>{slide.type}</span>
                                 </div>
                             </button>
                         ))}
                     </div>
                 </aside>
-                {/* Main Slide Area */}
-                <main className="flex-1 bg-slate-50/50 flex flex-col items-center justify-center p-8 relative">
-                    <button onClick={() => setCurrentSlide(Math.max(0, currentSlide - 1))} className="absolute left-4 w-12 h-12 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-900 hover:border-slate-300 transition-all shadow-sm"><ChevronLeft size={24} /></button>
-                    <button onClick={() => setCurrentSlide(Math.min(totalSlides - 1, currentSlide + 1))} className="absolute right-4 w-12 h-12 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-900 hover:border-slate-300 transition-all shadow-sm"><ChevronRight size={24} /></button>
+                <main className="flex-1 bg-muted/30 flex flex-col items-center justify-center p-12 relative overflow-hidden">
+                    {/* Background Accents */}
+                    <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-custom/5 rounded-full blur-[120px]" />
+                    </div>
 
-                    <div className="w-full max-w-4xl aspect-[16/9] bg-white rounded-[32px] shadow-2xl shadow-slate-200/50 p-12 flex flex-col justify-center relative overflow-hidden">
-                        <div className="absolute -top-20 -right-20 w-80 h-80 bg-lime-50 rounded-full blur-3xl opacity-60" />
-                        <div className="relative z-10">
-                            {currentSlide === 0 && (<>
-                                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-lime-100 text-lime-700 text-xs font-black uppercase tracking-widest mb-8"><Sparkles size={16} /> Lesson Introduction</div>
-                                <h2 className="text-5xl font-extrabold text-slate-900 mb-6 tracking-tight leading-tight">{generatedPlan?.title?.split(' ').slice(0, 2).join(' ')}<br /><span className="text-lime-500">{generatedPlan?.title?.split(' ').slice(2).join(' ')}</span></h2>
-                                <p className="text-xl text-slate-500 font-medium max-w-2xl leading-relaxed mb-10">{generatedPlan?.subtitle}</p>
-                                <div className="flex items-center gap-8">
-                                    <div className="flex items-center gap-3"><div className="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-white"><Clock size={20} /></div><div><div className="text-xs text-slate-400 font-bold uppercase">Duration</div><div className="text-lg font-bold text-slate-900">{generatedPlan?.duration}</div></div></div>
-                                    <div className="w-px h-10 bg-slate-200" />
-                                    <div className="flex items-center gap-3"><div className="w-12 h-12 rounded-2xl bg-lime-100 flex items-center justify-center text-lime-700"><Users size={20} /></div><div><div className="text-xs text-slate-400 font-bold uppercase">Level</div><div className="text-lg font-bold text-slate-900">{grade}</div></div></div>
+                    <button onClick={() => setCurrentSlide(Math.max(0, currentSlide - 1))} className="absolute left-10 w-14 h-14 rounded-full bg-card-bg border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary-custom transition-all shadow-xl hover:scale-110 active:scale-90 z-20"><ChevronLeft size={28} /></button>
+                    <button onClick={() => setCurrentSlide(Math.min(totalSlides - 1, currentSlide + 1))} className="absolute right-10 w-14 h-14 rounded-full bg-card-bg border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary-custom transition-all shadow-xl hover:scale-110 active:scale-90 z-20"><ChevronRight size={28} /></button>
+
+                    <div className="w-full max-w-5xl aspect-[16/9] bg-card-bg rounded-[4rem] shadow-2xl shadow-black/10 p-16 flex flex-col justify-center relative overflow-hidden border border-border animate-in fade-in zoom-in duration-500">
+                        <div className="absolute -top-40 -right-40 w-[500px] h-[500px] bg-primary-custom/5 rounded-full blur-[120px]" />
+                        <div className="relative z-10 h-full flex flex-col justify-center">
+                            {currentSlide === 0 && (<div className="animate-in slide-in-from-bottom-8 duration-700">
+                                <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-primary-custom/10 text-primary-custom text-[10px] font-black uppercase tracking-[0.3em] mb-12 border border-primary-custom/20"><Sparkles size={18} className="fill-primary-custom" /> Lesson Introduction</div>
+                                <h2 className="text-6xl md:text-7xl font-black text-foreground mb-8 tracking-tighter leading-[0.9] uppercase italic">{generatedPlan?.title?.split(' ').slice(0, 2).join(' ')}<br /><span className="text-primary-custom">{generatedPlan?.title?.split(' ').slice(2).join(' ')}</span></h2>
+                                <p className="text-2xl text-muted-foreground font-bold max-w-3xl leading-snug mb-16 uppercase opacity-80">{generatedPlan?.subtitle}</p>
+                                <div className="flex items-center gap-12">
+                                    <div className="flex items-center gap-4"><div className="w-16 h-16 rounded-[2rem] bg-foreground flex items-center justify-center text-background shadow-lg"><Clock size={28} /></div><div><div className="text-[10px] text-muted-foreground font-black uppercase tracking-widest mb-1">Duration</div><div className="text-2xl font-black text-foreground italic">{generatedPlan?.duration}</div></div></div>
+                                    <div className="w-px h-12 bg-border" />
+                                    <div className="flex items-center gap-4"><div className="w-16 h-16 rounded-[2rem] bg-primary-custom/10 flex items-center justify-center text-primary-custom shadow-sm border border-primary-custom/10"><Users size={28} /></div><div><div className="text-[10px] text-muted-foreground font-black uppercase tracking-widest mb-1">Grade Level</div><div className="text-2xl font-black text-foreground italic">{grade}</div></div></div>
                                 </div>
-                            </>)}
-                            {currentSlide === 1 && (<>
-                                <div className="flex items-center gap-3 mb-8"><Target size={28} className="text-lime-500" /><h3 className="text-3xl font-bold text-slate-900">Learning Objectives</h3></div>
-                                <div className="space-y-4">{generatedPlan?.objectives.map((obj, i) => (<div key={i} className="flex items-start gap-4 p-4 bg-slate-50 rounded-2xl"><div className="w-8 h-8 rounded-lg bg-lime-500 text-white flex items-center justify-center font-bold text-sm">{i + 1}</div><span className="text-slate-700 font-medium text-lg">{obj}</span></div>))}</div>
-                            </>)}
-                            {currentSlide === 2 && (<>
-                                <div className="flex items-center gap-3 mb-8"><Package size={28} className="text-lime-500" /><h3 className="text-3xl font-bold text-slate-900">Required Materials</h3></div>
-                                <div className="grid grid-cols-2 gap-4">{generatedPlan?.materials.map((m, i) => (<div key={i} className="flex items-center gap-4 p-5 bg-slate-50 rounded-2xl"><div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center"><Lightbulb size={24} className="text-amber-600" /></div><span className="text-slate-800 font-semibold">{m.name}</span></div>))}</div>
-                            </>)}
-                            {currentSlide > 2 && currentSlide < totalSlides - 1 && (<>
-                                <div className="flex justify-between items-start mb-6"><h3 className="text-3xl font-bold text-slate-900">{generatedPlan?.activities[currentSlide - 3]?.title}</h3><span className="text-sm font-black text-lime-700 bg-lime-100 px-4 py-2 rounded-full uppercase">{generatedPlan?.activities[currentSlide - 3]?.duration}</span></div>
-                                <p className="text-xl text-slate-600 leading-relaxed">{generatedPlan?.activities[currentSlide - 3]?.description}</p>
-                            </>)}
-                            {currentSlide === totalSlides - 1 && (<>
-                                <div className="flex items-center gap-3 mb-8"><ClipboardCheck size={28} className="text-lime-500" /><h3 className="text-3xl font-bold text-slate-900">Assessment Methods</h3></div>
-                                <ul className="space-y-4">{generatedPlan?.assessment.map((a, i) => (<li key={i} className="flex items-start gap-4 p-4 bg-slate-50 rounded-2xl"><div className="w-3 h-3 bg-lime-500 rounded-full mt-2 shrink-0" /><span className="text-slate-700 font-medium text-lg">{a}</span></li>))}</ul>
-                            </>)}
+                            </div>)}
+                            {currentSlide === 1 && (<div className="animate-in fade-in duration-500">
+                                <div className="flex items-center gap-6 mb-12"><div className="w-16 h-16 rounded-3xl bg-muted flex items-center justify-center border border-border"><Target size={32} className="text-primary-custom" /></div><h3 className="text-4xl font-black text-foreground uppercase italic tracking-tighter">Learning Objectives</h3></div>
+                                <div className="grid grid-cols-1 gap-4 max-w-4xl">{generatedPlan?.objectives.map((obj, i) => (<div key={i} className="flex items-start gap-6 p-6 bg-muted/40 rounded-[2.5rem] border border-border/50 group hover:border-primary-custom/30 transition-all"><div className="w-10 h-10 rounded-2xl bg-primary-custom text-white flex items-center justify-center font-black text-lg shadow-lg shadow-primary-custom/20">{i + 1}</div><span className="text-foreground/90 font-black text-xl leading-tight uppercase tracking-tight">{obj}</span></div>))}</div>
+                            </div>)}
+                            {currentSlide === 2 && (<div className="animate-in fade-in duration-500">
+                                <div className="flex items-center gap-6 mb-12"><div className="w-16 h-16 rounded-3xl bg-muted flex items-center justify-center border border-border"><Package size={32} className="text-primary-custom" /></div><h3 className="text-4xl font-black text-foreground uppercase italic tracking-tighter">Required Materials</h3></div>
+                                <div className="grid grid-cols-2 gap-6">{generatedPlan?.materials.map((m, i) => (<div key={i} className="flex items-center gap-6 p-8 bg-muted/40 rounded-[3rem] border border-border/50 group hover:bg-card-bg hover:shadow-xl transition-all"><div className="w-16 h-16 rounded-[2rem] bg-amber-500/10 flex items-center justify-center border border-amber-500/20"><Lightbulb size={32} className="text-amber-500" /></div><span className="text-foreground font-black text-xl uppercase tracking-tighter leading-none">{m.name}</span></div>))}</div>
+                            </div>)}
+                            {currentSlide > 2 && currentSlide < totalSlides - 1 && (<div className="animate-in slide-in-from-right-12 duration-500">
+                                <div className="flex justify-between items-center mb-12">
+                                    <div className="flex items-center gap-6">
+                                        <div className="w-16 h-16 rounded-[2rem] bg-primary-custom flex items-center justify-center text-white shadow-xl shadow-primary-custom/20 font-black text-2xl">{currentSlide - 2}</div>
+                                        <h3 className="text-5xl font-black text-foreground uppercase italic tracking-tighter leading-none">{generatedPlan?.activities[currentSlide - 3]?.title}</h3>
+                                    </div>
+                                    <span className="text-xs font-black text-primary-custom bg-primary-custom/10 px-6 py-3 rounded-full uppercase tracking-widest border border-primary-custom/20">{generatedPlan?.activities[currentSlide - 3]?.duration}</span>
+                                </div>
+                                <div className="relative">
+                                    <div className="absolute -left-10 top-0 bottom-0 w-2 bg-primary-custom rounded-full" />
+                                    <p className="text-3xl text-foreground font-bold leading-relaxed italic opacity-90">{generatedPlan?.activities[currentSlide - 3]?.description}</p>
+                                </div>
+                            </div>)}
+                            {currentSlide === totalSlides - 1 && (<div className="animate-in fade-in duration-500">
+                                <div className="flex items-center gap-6 mb-12"><div className="w-16 h-16 rounded-3xl bg-muted flex items-center justify-center border border-border"><ClipboardCheck size={32} className="text-primary-custom" /></div><h3 className="text-4xl font-black text-foreground uppercase italic tracking-tighter">Assessment & Success</h3></div>
+                                <div className="grid grid-cols-1 gap-5">{generatedPlan?.assessment.map((a, i) => (<div key={i} className="flex items-center gap-6 p-6 bg-muted/40 rounded-[2.5rem] border border-border/50 hover:bg-card-bg transition-all shadow-sm"><div className="w-4 h-4 bg-primary-custom rounded-full shadow-[0_0_15px_rgba(var(--primary-rgb),0.6)] shrink-0" /><span className="text-foreground/80 font-black text-xl uppercase tracking-tight italic">{a}</span></div>))}</div>
+                            </div>)}
                         </div>
                     </div>
-                    {/* Progress Bar */}
-                    <div className="w-full max-w-4xl mt-8">
-                        <div className="flex justify-between items-center mb-3 px-2"><span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Slide {currentSlide + 1} of {totalSlides}</span><span className="text-xs font-bold text-slate-900">{Math.round(progressPercent)}% Complete</span></div>
-                        <div className="h-2 w-full bg-slate-200 rounded-full overflow-hidden"><div className="h-full bg-lime-500 rounded-full transition-all duration-300" style={{ width: `${progressPercent}%` }} /></div>
+                    {/* Progress Bar Area */}
+                    <div className="w-full max-w-5xl mt-12 px-4 relative z-10">
+                        <div className="flex justify-between items-center mb-4 px-2">
+                            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em]">Section {currentSlide + 1} of {totalSlides}</span>
+                            <div className="flex items-center gap-4">
+                                <span className="text-[10px] font-black text-primary-custom uppercase tracking-widest">{Math.round(progressPercent)}% Explored</span>
+                                <div className="flex gap-1">
+                                    {slides.map((_, i) => (<div key={i} className={`h-1 rounded-full transition-all duration-300 ${i <= currentSlide ? 'bg-primary-custom w-4' : 'bg-border w-1'}`} />))}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="h-3 w-full bg-muted rounded-full overflow-hidden border border-border shadow-inner p-0.5">
+                            <div className="h-full bg-primary-custom rounded-full transition-all duration-700 ease-out shadow-[0_0_10px_rgba(var(--primary-rgb),0.5)]" style={{ width: `${progressPercent}%` }} />
+                        </div>
                     </div>
                 </main>
                 {/* AI Chat Sidebar */}
-                <aside className="w-80 border-l border-slate-200 bg-white flex flex-col shrink-0 hidden xl:flex">
-                    <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50"><div className="flex items-center gap-2"><div className="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center"><Zap size={16} className="text-white" /></div><span className="font-bold text-slate-800 text-sm">AI Slide Assistant</span></div><button className="p-1.5 rounded-lg hover:bg-slate-200 text-slate-500"><X size={18} /></button></div>
-                    <div className="flex-1 overflow-y-auto p-4"><div className="flex gap-3"><div className="w-8 h-8 rounded-full bg-lime-100 flex items-center justify-center shrink-0"><Bot size={16} className="text-lime-700" /></div><div className="bg-slate-100 rounded-2xl rounded-tl-none p-4 text-sm text-slate-700">Ready to refine this slide!<div className="mt-4 flex flex-col gap-2"><button className="text-left w-full px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold hover:border-lime-500">"Add more imagery"</button><button className="text-left w-full px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold hover:border-lime-500">"Make intro more exciting"</button><button className="text-left w-full px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold hover:border-lime-500">"Give me a script"</button></div></div></div></div>
-                    <div className="p-4 border-t border-slate-100"><div className="relative"><textarea className="w-full border border-slate-200 rounded-2xl pr-12 py-3 px-4 text-sm resize-none" placeholder="Ask AI to adjust slide..." rows={2} /><button className="absolute right-3 bottom-3 w-8 h-8 bg-slate-900 text-white rounded-xl flex items-center justify-center"><Send size={16} /></button></div><div className="mt-3 flex items-center justify-between px-1"><div className="flex gap-2"><Mic size={18} className="text-slate-400" /><Paperclip size={18} className="text-slate-400" /></div><span className="text-[10px] text-slate-400 font-bold uppercase">Assistant Syncing</span></div></div>
+                <aside className="w-80 border-l border-border bg-card-bg flex flex-col shrink-0 hidden xl:flex">
+                    <div className="p-5 border-b border-border flex items-center justify-between bg-muted/30">
+                        <div className="flex items-center gap-3">
+                            <div className="w-9 h-9 rounded-xl bg-foreground flex items-center justify-center"><Zap size={18} className="text-background" /></div>
+                            <span className="font-black text-foreground text-xs uppercase tracking-[0.2em]">Slide Assistant</span>
+                        </div>
+                        <button className="p-2 rounded-xl hover:bg-muted text-muted-foreground transition-all"><X size={20} /></button>
+                    </div>
+                    <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
+                        <div className="flex gap-4">
+                            <div className="w-10 h-10 rounded-2xl bg-primary-custom/10 flex items-center justify-center shrink-0 border border-primary-custom/20">
+                                <Bot size={20} className="text-primary-custom" />
+                            </div>
+                            <div className="bg-muted rounded-[2rem] rounded-tl-none p-6 text-sm font-bold text-foreground/80 leading-relaxed border border-border relative overflow-hidden">
+                                Ready to refine this slide!
+                                <div className="mt-6 flex flex-col gap-2.5">
+                                    <button className="text-left w-full px-5 py-3 bg-card-bg border border-border rounded-2xl text-[10px] font-black uppercase tracking-widest hover:border-primary-custom hover:text-primary-custom transition-all shadow-sm">"Add more imagery"</button>
+                                    <button className="text-left w-full px-5 py-3 bg-card-bg border border-border rounded-2xl text-[10px] font-black uppercase tracking-widest hover:border-primary-custom hover:text-primary-custom transition-all shadow-sm">"Make intro exciting"</button>
+                                    <button className="text-left w-full px-5 py-3 bg-card-bg border border-border rounded-2xl text-[10px] font-black uppercase tracking-widest hover:border-primary-custom hover:text-primary-custom transition-all shadow-sm">"Give me a script"</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="p-6 border-t border-border bg-muted/20">
+                        <div className="relative group">
+                            <textarea className="w-full bg-card-bg border border-border rounded-[2rem] pr-14 py-4 px-6 text-sm font-bold text-foreground placeholder:text-muted-foreground/30 focus:border-primary-custom focus:ring-0 focus:outline-none transition-all resize-none shadow-sm hover:border-primary-custom/50" placeholder="Type your request..." rows={2} />
+                            <button className="absolute right-3 bottom-3 w-10 h-10 bg-foreground text-background rounded-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-lg"><Send size={18} /></button>
+                        </div>
+                        <div className="mt-4 flex items-center justify-between px-2">
+                            <div className="flex gap-4">
+                                <button className="text-muted-foreground hover:text-primary-custom transition-all"><Mic size={20} /></button>
+                                <button className="text-muted-foreground hover:text-primary-custom transition-all"><Paperclip size={20} /></button>
+                            </div>
+                            <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest flex items-center gap-2 italic">
+                                Syncing Active
+                            </span>
+                        </div>
+                    </div>
                 </aside>
             </div>
         </div>

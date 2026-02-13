@@ -38,18 +38,18 @@ const CustomDropdown = ({
 
     return (
         <div className="relative" ref={dropdownRef}>
-            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">{label}</label>
+            <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2 ml-1">{label}</label>
             <button
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
-                className={`w-full flex items-center justify-between bg-white/50 backdrop-blur-md border-2 
-                    ${isOpen ? 'border-orange-500' : 'border-slate-100'} 
-                    px-4 py-3 rounded-2xl text-sm font-bold transition-all cursor-pointer text-left hover:border-orange-300 group`}
+                className={`w-full flex items-center justify-between bg-card-bg border-2 
+                    ${isOpen ? 'border-primary-custom shadow-[0_0_0_4px_rgba(var(--primary-rgb),0.1)]' : 'border-border'} 
+                    px-5 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer text-left hover:border-primary-custom group shadow-soft`}
             >
-                <span className={value ? 'text-slate-800' : 'text-slate-400'}>
+                <span className={value ? 'text-foreground' : 'text-muted-foreground/50'}>
                     {value || placeholder}
                 </span>
-                <ChevronDown size={16} className={`text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180 text-orange-500' : ''}`} />
+                <ChevronDown size={16} className={`text-muted-foreground transition-transform duration-300 ${isOpen ? 'rotate-180 text-primary-custom' : ''}`} />
             </button>
             <AnimatePresence>
                 {isOpen && (
@@ -57,18 +57,18 @@ const CustomDropdown = ({
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 10 }}
-                        className="absolute z-50 mt-2 w-full bg-white rounded-2xl shadow-2xl border border-slate-100 py-2 max-h-[200px] overflow-y-auto"
+                        className="absolute z-50 mt-2 w-full bg-card-bg rounded-2xl shadow-2xl border border-border py-2 max-h-[250px] overflow-y-auto backdrop-blur-xl"
                     >
                         {options.map((option) => (
                             <button
                                 key={option}
                                 type="button"
                                 onClick={() => { onChange(option); setIsOpen(false); }}
-                                className={`w-full px-4 py-2.5 text-left text-sm font-bold transition-all flex items-center justify-between
-                                    ${value === option ? 'bg-orange-50 text-orange-700' : 'text-slate-700 hover:bg-slate-50'}`}
+                                className={`w-full px-5 py-3 text-left text-sm font-bold transition-all flex items-center justify-between
+                                    ${value === option ? 'bg-primary-custom/10 text-primary-custom' : 'text-foreground hover:bg-primary-custom/5'}`}
                             >
                                 <span>{option}</span>
-                                {value === option && <Check size={14} className="text-orange-600" />}
+                                {value === option && <Check size={14} className="text-primary-custom" />}
                             </button>
                         ))}
                     </motion.div>
@@ -112,7 +112,7 @@ const StoryGeneratorView: React.FC = () => {
                     },
                     {
                         title: 'The Call to Journey',
-                        content: `Inside the chest lay a single, glowing stone that seemed to pulse with a life of its own. Elara knew she couldn't keep this discovery to herself. The village elders spoke of such artifacts in hushed voices, calling them 'Echo Stones'—remnants of a forgotten age where magic and metallurgy were one and the same. As she held the stone, a map began to manifest in the dust at her feet, showing a path to the Silent Peaks.`
+                        content: `Inside the stone lay single, glowing pulse that seemed to pulse with a life of its own. Elara knew she couldn't keep this discovery to herself. The village elders spoke of such artifacts in hushed voices, calling them 'Echo Stones'—remnants of a forgotten age where magic and metallurgy were one and the same. As she held the stone, a map began to manifest in the dust at her feet, showing a path to the Silent Peaks.`
                     },
                     {
                         title: 'Through the Shimmering Gates',
@@ -145,41 +145,50 @@ const StoryGeneratorView: React.FC = () => {
 
     if (viewState === 'form') {
         return (
-            <div className="min-h-screen bg-[#fffcf8] flex flex-col items-center p-8 relative overflow-hidden">
-                {/* Background Textures */}
-                <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#8b4513 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] bg-gradient-to-b from-orange-100/50 to-transparent blur-[120px]" />
+            <div className="min-h-screen bg-transparent flex flex-col items-center p-8 relative overflow-hidden">
+                {/* Dynamic Background Elements */}
+                <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+                    <div className="absolute top-[-10%] left-[-5%] w-[600px] h-[600px] bg-primary-custom/10 rounded-full blur-[100px]" />
+                    <div className="absolute bottom-[-10%] right-[-5%] w-[500px] h-[500px] bg-primary-custom/5 rounded-full blur-[100px]" />
+                </div>
 
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="w-full max-w-4xl relative z-10"
                 >
-                    <div className="flex items-center gap-4 mb-12">
-                        <div className="w-16 h-16 bg-[#2d1b0d] rounded-2xl flex items-center justify-center shadow-xl shadow-orange-200">
-                            <Feather size={32} className="text-orange-400" />
+                    <div className="flex items-center gap-6 mb-12">
+                        <div className="w-16 h-16 bg-primary-custom rounded-[2rem] flex items-center justify-center shadow-lg shadow-primary-custom/20">
+                            <Feather size={32} className="text-white" />
                         </div>
                         <div>
-                            <h1 className="text-4xl font-serif italic text-slate-900 tracking-tight leading-none mb-2">Story Generator</h1>
-                            <p className="text-[10px] font-black text-orange-600 uppercase tracking-[0.3em]">AI Narrative Engine</p>
+                            <h1 className="text-4xl font-black text-foreground tracking-tighter leading-none mb-1 uppercase italic">Narrative Engine</h1>
+                            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em]">AI Story Weaver</p>
                         </div>
                     </div>
 
-                    <div className="bg-white/90 backdrop-blur-xl rounded-[4rem] p-16 border border-white shadow-[0_30px_100px_rgba(139,69,19,0.08)]">
-                        <div className="text-center mb-16">
-                            <h2 className="text-5xl font-serif italic text-[#2d1b0d] leading-tight mb-4">What <span className="text-orange-600 underline underline-offset-8">world</span> shall we create?</h2>
-                            <p className="text-slate-500 font-medium">Define your characters, setting, or moral, and our AI will weave a timeless tale.</p>
+                    <div className="bg-card-bg/60 backdrop-blur-[40px] rounded-[3.5rem] p-16 border border-border shadow-[0_32px_120px_-20px_rgba(0,0,0,0.15)] relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-primary-custom/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+
+                        <div className="text-center mb-16 relative z-10">
+                            <h2 className="text-5xl font-black text-foreground leading-[1.1] tracking-tighter uppercase italic mb-4">What <span className="text-primary-custom">world</span> shall we create?</h2>
+                            <p className="text-muted-foreground font-bold uppercase tracking-widest text-xs">Define your characters and settings, and our AI will weave a timeless tale.</p>
                         </div>
 
-                        <div className="space-y-12">
-                            <div className="group">
-                                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 ml-2">Story Prompt or Topic</label>
-                                <textarea
-                                    value={topic}
-                                    onChange={(e) => setTopic(e.target.value)}
-                                    placeholder="Once upon a time, there was a young girl who found a glowing compass in the woods..."
-                                    className="w-full bg-[#fcf9f5] border-2 border-slate-100 focus:border-orange-400 rounded-[2.5rem] px-10 py-8 text-xl font-medium transition-all outline-none placeholder:text-slate-300 min-h-[160px] resize-none leading-relaxed"
-                                />
+                        <div className="space-y-10 relative z-10">
+                            <div className="relative group/input">
+                                <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-3 ml-1">Story Prompt or Topic</label>
+                                <div className="relative">
+                                    <textarea
+                                        value={topic}
+                                        onChange={(e) => setTopic(e.target.value)}
+                                        placeholder="Once upon a time, there was a young girl who found a glowing compass in the woods..."
+                                        className="w-full bg-muted/30 border-2 border-border focus:border-primary-custom focus:bg-card-bg rounded-[2.5rem] px-10 py-8 text-xl font-bold transition-all outline-none placeholder:text-muted-foreground/30 text-foreground shadow-soft min-h-[180px] resize-none leading-relaxed"
+                                    />
+                                    <div className="absolute right-8 bottom-8 text-primary-custom/20 group-hover/input:text-primary-custom group-hover/input:rotate-12 transition-all">
+                                        <BookOpen size={32} />
+                                    </div>
+                                </div>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -190,17 +199,17 @@ const StoryGeneratorView: React.FC = () => {
                             </div>
                         </div>
 
-                        <div className="mt-16 flex justify-center">
+                        <div className="mt-16 flex justify-center relative z-10">
                             <button
                                 onClick={handleGenerate}
                                 disabled={!topic}
-                                className="group relative px-14 py-6 bg-[#2d1b0d] text-white rounded-full font-serif italic text-xl transition-all hover:scale-105 active:scale-95 disabled:opacity-50"
+                                className="group px-14 py-6 bg-foreground text-background rounded-full font-black uppercase tracking-[0.3em] text-xs shadow-[0_20px_60px_rgba(0,0,0,0.3)] hover:shadow-[0_20px_60px_rgba(0,0,0,0.4)] transition-all hover:-translate-y-1 active:scale-95 disabled:opacity-30 disabled:translate-y-0 disabled:shadow-none overflow-hidden relative"
                             >
-                                <div className="flex items-center gap-4">
-                                    <Sparkles size={24} className="text-orange-400 group-hover:rotate-12 transition-transform" />
+                                <div className="absolute inset-0 bg-gradient-to-r from-primary-custom/20 to-transparent translate-x-full group-hover:translate-x-0 transition-transform duration-700 pointer-events-none" />
+                                <div className="flex items-center gap-4 relative z-10">
+                                    <Sparkles size={24} className="group-hover:rotate-12 transition-transform text-primary-custom" />
                                     Weave the Story
                                 </div>
-                                <div className="absolute inset-0 rounded-full bg-orange-600 blur-2xl opacity-0 group-hover:opacity-20 transition-opacity" />
                             </button>
                         </div>
                     </div>
@@ -211,48 +220,58 @@ const StoryGeneratorView: React.FC = () => {
 
     if (viewState === 'generating') {
         return (
-            <div className="h-screen w-full flex flex-col items-center justify-center bg-[#fcf9f5]">
+            <div className="h-screen w-full flex flex-col items-center justify-center bg-background p-8 overflow-hidden relative">
+                {/* Background Glow */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-custom/10 rounded-full blur-[120px] pointer-events-none" />
+
                 <div className="w-24 h-24 relative mb-12">
                     <motion.div
                         animate={{ rotate: 360 }}
                         transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-                        className="absolute inset-0 border-2 border-orange-200 border-dashed rounded-full"
+                        className="absolute inset-0 border-2 border-primary-custom/20 border-dashed rounded-full"
                     />
                     <div className="absolute inset-0 flex items-center justify-center">
-                        <Feather size={40} className="text-orange-500 animate-bounce" />
+                        <Feather size={40} className="text-primary-custom animate-bounce" />
                     </div>
                 </div>
-                <h2 className="text-4xl font-serif italic text-[#2d1b0d] mb-3">Gathering Ink...</h2>
-                <p className="text-slate-400 font-bold uppercase tracking-[0.3em] text-xs">Penning your unique narrative</p>
+                <h2 className="text-4xl font-black text-foreground mb-4 uppercase italic tracking-tighter text-center">Gathering Ink...</h2>
+                <div className="flex items-center gap-4 text-primary-custom font-black uppercase tracking-[0.4em] text-[10px]">
+                    <div className="w-2 h-2 rounded-full bg-primary-custom animate-ping" />
+                    Penning Your Unique Narrative
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-[#fcf9f5] flex flex-col">
-            <header className="bg-white/80 backdrop-blur-xl border-b border-orange-100 p-4 px-8 flex items-center justify-between sticky top-0 z-50">
+        <div className="min-h-screen bg-transparent flex flex-col text-foreground">
+            <header className="bg-background/80 backdrop-blur-[20px] border-b border-border p-5 px-10 flex items-center justify-between sticky top-0 z-50">
                 <div className="flex items-center gap-6">
-                    <button onClick={() => setViewState('form')} className="p-2 text-slate-400 hover:text-orange-600 transition-colors">
-                        <ArrowLeft size={24} />
+                    <button onClick={() => setViewState('form')} className="w-10 h-10 flex items-center justify-center bg-muted rounded-xl text-muted-foreground hover:text-primary-custom hover:bg-primary-custom/10 transition-all border border-transparent hover:border-primary-custom/20 group">
+                        <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
                     </button>
                     <div>
-                        <h1 className="text-xl font-serif italic text-[#2d1b0d] leading-none">{generatedStory?.title}</h1>
-                        <p className="text-[10px] font-black text-orange-600 uppercase tracking-widest mt-1">{genre} • {grade}</p>
+                        <h1 className="text-xl font-black uppercase italic tracking-tighter leading-none">{generatedStory?.title}</h1>
+                        <p className="text-[10px] font-black text-primary-custom uppercase tracking-[0.3em] mt-1.5">{genre} • {grade}</p>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <div className="flex bg-slate-100 p-1 rounded-xl mr-4">
-                        <button onClick={() => setFontSize(Math.max(14, fontSize - 2))} className="p-2 text-slate-500 hover:text-slate-900"><Type size={16} /></button>
-                        <div className="w-px h-10 bg-slate-200" />
-                        <button onClick={() => setFontSize(Math.min(32, fontSize + 2))} className="p-2 text-slate-500 hover:text-slate-900"><Type size={20} /></button>
+                    <div className="flex bg-muted p-1 rounded-2xl mr-4 border border-border">
+                        <button onClick={() => setFontSize(Math.max(14, fontSize - 2))} className="w-10 h-10 flex items-center justify-center text-muted-foreground hover:text-foreground transition-all hover:bg-background rounded-xl">
+                            <Type size={14} />
+                        </button>
+                        <div className="w-px h-6 bg-border self-center mx-1" />
+                        <button onClick={() => setFontSize(Math.min(32, fontSize + 2))} className="w-10 h-10 flex items-center justify-center text-muted-foreground hover:text-foreground transition-all hover:bg-background rounded-xl">
+                            <Type size={18} />
+                        </button>
                     </div>
-                    <button className="flex items-center gap-2 px-6 py-3 bg-white border border-orange-100 text-[#2d1b0d] rounded-2xl font-bold text-sm hover:shadow-lg transition-all">
-                        <Volume2 size={18} /> Narrate
+                    <button className="flex items-center gap-3 px-6 py-3 bg-muted text-foreground rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-primary-custom/5 hover:text-primary-custom border border-transparent hover:border-primary-custom/20 transition-all group">
+                        <Volume2 size={16} className="group-hover:scale-110 transition-transform" /> Narrate
                     </button>
                     <button
                         onClick={handleSave}
-                        className={`flex items-center gap-2 px-8 py-3 rounded-2xl font-bold text-sm shadow-xl transition-all ${isSaved ? 'bg-green-600 text-white' : 'bg-[#2d1b0d] text-white hover:bg-orange-950 shadow-orange-900/10'}`}
+                        className={`flex items-center gap-3 px-8 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl transition-all ${isSaved ? 'bg-green-500 text-white shadow-green-500/20' : 'bg-foreground text-background hover:bg-foreground/90 shadow-black/10'}`}
                     >
                         {isSaved ? <Check size={18} /> : <Save size={18} />}
                         {isSaved ? 'Saved' : 'Save Story'}
@@ -262,86 +281,118 @@ const StoryGeneratorView: React.FC = () => {
 
             <main className="flex-1 flex overflow-hidden">
                 {/* Chapters Navigation */}
-                <aside className="w-80 border-r border-orange-50 bg-[#fdfaf6] p-8 hidden xl:block overflow-y-auto">
-                    <h3 className="text-[10px] font-black text-orange-600 uppercase tracking-[0.2em] mb-8">Table of Contents</h3>
-                    <div className="space-y-4">
+                <aside className="w-96 border-r border-border bg-muted/30 p-10 hidden xl:flex flex-col overflow-y-auto custom-scrollbar relative">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-primary-custom/5 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+
+                    <h3 className="text-[10px] font-black text-primary-custom uppercase tracking-[0.3em] mb-10 pl-2">Table of Contents</h3>
+                    <div className="space-y-4 flex-1">
                         {generatedStory?.chapters.map((chapter, i) => (
                             <button
                                 key={i}
                                 onClick={() => setCurrentChapter(i)}
-                                className={`w-full p-4 rounded-2xl text-left transition-all ${currentChapter === i ? 'bg-white shadow-xl shadow-orange-900/5 border border-orange-100' : 'hover:bg-white/50'}`}
+                                className={`w-full p-6 rounded-[2rem] text-left transition-all relative group/chapter ${currentChapter === i ? 'bg-card-bg shadow-soft border border-border shadow-lg shadow-primary-custom/5' : 'hover:bg-primary-custom/5'}`}
                             >
-                                <span className={`text-[10px] font-black block mb-1 ${currentChapter === i ? 'text-orange-600' : 'text-slate-400'}`}>Chapter {i + 1}</span>
-                                <h4 className={`font-serif italic text-sm ${currentChapter === i ? 'text-[#2d1b0d]' : 'text-slate-500'}`}>{chapter.title}</h4>
+                                <span className={`text-[9px] font-black block mb-2 uppercase tracking-widest ${currentChapter === i ? 'text-primary-custom' : 'text-muted-foreground/60'}`}>Chapter {i + 1}</span>
+                                <h4 className={`text-sm font-black uppercase italic tracking-tighter ${currentChapter === i ? 'text-foreground' : 'text-muted-foreground group-hover/chapter:text-foreground'} transition-colors`}>{chapter.title}</h4>
+                                {currentChapter === i && <motion.div layoutId="chapter-active" className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-8 bg-primary-custom rounded-r-full" />}
                             </button>
                         ))}
                     </div>
 
-                    <div className="mt-12 p-6 bg-orange-100/50 rounded-[2rem] border border-orange-200">
-                        <div className="flex items-center gap-2 mb-3 text-orange-800">
-                            <Sparkles size={16} />
-                            <span className="text-[10px] font-black uppercase tracking-widest">The Moral</span>
+                    <div className="mt-12 p-8 bg-card-bg/40 backdrop-blur-md rounded-[2.5rem] border border-border relative overflow-hidden group">
+                        <div className="absolute bottom-0 right-0 w-24 h-24 bg-primary-custom/10 rounded-full blur-2xl translate-y-1/2 translate-x-1/2 pointer-events-none" />
+                        <div className="flex items-center gap-3 mb-4 text-primary-custom relative z-10">
+                            <Sparkles size={16} className="group-hover:rotate-12 transition-transform" />
+                            <span className="text-[10px] font-black uppercase tracking-[0.3em]">The Moral</span>
                         </div>
-                        <p className="text-sm font-serif italic text-orange-900/70 leading-relaxed">
+                        <p className="text-sm font-bold indent-2 text-foreground/80 leading-relaxed relative z-10 italic uppercase tracking-tight">
                             "{generatedStory?.moral}"
                         </p>
                     </div>
                 </aside>
 
-                <div className="flex-1 relative bg-white overflow-y-auto">
-                    <div className="max-w-3xl mx-auto px-12 py-20">
+                <div className="flex-1 relative bg-background overflow-y-auto custom-scrollbar">
+                    <div className="max-w-3xl mx-auto px-12 py-24 relative">
+                        {/* Decorative Book Element */}
+                        <div className="absolute top-10 left-[-40px] text-primary-custom/5 pointer-events-none">
+                            <BookOpen size={200} />
+                        </div>
+
                         <AnimatePresence mode="wait">
                             <motion.article
                                 key={currentChapter}
-                                initial={{ opacity: 0, y: 30 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -30 }}
-                                transition={{ duration: 0.5 }}
-                                className="prose prose-slate lg:prose-xl"
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -20 }}
+                                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                                className="relative z-10"
                             >
-                                <div className="mb-12">
-                                    <span className="text-orange-600 font-serif italic text-lg block mb-4">Chapter {currentChapter + 1}</span>
-                                    <h2 className="text-5xl font-serif italic text-[#2d1b0d] leading-tight" style={{ fontSize: fontSize + 24 }}>{generatedStory?.chapters[currentChapter].title}</h2>
+                                <div className="mb-16">
+                                    <div className="flex items-center gap-4 mb-6">
+                                        <div className="w-12 h-1 bg-primary-custom rounded-full" />
+                                        <span className="text-primary-custom font-black uppercase italic tracking-[0.3em] text-xs">Chapter {currentChapter + 1}</span>
+                                    </div>
+                                    <h2 className="text-6xl font-black text-foreground leading-[1.1] uppercase italic tracking-tighter" style={{ fontSize: fontSize + 28 }}>{generatedStory?.chapters[currentChapter].title}</h2>
                                 </div>
-                                <p className="text-[#2d1b0d]/80 leading-relaxed font-serif text-justify whitespace-pre-wrap" style={{ fontSize: fontSize, lineHeight: 1.8 }}>
-                                    {generatedStory?.chapters[currentChapter].content}
-                                </p>
+
+                                <div className="relative">
+                                    <div className="absolute left-[-40px] top-0 bottom-0 w-px bg-gradient-to-b from-primary-custom/20 via-primary-custom/5 to-transparent" />
+                                    <p className="text-foreground/90 leading-relaxed font-bold text-justify whitespace-pre-wrap uppercase tracking-tight" style={{ fontSize: fontSize, lineHeight: 1.8 }}>
+                                        {generatedStory?.chapters[currentChapter].content}
+                                    </p>
+                                </div>
                             </motion.article>
                         </AnimatePresence>
 
-                        <div className="mt-20 flex items-center justify-between pt-12 border-t border-orange-50">
+                        <div className="mt-24 pt-16 border-t border-border flex items-center justify-between">
                             <button
                                 onClick={() => setCurrentChapter(Math.max(0, currentChapter - 1))}
                                 disabled={currentChapter === 0}
-                                className="flex items-center gap-3 text-sm font-bold text-slate-400 hover:text-orange-600 disabled:opacity-0 transition-all"
+                                className="group flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground hover:text-primary-custom disabled:opacity-0 transition-all"
                             >
-                                <ChevronLeft size={20} />
+                                <div className="w-10 h-10 flex items-center justify-center bg-muted rounded-xl group-hover:-translate-x-1 transition-transform">
+                                    <ChevronLeft size={18} />
+                                </div>
                                 Previous Chapter
                             </button>
-                            <div className="flex gap-2">
+
+                            <div className="flex gap-3">
                                 {generatedStory?.chapters.map((_, i) => (
-                                    <div key={i} className={`h-1.5 rounded-full transition-all ${currentChapter === i ? 'w-8 bg-orange-500' : 'w-1.5 bg-orange-200'}`} />
+                                    <button
+                                        key={i}
+                                        onClick={() => setCurrentChapter(i)}
+                                        className={`h-1.5 rounded-full transition-all duration-500 ${currentChapter === i ? 'w-12 bg-primary-custom' : 'w-2 bg-muted hover:bg-muted-foreground/30'}`}
+                                    />
                                 ))}
                             </div>
+
                             <button
                                 onClick={() => setCurrentChapter(Math.min(generatedStory!.chapters.length - 1, currentChapter + 1))}
                                 disabled={currentChapter === (generatedStory?.chapters.length || 0) - 1}
-                                className="flex items-center gap-3 text-sm font-bold text-slate-400 hover:text-orange-600 disabled:opacity-0 transition-all"
+                                className="group flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground hover:text-primary-custom disabled:opacity-0 transition-all text-right"
                             >
                                 Next Chapter
-                                <ChevronRight size={20} />
+                                <div className="w-10 h-10 flex items-center justify-center bg-muted rounded-xl group-hover:translate-x-1 transition-transform">
+                                    <ChevronRight size={18} />
+                                </div>
                             </button>
                         </div>
                     </div>
 
                     {/* Quick Tools Floating Panel */}
-                    <div className="fixed bottom-10 right-10 flex flex-col gap-4">
-                        <button className="w-14 h-14 bg-white shadow-2xl rounded-full flex items-center justify-center text-slate-600 hover:text-orange-600 hover:scale-110 transition-all border border-orange-50">
-                            <ImageIcon size={22} />
-                        </button>
-                        <button className="w-14 h-14 bg-white shadow-2xl rounded-full flex items-center justify-center text-slate-600 hover:text-orange-600 hover:scale-110 transition-all border border-orange-50">
-                            <Music size={22} />
-                        </button>
+                    <div className="fixed bottom-12 right-12 flex flex-col gap-5 relative z-50">
+                        {[
+                            { icon: <ImageIcon size={22} />, label: "Illustrate" },
+                            { icon: <Music size={22} />, label: "Atmosphere" },
+                            { icon: <Languages size={22} />, label: "Translate" }
+                        ].map((tool, i) => (
+                            <button key={i} className="w-16 h-16 bg-card-bg/80 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] rounded-[1.5rem] flex items-center justify-center text-muted-foreground hover:text-primary-custom hover:scale-110 transition-all border border-border group relative">
+                                {tool.icon}
+                                <span className="absolute right-full mr-4 px-4 py-2 bg-foreground text-background text-[10px] font-black uppercase tracking-widest rounded-xl opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 transition-all pointer-events-none whitespace-nowrap shadow-xl">
+                                    {tool.label}
+                                </span>
+                            </button>
+                        ))}
                     </div>
                 </div>
             </main>
