@@ -28,6 +28,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 import { getAllGeneratedContent, getTypeColor, GeneratedContent } from '@/lib/storage';
 import SettingsModal from './SettingsModal';
+import PricingModal from './PricingModal';
 
 const Header: React.FC = () => {
     const pathname = usePathname();
@@ -37,10 +38,22 @@ const Header: React.FC = () => {
     const [isNotificationOpen, setIsNotificationOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+    const [isPricingOpen, setIsPricingOpen] = useState(false);
     const [notifications, setNotifications] = useState<any[]>([]);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const notificationRef = useRef<HTMLDivElement>(null);
     const searchRef = useRef<HTMLDivElement>(null);
+
+    const getIconForType = (type: GeneratedContent['type']) => {
+        switch (type) {
+            case 'lesson-plan': return Wand2;
+            case 'quiz': return FileText;
+            case 'simulation': return LayoutDashboard;
+            case 'visual': return Wand2;
+            case 'story': return Wand2;
+            default: return Wand2;
+        }
+    };
 
     const fetchNotifications = async () => {
         try {
@@ -110,14 +123,13 @@ const Header: React.FC = () => {
         setSearchResults([...routeMatches, ...contentMatches.slice(0, 5)]);
     };
 
-    const getIconForType = (type: GeneratedContent['type']) => {
-        switch (type) {
-            case 'lesson-plan': return Wand2;
-            case 'quiz': return FileText;
-            case 'simulation': return LayoutDashboard;
-            case 'visual': return Wand2;
-            case 'story': return Wand2;
-            default: return Wand2;
+    const togglePricing = (open: boolean) => {
+        setIsPricingOpen(open);
+        if (open) {
+            window.location.hash = 'pricing';
+        } else {
+            // Remove hash without scrolling or reload
+            window.history.pushState("", document.title, window.location.pathname + window.location.search);
         }
     };
 
@@ -127,6 +139,17 @@ const Header: React.FC = () => {
             setUser(JSON.parse(storedUser));
         }
         fetchNotifications();
+
+        // Check for #pricing on mount
+        if (window.location.hash === '#pricing') {
+            setIsPricingOpen(true);
+        }
+
+        const handleHashChange = () => {
+            setIsPricingOpen(window.location.hash === '#pricing');
+        };
+
+        window.addEventListener('hashchange', handleHashChange);
 
         const handleClickOutside = (event: MouseEvent) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -140,14 +163,16 @@ const Header: React.FC = () => {
             }
         };
         document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+            window.removeEventListener('hashchange', handleHashChange);
+        };
     }, []);
 
     const handleLogout = () => {
         localStorage.removeItem('learnivo_current_user');
         router.push('/login');
     };
-
 
     const isActive = (href: string) => {
         if (href === '/' && pathname === '/') return true;
@@ -419,7 +444,10 @@ const Header: React.FC = () => {
 
                                 {/* Menu Items */}
                                 <div className="space-y-0.5">
-                                    <button className="w-full flex items-center gap-2.5 px-2.5 py-2 text-[12px] font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-white/5 rounded-lg transition-all group">
+                                    <button
+                                        onClick={() => togglePricing(true)}
+                                        className="w-full flex items-center gap-2.5 px-2.5 py-2 text-[12px] font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-white/5 rounded-lg transition-all group"
+                                    >
                                         <CreditCard size={15} className="text-slate-400 dark:text-slate-500 group-hover:text-primary-custom" />
                                         <span>Upgrade plan</span>
                                     </button>
@@ -463,11 +491,17 @@ const Header: React.FC = () => {
                 </div>
             </div>
 
-            {/* Settings Modal */}
+            {/* Modals and Overlays */}
             <SettingsModal
                 isOpen={isSettingsOpen}
                 onClose={() => setIsSettingsOpen(false)}
                 user={user}
+            />
+
+            <PricingModal
+                isOpen={isPricingOpen}
+                onClose={() => togglePricing(false)}
+                currentPlan={user?.plan || 'Free plan'}
             />
         </header>
     );
