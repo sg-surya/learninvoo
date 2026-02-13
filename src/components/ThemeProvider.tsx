@@ -8,9 +8,13 @@ interface ThemeContextType {
     theme: Theme;
     accentColor: string;
     interfaceScale: string;
+    language: string;
+    aiVoice: string;
     setTheme: (theme: Theme) => void;
     setAccentColor: (color: string) => void;
     setInterfaceScale: (scale: string) => void;
+    setLanguage: (lang: string) => void;
+    setAiVoice: (voice: string) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -19,6 +23,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const [theme, setTheme] = useState<Theme>('System');
     const [accentColor, setAccentColor] = useState('#84cc16');
     const [interfaceScale, setInterfaceScale] = useState('Standard Quality');
+    const [language, setLanguage] = useState('English (US)');
+    const [aiVoice, setAiVoice] = useState('Breeze (Default)');
 
     useEffect(() => {
         const savedSettings = localStorage.getItem('learnivo_settings');
@@ -27,6 +33,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
             if (settings.appearance) setTheme(settings.appearance);
             if (settings.accentColor) setAccentColor(settings.accentColor);
             if (settings.interfaceScale) setInterfaceScale(settings.interfaceScale);
+            if (settings.language) setLanguage(settings.language);
+            if (settings.aiVoice) setAiVoice(settings.aiVoice);
         }
 
         const handleSettingsUpdate = () => {
@@ -34,6 +42,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
             if (updatedSettings.appearance) setTheme(updatedSettings.appearance);
             if (updatedSettings.accentColor) setAccentColor(updatedSettings.accentColor);
             if (updatedSettings.interfaceScale) setInterfaceScale(updatedSettings.interfaceScale);
+            if (updatedSettings.language) setLanguage(updatedSettings.language);
+            if (updatedSettings.aiVoice) setAiVoice(updatedSettings.aiVoice);
         };
 
         window.addEventListener('learnivo_settings_updated', handleSettingsUpdate);
@@ -79,8 +89,27 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         root.classList.add(scaleClass);
     }, [interfaceScale]);
 
+    useEffect(() => {
+        const root = window.document.documentElement;
+        const langCode = language === 'English (US)' ? 'en' :
+            language === 'Hindi' ? 'hi' :
+                language === 'Spanish' ? 'es' : 'hi-IN'; // Hinglish defaults to hi-IN
+        root.setAttribute('lang', langCode);
+    }, [language]);
+
     return (
-        <ThemeContext.Provider value={{ theme, accentColor, interfaceScale, setTheme, setAccentColor, setInterfaceScale }}>
+        <ThemeContext.Provider value={{
+            theme,
+            accentColor,
+            interfaceScale,
+            language,
+            aiVoice,
+            setTheme,
+            setAccentColor,
+            setInterfaceScale,
+            setLanguage,
+            setAiVoice
+        }}>
             {children}
         </ThemeContext.Provider>
     );
