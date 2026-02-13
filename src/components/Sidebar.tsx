@@ -3,7 +3,24 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, GraduationCap, PieChart, BookOpen, ChevronLeft, ChevronRight, Wand2, MessageSquare } from 'lucide-react';
+import {
+    LayoutDashboard,
+    GraduationCap,
+    PieChart,
+    BookOpen,
+    ChevronLeft,
+    ChevronRight,
+    Wand2,
+    MessageSquare,
+    BrainCircuit,
+    FileCheck,
+    MapPin,
+    Sparkles,
+    Image as ImageIcon,
+    Zap,
+    Cpu,
+    MousePointer2
+} from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface SidebarProps {
@@ -23,13 +40,23 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
         { href: '/assignments', label: 'Assignments', icon: BookOpen },
     ];
 
+    const quickTools = [
+        { href: '/tools/lesson-planner', label: 'Lesson Planner', icon: Wand2 },
+        { href: '/tools/quiz-exam-generator', label: 'Quiz Engine', icon: BrainCircuit },
+        { href: '/tools/paper-digitizer', label: 'Digitize', icon: FileCheck },
+        { href: '/tools/hyper-local-content', label: 'Hyper-Local', icon: MapPin },
+        { href: '/tools/visual-generator', label: 'Visuals', icon: ImageIcon },
+        { href: '/tools/story-generator', label: 'Stories', icon: Sparkles },
+    ];
+
+    const isInTool = pathname.startsWith('/tools/') && pathname !== '/tools';
+
     const isActive = (href: string) => {
         if (href === '/' && pathname === '/') return true;
-        if (href !== '/' && pathname.startsWith(href)) return true;
+        if (href !== '/' && pathname === href) return true;
         return false;
     };
 
-    // Animation variants for text
     const textVariants = {
         hidden: { opacity: 0, x: -10, display: 'none' },
         visible: { opacity: 1, x: 0, display: 'block', transition: { delay: 0.1 } },
@@ -38,7 +65,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
 
     return (
         <motion.div
-            className={`h-full flex flex-col py-10 transition-all duration-300 bg-transparent ${isCollapsed ? 'px-3' : 'px-6'}`}
+            className={`h-full flex flex-col py-10 transition-all duration-300 bg-transparent relative ${isCollapsed ? 'px-3' : 'px-6'}`}
             initial={false}
         >
             {/* Logo Section */}
@@ -74,16 +101,16 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
                     onClick={onToggle}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
-                    className={`absolute ${isCollapsed ? '-right-6' : '-right-8'} top-1/2 -translate-y-1/2 bg-card-bg border border-border shadow-md p-1.5 rounded-full hover:bg-primary-custom/10 text-muted-foreground hover:text-primary-custom transition-colors z-20`}
+                    className={`absolute ${isCollapsed ? '-right-5' : '-right-8'} top-1/2 -translate-y-1/2 bg-card-bg border border-border shadow-md p-1.5 rounded-full hover:bg-primary-custom/10 text-muted-foreground hover:text-primary-custom transition-colors z-20`}
                 >
                     {isCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
                 </motion.button>
             </div>
 
-            {/* Navigation */}
-            <nav className="flex-1 space-y-3">
+            {/* Main Navigation */}
+            <nav className="flex-1 space-y-2">
                 {navItems.map((item) => {
-                    const active = isActive(item.href);
+                    const active = (item.href === '/tools' && isInTool) || isActive(item.href);
                     return (
                         <Link
                             key={item.href}
@@ -98,7 +125,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
                                         : 'text-muted-foreground font-medium hover:text-primary-custom'
                                     }`}
                             >
-                                {/* Active Background Layer */}
                                 {active && !isCollapsed && (
                                     <motion.div
                                         layoutId="activeTab"
@@ -107,50 +133,92 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
                                         transition={{ type: "spring", stiffness: 300, damping: 30 }}
                                     />
                                 )}
-
-                                {/* Hover Effect Layer for non-active */}
                                 {!active && !isCollapsed && (
                                     <div className="absolute inset-0 bg-primary-custom/5 opacity-0 group-hover:opacity-100 rounded-2xl transition-opacity -z-10" />
                                 )}
-
-                                <motion.div
-                                    whileHover={{ scale: 1.1, rotate: active ? 0 : [0, -5, 5, 0] }}
-                                    transition={{
-                                        scale: { type: "spring", stiffness: 400, damping: 10 },
-                                        rotate: { duration: 0.4, ease: "easeInOut" }
-                                    }}
-                                >
-                                    <item.icon
-                                        size={20}
-                                        className={`flex-shrink-0 transition-colors ${active ? 'text-primary-custom' : 'text-muted-foreground group-hover:text-primary-custom'}`}
-                                    />
-                                </motion.div>
-
-                                <AnimatePresence mode='wait'>
-                                    {!isCollapsed && (
-                                        <motion.span
-                                            variants={textVariants}
-                                            initial="hidden"
-                                            animate="visible"
-                                            exit="exit"
-                                            className="text-[13px] whitespace-nowrap overflow-hidden"
-                                        >
-                                            {item.label}
-                                        </motion.span>
-                                    )}
-                                </AnimatePresence>
+                                <item.icon
+                                    size={18}
+                                    className={`flex-shrink-0 transition-colors ${active ? 'text-primary-custom' : 'text-muted-foreground group-hover:text-primary-custom'}`}
+                                />
+                                {!isCollapsed && (
+                                    <motion.span
+                                        variants={textVariants}
+                                        className="text-[13px] whitespace-nowrap"
+                                    >
+                                        {item.label}
+                                    </motion.span>
+                                )}
                             </motion.div>
 
-                            {/* Tooltip for Collapsed State */}
                             {isCollapsed && (
-                                <div className="absolute left-full ml-4 px-3 py-1.5 bg-foreground/90 backdrop-blur-sm text-background text-[10px] font-medium rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 whitespace-nowrap z-50 shadow-xl translate-x-[-10px] group-hover:translate-x-0">
+                                <div className="absolute left-full ml-4 px-3 py-1.5 bg-foreground/90 backdrop-blur-sm text-background text-[10px] font-medium rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 whitespace-nowrap z-50 shadow-xl">
                                     {item.label}
                                 </div>
                             )}
                         </Link>
                     );
                 })}
+
+                {/* Contextual Tools Section */}
+                <AnimatePresence>
+                    {isInTool && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 10 }}
+                            className={`mt-10 pt-8 border-t border-border/40 ${isCollapsed ? 'space-y-4' : 'space-y-2'}`}
+                        >
+                            {!isCollapsed && (
+                                <h3 className="text-[10px] font-black text-muted-foreground/50 uppercase tracking-[0.2em] px-4 mb-4 flex items-center gap-2">
+                                    <Zap size={10} className="text-primary-custom" />
+                                    Quick Switch
+                                </h3>
+                            )}
+
+                            <div className={`grid ${isCollapsed ? 'grid-cols-1' : 'grid-cols-1'} gap-1.5`}>
+                                {quickTools.map((tool) => {
+                                    const active = pathname === tool.href;
+                                    return (
+                                        <Link key={tool.href} href={tool.href} title={tool.label}>
+                                            <motion.div
+                                                whileHover={{ scale: 1.05 }}
+                                                className={`flex items-center rounded-xl transition-all cursor-pointer ${isCollapsed
+                                                    ? 'justify-center p-2.5'
+                                                    : 'gap-3 px-4 py-2 group'
+                                                    } ${active
+                                                        ? 'bg-primary-custom/10 text-primary-custom'
+                                                        : 'text-muted-foreground/60 hover:text-primary-custom hover:bg-primary-custom/5'
+                                                    }`}
+                                            >
+                                                <tool.icon size={16} strokeWidth={active ? 2.5 : 2} />
+                                                {!isCollapsed && (
+                                                    <span className={`text-[11px] font-bold tracking-tight truncate ${active ? 'opacity-100' : 'opacity-70 group-hover:opacity-100'}`}>
+                                                        {tool.label}
+                                                    </span>
+                                                )}
+                                                {isCollapsed && active && (
+                                                    <div className="absolute left-full ml-4 px-3 py-1.5 bg-primary-custom text-white text-[10px] font-medium rounded-lg z-50 shadow-xl whitespace-nowrap">
+                                                        {tool.label} (Current)
+                                                    </div>
+                                                )}
+                                            </motion.div>
+                                        </Link>
+                                    );
+                                })}
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </nav>
+
+            {/* Bottom Actions */}
+            <div className="mt-auto">
+                <div className={`flex flex-col gap-2 ${isCollapsed ? 'items-center' : ''}`}>
+                    <small className={`text-[8px] font-black text-muted-foreground/30 uppercase tracking-[0.3em] ${isCollapsed ? 'hidden' : 'px-4'}`}>
+                        v2.4.0-stable
+                    </small>
+                </div>
+            </div>
         </motion.div>
     );
 };
