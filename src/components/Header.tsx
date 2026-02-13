@@ -63,9 +63,8 @@ const Header: React.FC = () => {
         { href: '/tools', label: 'Tools', icon: Wand2 },
         { href: '/library', label: 'Library', icon: LibraryIcon },
         { href: '/workspace', label: 'Workspace', icon: Briefcase },
-        { href: '/calendar', label: 'Calendar', icon: CalendarIcon },
+        { href: '/schedule', label: 'Schedule', icon: CalendarIcon },
         { href: '/notes', label: 'Notes', icon: FileText },
-        { href: '/schedule', label: 'MY Schedule', icon: Clock },
         { href: '/classes', label: 'Classes', icon: GraduationCap },
     ];
 
