@@ -430,7 +430,7 @@ const ScheduleView: React.FC = () => {
                         <div className="relative z-10">
                             <div className="flex items-center gap-2 mb-4 bg-white/20 backdrop-blur-md rounded-lg px-3 py-1.5 w-fit border border-white/20">
                                 <Sparkles size={14} className="fill-white" />
-                                <span className="text-[10px] font-black uppercase tracking-widest italic">Aiva Assistant</span>
+                                <span className="text-[10px] font-black uppercase tracking-widest italic">Vasu Assistant</span>
                             </div>
                             <p className="text-sm font-bold leading-relaxed italic mb-6">
                                 "You have back-to-back classes starting in 15 mins. I've pre-loaded the 'Quadratic Equations' simulation for your 9:00 AM class."
