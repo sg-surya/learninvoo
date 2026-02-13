@@ -86,10 +86,10 @@ const LandingPage = () => {
   ];
 
   return (
-    <div className="h-screen w-full bg-background px-[10px] pb-[10px] overflow-hidden selection:bg-lime-500 selection:text-white transition-colors duration-300">
+    <div className="h-screen w-full bg-background overflow-hidden selection:bg-lime-500 selection:text-white transition-colors duration-300">
       <div
         ref={scrollContainerRef}
-        className="h-full w-full bg-card-bg rounded-b-[10px] rounded-t-none overflow-y-auto overflow-x-hidden relative text-foreground font-sans shadow-2xl transition-colors duration-300"
+        className="h-full w-full bg-card-bg overflow-y-auto overflow-x-hidden relative text-foreground font-sans shadow-2xl transition-colors duration-300"
       >
 
         {/* Scroll Progress Bar */}
