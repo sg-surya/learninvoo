@@ -1,6 +1,7 @@
+'use client';
 
-import DashboardView from '@/components/DashboardView';
+import ClassDetailView from '@/components/ClassDetailView';
 
 export default function ClassesPage() {
-    return <DashboardView />;
+    return <ClassDetailView />;
 }

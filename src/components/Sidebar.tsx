@@ -17,7 +17,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
     const navItems = [
         { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
         { href: '/tools', label: 'Tools', icon: Wand2 },
-        { href: '/classes', label: 'Classes', icon: GraduationCap },
+        { href: '/classes', label: 'Classes', icon: GraduationCap }, // Reverted to '/classes', 'Classes', GraduationCap
         { href: '/reports', label: 'Report', icon: PieChart },
         { href: '/assignments', label: 'Assignments', icon: BookOpen },
     ];
