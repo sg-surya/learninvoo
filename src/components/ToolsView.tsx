@@ -67,35 +67,43 @@ const ToolsView: React.FC = () => {
             </div>
 
             {/* Stats Overview */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-                <div className="bg-card-bg rounded-2xl p-6 shadow-sm border border-border relative overflow-hidden group hover:shadow-md transition-shadow">
-                    <div className="absolute left-0 top-6 bottom-6 w-1 bg-primary-custom rounded-r-full"></div>
-                    <div className="ml-4">
-                        <p className="text-muted-foreground text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-2">
-                            <BookOpen size={14} className="text-primary-custom" />
-                            Total Topics
-                        </p>
-                        <h3 className="text-4xl font-extrabold text-foreground">{stats.topics}</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+                <div className="group relative bg-card-bg/40 backdrop-blur-md border border-border/50 rounded-3xl p-8 transition-all duration-500 hover:shadow-2xl hover:shadow-primary-custom/5 flex items-center gap-6 overflow-hidden">
+                    <div className="absolute top-0 right-0 p-2 opacity-5 scale-150 rotate-12 transition-transform group-hover:rotate-0 duration-700">
+                        <BookOpen size={80} />
+                    </div>
+                    <div className="w-16 h-16 rounded-2xl bg-primary-custom/10 text-primary-custom flex items-center justify-center shrink-0 shadow-inner group-hover:scale-110 transition-transform duration-500">
+                        <BookOpen size={28} strokeWidth={1.5} />
+                    </div>
+                    <div>
+                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">Total Topics</p>
+                        <h3 className="text-3xl font-black text-foreground font-display tracking-tight leading-none italic">{stats.topics}</h3>
                     </div>
                 </div>
-                <div className="bg-card-bg rounded-2xl p-6 shadow-sm border border-border relative overflow-hidden group hover:shadow-md transition-shadow">
-                    <div className="absolute left-0 top-6 bottom-6 w-1 bg-sky-500 rounded-r-full"></div>
-                    <div className="ml-4">
-                        <p className="text-muted-foreground text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-2">
-                            <Layout size={14} className="text-sky-500" />
-                            Total Assets
-                        </p>
-                        <h3 className="text-4xl font-extrabold text-foreground">{stats.assets}</h3>
+
+                <div className="group relative bg-card-bg/40 backdrop-blur-md border border-border/50 rounded-3xl p-8 transition-all duration-500 hover:shadow-2xl hover:shadow-sky-500/5 flex items-center gap-6 overflow-hidden">
+                    <div className="absolute top-0 right-0 p-2 opacity-5 scale-150 rotate-12 transition-transform group-hover:rotate-0 duration-700">
+                        <Layout size={80} />
+                    </div>
+                    <div className="w-16 h-16 rounded-2xl bg-sky-500/10 text-sky-500 flex items-center justify-center shrink-0 shadow-inner group-hover:scale-110 transition-transform duration-500">
+                        <Layout size={28} strokeWidth={1.5} />
+                    </div>
+                    <div>
+                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">Total Assets</p>
+                        <h3 className="text-3xl font-black text-foreground font-display tracking-tight leading-none italic">{stats.assets}</h3>
                     </div>
                 </div>
-                <div className="bg-card-bg rounded-2xl p-6 shadow-sm border border-border relative overflow-hidden group hover:shadow-md transition-shadow">
-                    <div className="absolute left-0 top-6 bottom-6 w-1 bg-purple-500 rounded-r-full"></div>
-                    <div className="ml-4">
-                        <p className="text-muted-foreground text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-2">
-                            <Sparkles size={14} className="text-purple-500" />
-                            This Week
-                        </p>
-                        <h3 className="text-4xl font-extrabold text-foreground">{stats.thisWeek}</h3>
+
+                <div className="group relative bg-card-bg/40 backdrop-blur-md border border-border/50 rounded-3xl p-8 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-500/5 flex items-center gap-6 overflow-hidden">
+                    <div className="absolute top-0 right-0 p-2 opacity-5 scale-150 rotate-12 transition-transform group-hover:rotate-0 duration-700">
+                        <Sparkles size={80} />
+                    </div>
+                    <div className="w-16 h-16 rounded-2xl bg-purple-500/10 text-purple-500 flex items-center justify-center shrink-0 shadow-inner group-hover:scale-110 transition-transform duration-500">
+                        <Sparkles size={28} strokeWidth={1.5} />
+                    </div>
+                    <div>
+                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">This Week</p>
+                        <h3 className="text-3xl font-black text-foreground font-display tracking-tight leading-none italic">{stats.thisWeek}</h3>
                     </div>
                 </div>
             </div>
