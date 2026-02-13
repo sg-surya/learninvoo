@@ -43,7 +43,7 @@
   --color-accent-custom: var(--accent);
   --color-accent-foreground-custom: var(--accent-foreground);
   --font-sans: var(--font-inter);
-  --font-display: var(--font-outfit);
+  --font-display: var(--font-inter);
 }
 
 body {

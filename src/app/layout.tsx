@@ -1,6 +1,6 @@
 
 import type { Metadata } from "next";
-import { Inter, Outfit } from "next/font/google"; // Import fonts
+import { Inter } from "next/font/google"; // Import fonts
 import "./globals.css";
 import ClientLayout from "./ClientLayout";
 import { ThemeProvider } from "@/components/ThemeProvider";
@@ -11,11 +11,7 @@ const inter = Inter({
   display: "swap",
 });
 
-const outfit = Outfit({
-  subsets: ["latin"],
-  variable: "--font-outfit",
-  display: "swap",
-});
+
 
 export const metadata: Metadata = {
   title: "Learnivo AI Teacher Dashboard",
@@ -29,7 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} ${outfit.variable} antialiased`} suppressHydrationWarning>
+      <body className={`${inter.variable} antialiased`} suppressHydrationWarning>
         <ThemeProvider>
           <ClientLayout>{children}</ClientLayout>
         </ThemeProvider>

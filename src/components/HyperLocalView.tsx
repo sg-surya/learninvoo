@@ -281,7 +281,7 @@ const HyperLocalView: React.FC = () => {
 
                         <div className="w-full max-w-md space-y-10 text-center relative z-20">
                             <div className="space-y-6">
-                                <h2 className="text-5xl md:text-6xl font-black tracking-tighter text-foreground font-outfit uppercase italic leading-none">
+                                <h2 className="text-5xl md:text-6xl font-black tracking-tighter text-foreground font-display uppercase italic leading-none">
                                     Crafting Your <span className="text-primary-custom">Content</span>
                                 </h2>
 
