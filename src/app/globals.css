@@ -12,6 +12,7 @@
   --muted-foreground: #64748b;
   --accent: #f1f5f9;
   --accent-foreground: #0f172a;
+  --primary-rgb: 132, 204, 22;
 }
 
 .dark {
@@ -26,6 +27,7 @@
   --muted-foreground: #94a3b8;
   --accent: #1e293b;
   --accent-foreground: #f8fafc;
+  --primary-rgb: 132, 204, 22;
 }
 
 @theme inline {

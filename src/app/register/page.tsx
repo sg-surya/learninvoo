@@ -120,22 +120,21 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="h-screen w-full bg-slate-950 px-[10px] pb-[10px] overflow-hidden">
-            <div className="h-full w-full flex overflow-y-auto overflow-x-hidden font-sans selection:bg-lime-600 selection:text-white rounded-b-[10px] rounded-t-none bg-white shadow-2xl">
-
-                {/* 🟢 LEFT SIDE: Registration Form Side */}
-                <div className="w-full lg:w-[60%] bg-white flex flex-col relative overflow-hidden text-slate-950">
+        <div className="h-screen w-full bg-background px-[10px] pb-[10px] overflow-hidden selection:bg-lime-600 selection:text-white transition-colors duration-300">
+            <div className="h-full w-full flex overflow-y-auto overflow-x-hidden font-sans rounded-b-[10px] rounded-t-none bg-card-bg shadow-2xl transition-colors duration-300">
+                {/* 🟢 LEFT SIDE: Form Area */}
+                <div className="w-full lg:w-[60%] bg-card-bg flex flex-col relative overflow-hidden transition-colors">
                     <header className="h-20 flex items-center px-12 md:px-16 lg:px-24 shrink-0 relative z-20">
                         <Link href="/" className="flex items-center gap-2 group">
-                            <div className="w-8 h-8 bg-slate-950 flex items-center justify-center rounded group-hover:bg-lime-500 transition-colors">
-                                <BookOpen className="text-lime-400 group-hover:text-white" size={18} />
+                            <div className="w-8 h-8 bg-foreground flex items-center justify-center rounded group-hover:bg-lime-500 transition-colors">
+                                <BookOpen className="text-lime-400 group-hover:text-background" size={18} />
                             </div>
-                            <span className="text-xl font-black tracking-tighter text-slate-950 uppercase italic">LEARNIVO<span className="text-lime-500">.</span></span>
+                            <span className="text-xl font-black tracking-tighter text-foreground uppercase italic font-display">LEARNIVO<span className="text-lime-500">.</span></span>
                         </Link>
                     </header>
 
-                    <div className="absolute -top-20 -right-20 w-64 h-64 bg-lime-50 rounded-full opacity-50 pointer-events-none"></div>
-                    <div className="absolute -bottom-20 -left-10 w-48 h-48 bg-lime-50 rounded-full opacity-50 pointer-events-none"></div>
+                    <div className="absolute -top-20 -left-20 w-64 h-64 bg-lime-500/5 rounded-full blur-3xl pointer-events-none"></div>
+                    <div className="absolute -bottom-20 -left-10 w-48 h-48 bg-lime-500/5 rounded-full blur-3xl pointer-events-none"></div>
 
                     <div className="flex-1 flex flex-col justify-center items-center px-12 md:px-16 lg:px-24 py-12 relative z-10">
                         <div className="max-w-xl w-full">
@@ -149,49 +148,47 @@ export default function RegisterPage() {
                                         exit="exit"
                                         className="space-y-10"
                                     >
-                                        <div className="space-y-2">
-                                            <h1 className="text-6xl font-black text-slate-950 uppercase tracking-tighter leading-[0.9]">Sign <br /> <span className="text-lime-500">Up</span></h1>
-                                            <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.2em]">Select your identity to initialize your portal.</p>
-                                        </div>
+                                        <div className="w-full max-w-sm space-y-10">
+                                            <div className="space-y-4">
+                                                <h2 className="text-4xl font-black text-foreground tracking-tighter uppercase italic">Choose Your <br /> Path<span className="text-lime-500">.</span></h2>
+                                                <p className="text-muted-foreground font-medium text-sm italic">Are you ready to transform Bharat's education system?</p>
+                                            </div>
 
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                            <button
-                                                onClick={() => setRole('teacher')}
-                                                className={`p-6 rounded border-2 text-left transition-all flex flex-col gap-4 ${role === 'teacher' ? 'border-lime-500 bg-lime-50/30' : 'border-slate-50 bg-slate-50 hover:border-slate-100'}`}
-                                            >
-                                                <div className={`w-10 h-10 rounded flex items-center justify-center ${role === 'teacher' ? 'bg-slate-950 text-lime-400' : 'bg-white text-slate-400 border border-slate-100'}`}>
-                                                    <Presentation size={24} />
-                                                </div>
-                                                <div>
-                                                    <h3 className="text-lg font-black text-slate-950 uppercase tracking-tighter">Educator</h3>
-                                                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Manage Workspace</p>
-                                                </div>
-                                            </button>
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                <motion.button
+                                                    whileHover={{ scale: 1.02 }}
+                                                    whileTap={{ scale: 0.98 }}
+                                                    onClick={() => setRole('teacher')}
+                                                    className={`p-6 rounded-3xl border-2 text-left transition-all ${role === 'teacher' ? 'border-lime-500 bg-lime-500/5' : 'border-border bg-muted/20 hover:border-lime-500/50'}`}
+                                                >
+                                                    <Presentation className={role === 'teacher' ? 'text-lime-500' : 'text-muted-foreground'} size={32} />
+                                                    <p className="mt-4 font-black uppercase text-[10px] tracking-widest text-foreground">Teacher</p>
+                                                    <p className="text-[9px] font-bold text-muted-foreground uppercase mt-1">AI Workshop</p>
+                                                </motion.button>
 
-                                            <button
-                                                onClick={() => setRole('student')}
-                                                className={`p-6 rounded border-2 text-left transition-all flex flex-col gap-4 ${role === 'student' ? 'border-slate-950 bg-slate-50' : 'border-slate-50 bg-slate-50 hover:border-slate-100'}`}
-                                            >
-                                                <div className={`w-10 h-10 rounded flex items-center justify-center ${role === 'student' ? 'bg-slate-950 text-purple-400' : 'bg-white text-slate-400 border border-slate-100'}`}>
-                                                    <GraduationCap size={24} />
-                                                </div>
-                                                <div>
-                                                    <h3 className="text-lg font-black text-slate-950 uppercase tracking-tighter">Scholar</h3>
-                                                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Personal Learning</p>
-                                                </div>
-                                            </button>
-                                        </div>
-
-                                        <div className="pt-6 flex items-center gap-6">
-                                            <button
+                                                <motion.button
+                                                    whileHover={{ scale: 1.02 }}
+                                                    whileTap={{ scale: 0.98 }}
+                                                    onClick={() => setRole('student')}
+                                                    className={`p-6 rounded-3xl border-2 text-left transition-all ${role === 'student' ? 'border-lime-500 bg-lime-500/5' : 'border-border bg-muted/20 hover:border-lime-500/50'}`}
+                                                >
+                                                    <GraduationCap className={role === 'student' ? 'text-lime-500' : 'text-muted-foreground'} size={32} />
+                                                    <p className="mt-4 font-black uppercase text-[10px] tracking-widest text-foreground">Student</p>
+                                                    <p className="text-[9px] font-bold text-muted-foreground uppercase mt-1">Study Portal</p>
+                                                </motion.button>
+                                            </div>
+                                            <motion.button
+                                                whileHover={{ scale: 1.02 }}
+                                                whileTap={{ scale: 0.98 }}
                                                 disabled={!role}
                                                 onClick={() => setStep(2)}
-                                                className={`h-12 px-10 font-black uppercase text-[10px] tracking-widest rounded shadow-xl transition-all ${role ? 'bg-lime-600 text-white shadow-lime-600/20 hover:bg-lime-700' : 'bg-slate-100 text-slate-300'}`}
+                                                className="w-full h-14 bg-foreground text-background font-black uppercase text-xs tracking-[0.2em] rounded-2xl shadow-xl hover:opacity-90 disabled:opacity-50 transition-all flex items-center justify-center gap-3"
                                             >
-                                                Continue Step
-                                            </button>
-                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">
-                                                Already joined? <Link href="/login" className="text-lime-600 hover:underline">Log in portal</Link>
+                                                Continue to Profile <ArrowRight size={18} />
+                                            </motion.button>
+
+                                            <p className="text-center text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                                                Already registered? <Link href="/login" className="text-lime-600 hover:text-lime-500">Sign In instead</Link>
                                             </p>
                                         </div>
                                     </motion.div>
@@ -206,107 +203,130 @@ export default function RegisterPage() {
                                     >
                                         <button
                                             onClick={() => setStep(1)}
-                                            className="flex items-center gap-2 text-slate-400 hover:text-slate-950 font-black text-[10px] uppercase tracking-widest transition-colors"
+                                            className="flex items-center gap-2 text-muted-foreground hover:text-foreground font-black text-[10px] uppercase tracking-widest transition-colors"
                                         >
                                             <ChevronLeft size={16} /> Change Selection
                                         </button>
 
-                                        <div className="space-y-2">
-                                            <h1 className="text-6xl font-black text-slate-950 uppercase tracking-tighter leading-[0.9]">Profile <br /> <span className="text-lime-500">Data</span></h1>
-                                            <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.2em]">Finalize your digital identity for {role}.</p>
+                                        <div className="space-y-4">
+                                            <h2 className="text-4xl font-black text-foreground tracking-tighter uppercase italic">Complete <br /> Profile<span className="text-lime-500">.</span></h2>
+                                            <p className="text-muted-foreground font-medium text-sm italic">Designing your identity as a {role === 'teacher' ? 'Guru' : 'Scholar'}.</p>
                                         </div>
 
-                                        <form className="grid gap-6 sm:grid-cols-2" onSubmit={handleRegister}>
-                                            <div className="space-y-2">
-                                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Full Name</label>
-                                                <input
-                                                    type="text"
-                                                    placeholder="Rahul Kumar"
-                                                    value={formData.fullName}
-                                                    onChange={(e) => handleNameChange(e.target.value)}
-                                                    className="w-full px-5 h-12 bg-slate-50 border border-slate-100 rounded focus:outline-none focus:border-lime-500 transition-all font-bold text-sm"
-                                                    required
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Work Email</label>
-                                                <input
-                                                    type="email"
-                                                    placeholder="rahul@school.com"
-                                                    value={formData.email}
-                                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                                    className="w-full px-5 h-12 bg-slate-50 border border-slate-100 rounded focus:outline-none focus:border-lime-500 transition-all font-bold text-sm"
-                                                    required
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Unique Username</label>
-                                                <div className="relative">
-                                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"><AtSign size={14} /></span>
-                                                    <input
-                                                        type="text"
-                                                        placeholder="rahul.ai"
-                                                        value={formData.username}
-                                                        onChange={(e) => {
-                                                            setIsUsernameManuallyEdited(true);
-                                                            setFormData({ ...formData, username: e.target.value.toLowerCase() });
-                                                        }}
-                                                        className="w-full pl-10 pr-5 h-12 bg-slate-50 border border-slate-100 rounded focus:outline-none focus:border-lime-500 transition-all font-bold text-sm"
-                                                        required
-                                                    />
+                                        <form className="space-y-5" onSubmit={handleRegister}>
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                <div className="space-y-2">
+                                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Full Name</label>
+                                                    <div className="relative group">
+                                                        <User className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-lime-500 transition-colors" size={16} />
+                                                        <input
+                                                            type="text"
+                                                            value={formData.fullName}
+                                                            onChange={(e) => handleNameChange(e.target.value)}
+                                                            className="w-full h-12 pl-10 pr-4 bg-muted/30 border border-border rounded-xl outline-none focus:border-lime-500 focus:bg-card-bg transition-all font-medium text-xs text-foreground"
+                                                            placeholder="Arjun Singh"
+                                                            required
+                                                        />
+                                                    </div>
                                                 </div>
-                                                <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest ml-1">Letters, numbers, and dots only</p>
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Set Access Key</label>
-                                                <input
-                                                    type="password"
-                                                    placeholder="••••••••"
-                                                    value={formData.password}
-                                                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                                    className="w-full px-5 h-12 bg-slate-50 border border-slate-100 rounded focus:outline-none focus:border-lime-500 transition-all font-bold text-sm"
-                                                    required
-                                                />
+
+                                                <div className="space-y-2">
+                                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Email</label>
+                                                    <div className="relative group">
+                                                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-lime-500 transition-colors" size={16} />
+                                                        <input
+                                                            type="email"
+                                                            value={formData.email}
+                                                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                                            className="w-full h-12 pl-10 pr-4 bg-muted/30 border border-border rounded-xl outline-none focus:border-lime-500 focus:bg-card-bg transition-all font-medium text-xs text-foreground"
+                                                            placeholder="arjun@example.com"
+                                                            required
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <div className="space-y-2">
+                                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Username</label>
+                                                    <div className="relative group">
+                                                        <AtSign className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-lime-500 transition-colors" size={16} />
+                                                        <input
+                                                            type="text"
+                                                            value={formData.username}
+                                                            onChange={(e) => {
+                                                                setFormData({ ...formData, username: e.target.value });
+                                                                setIsUsernameManuallyEdited(true);
+                                                            }}
+                                                            className="w-full h-12 pl-10 pr-4 bg-muted/30 border border-border rounded-xl outline-none focus:border-lime-500 focus:bg-card-bg transition-all font-medium text-xs text-foreground"
+                                                            placeholder="arjun.singh"
+                                                            required
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <div className="space-y-2">
+                                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Lock Password</label>
+                                                    <div className="relative group">
+                                                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-lime-500 transition-colors" size={16} />
+                                                        <input
+                                                            type="password"
+                                                            value={formData.password}
+                                                            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                                            className="w-full h-12 pl-10 pr-4 bg-muted/30 border border-border rounded-xl outline-none focus:border-lime-500 focus:bg-card-bg transition-all font-medium text-xs text-foreground"
+                                                            placeholder="••••••••"
+                                                            required
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <div className="space-y-2 sm:col-span-2">
+                                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">{role === 'teacher' ? 'School/Institution' : 'Current School/Class'}</label>
+                                                    <div className="relative group">
+                                                        <LayoutGrid className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-lime-500 transition-colors" size={16} />
+                                                        <input
+                                                            type="text"
+                                                            value={formData.school}
+                                                            onChange={(e) => setFormData({ ...formData, school: e.target.value })}
+                                                            className="w-full h-12 pl-10 pr-4 bg-muted/30 border border-border rounded-xl outline-none focus:border-lime-500 focus:bg-card-bg transition-all font-medium text-xs text-foreground"
+                                                            placeholder={role === 'teacher' ? "Delhi Public School" : "10th Grade, VPS"}
+                                                            required
+                                                        />
+                                                    </div>
+                                                </div>
                                             </div>
 
-                                            <div className="sm:col-span-2 pt-6">
-                                                <button type="submit" className="h-12 px-12 bg-lime-600 text-white font-black uppercase text-[10px] tracking-widest rounded shadow-xl shadow-lime-600/20 hover:bg-lime-700 transition-all flex items-center justify-center gap-2">
-                                                    Register Identity <ArrowRight size={14} />
-                                                </button>
-                                            </div>
+                                            <motion.button
+                                                whileHover={{ scale: 1.01 }}
+                                                whileTap={{ scale: 0.99 }}
+                                                type="submit"
+                                                className="w-full h-14 bg-foreground text-background font-black uppercase text-xs tracking-[0.2em] rounded-2xl shadow-xl hover:opacity-90 transition-all flex items-center justify-center gap-3 mt-6"
+                                            >
+                                                Finalize Registration <Activity size={18} />
+                                            </motion.button>
                                         </form>
                                     </motion.div>
                                 )}
                             </AnimatePresence>
                         </div>
-                        <div className="mt-auto pt-20 text-[10px] font-black text-slate-300 uppercase tracking-[0.4em]">
+                        <div className="mt-auto pt-20 text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em]">
                             © 2026 LEARNIVO SECURE REGISTRATION
                         </div>
                     </div>
                 </div>
 
-                {/* 🟢 RIGHT SIDE: Branding Sidebar */}
-                <div className="hidden lg:flex lg:w-[40%] bg-slate-950 relative flex-col items-center justify-center p-12 overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-br from-lime-500 via-lime-600 to-emerald-700"></div>
-                    <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent animate-pulse"></div>
+                <div className="hidden lg:flex lg:w-[40%] bg-foreground relative overflow-hidden flex-col justify-end p-24">
+                    <div className="absolute inset-0 bg-gradient-to-br from-lime-500/10 via-transparent to-transparent pointer-events-none"></div>
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-lime-500/5 rounded-full blur-[120px] pointer-events-none"></div>
 
-                    <div className="relative z-20 text-center space-y-8 flex flex-col items-center">
-                        <motion.div whileHover={{ scale: 1.05 }} className="flex flex-col items-center gap-4">
-                            <div className="w-20 h-20 bg-white p-4 flex items-center justify-center rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] transform -rotate-3 hover:rotate-0 transition-transform duration-500">
-                                <BookOpen className="text-lime-600" size={40} />
-                            </div>
-                            <span className="text-2xl font-black tracking-tighter text-white uppercase italic">LEARNIVO</span>
-                        </motion.div>
-
-                        <div className="space-y-4">
-                            <h2 className="text-5xl xl:text-6xl font-black text-white uppercase tracking-tight leading-[0.9] drop-shadow-2xl">
-                                Future <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-white/40 italic pr-1">Starts</span> <br /> Here
-                            </h2>
-                            <p className="text-white/70 max-w-[280px] text-[10px] font-medium uppercase tracking-[0.2em] leading-relaxed mx-auto italic">
-                                Join Bharat's elite educational network and leverage the power of Vasu AI.
-                            </p>
+                    <div className="relative z-10 space-y-6">
+                        <div className="w-12 h-12 bg-background rounded-2xl flex items-center justify-center shadow-2xl">
+                            <BookOpen className="text-lime-500" size={24} />
                         </div>
+                        <h2 className="text-5xl font-black text-background leading-[0.9] tracking-tighter uppercase italic">Redefining <br /> Bharat's <br /> Education.</h2>
+                        <div className="h-1 w-24 bg-lime-500 rounded-full"></div>
+                        <p className="text-background/60 text-sm font-medium leading-relaxed max-w-xs uppercase tracking-widest">Join the movement that's empowering millions of Indian classrooms.</p>
                     </div>
+
+                    <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-lime-500/10 rounded-full blur-3xl"></div>
                 </div>
             </div>
         </div>
