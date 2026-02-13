@@ -8,7 +8,6 @@ import {
     Zap,
     Users,
     Sparkles,
-    ArrowRight,
     MessageSquare,
     Brain,
     Clock,
@@ -36,8 +35,7 @@ const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose, currentPla
             name: 'Starter',
             price: '₹0',
             description: 'Trial focus to build your AI teaching habit.',
-            buttonText: 'Current Plan',
-            badge: 'FREEMIUM',
+            buttonText: 'Your current plan',
             features: [
                 { text: '5 Lesson Plans / month', icon: FileText },
                 { text: '10 Quiz generations / month', icon: MessageSquare },
@@ -53,10 +51,8 @@ const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose, currentPla
             name: 'Educator Pro',
             price: billingCycle === 'monthly' ? '₹499' : '₹375',
             period: '/mo',
-            yearlyTotal: '₹4,499 billed annually',
             description: 'Perfect for individual teachers and tutors.',
             buttonText: 'Upgrade to Pro',
-            badge: 'EARLY BIRD',
             features: [
                 { text: '60 Lesson Plans / mo', icon: FileText },
                 { text: '150 Quiz generations', icon: MessageSquare },
@@ -75,10 +71,8 @@ const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose, currentPla
             name: 'Institution Pro',
             price: billingCycle === 'monthly' ? '₹1,499' : '₹1,249',
             period: '/mo',
-            yearlyTotal: '₹14,999 billed annually',
             description: 'The ultimate power for schools & heavy users.',
             buttonText: 'Go Premium',
-            badge: 'ENTERPRISE',
             features: [
                 { text: 'Unlimited Everything*', icon: TrendingUp },
                 { text: 'Full Hyperlocal Engine', icon: Globe },
@@ -97,7 +91,7 @@ const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose, currentPla
 
     return (
         <AnimatePresence>
-            <div className="fixed inset-0 z-[1000] flex items-center justify-center p-2 md:p-4">
+            <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -107,21 +101,21 @@ const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose, currentPla
                 />
 
                 <motion.div
-                    initial={{ opacity: 0, scale: 0.98, y: 10 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.98, y: 10 }}
-                    className="relative w-full max-w-6xl bg-card-bg/80 backdrop-blur-2xl rounded-[1.5rem] md:rounded-[2rem] shadow-2xl flex flex-col overflow-hidden text-foreground border border-border transition-colors duration-300 max-h-[95vh]"
+                    initial={{ opacity: 0, scale: 0.98 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.98 }}
+                    className="relative w-[calc(100vw-20px)] h-[calc(100vh-20px)] bg-card-bg/80 backdrop-blur-2xl rounded-[10px] shadow-2xl flex flex-col overflow-hidden text-foreground border border-border"
                 >
-                    {/* Header Section - Compact */}
-                    <div className="flex flex-col items-center pt-6 pb-2 relative z-10 px-6">
-                        <h2 className="text-xl md:text-2xl font-black text-foreground mb-4 tracking-tight italic uppercase">AI Assistant for Indian Educators 🇮🇳</h2>
+                    {/* Header Section */}
+                    <div className="flex flex-col items-center pt-8 pb-4 relative z-10 px-6">
+                        <h2 className="text-xl font-bold text-foreground mb-6 tracking-tight">Upgrade your plan</h2>
 
-                        {/* Toggle - Price Switch - Smaller */}
-                        <div className="flex items-center bg-muted/50 p-1 rounded-full mb-1 border border-border">
+                        {/* Toggle - Price Switch */}
+                        <div className="flex items-center bg-muted/50 p-1 rounded-full mb-4 border border-border">
                             <button
                                 onClick={() => setBillingCycle('monthly')}
-                                className={`px-5 py-1.5 rounded-full text-[11px] font-black uppercase tracking-widest transition-all ${billingCycle === 'monthly'
-                                        ? 'bg-primary-custom text-white shadow-lg'
+                                className={`px-6 py-1.5 rounded-full text-[12px] font-bold transition-all ${billingCycle === 'monthly'
+                                        ? 'bg-primary-custom text-white shadow-lg shadow-primary-custom/20'
                                         : 'text-muted-foreground hover:text-foreground'
                                     }`}
                             >
@@ -129,105 +123,79 @@ const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose, currentPla
                             </button>
                             <button
                                 onClick={() => setBillingCycle('annual')}
-                                className={`px-5 py-1.5 rounded-full text-[11px] font-black uppercase tracking-widest transition-all relative ${billingCycle === 'annual'
-                                        ? 'bg-primary-custom text-white shadow-lg'
+                                className={`px-6 py-1.5 rounded-full text-[12px] font-bold transition-all relative ${billingCycle === 'annual'
+                                        ? 'bg-primary-custom text-white shadow-lg shadow-primary-custom/20'
                                         : 'text-muted-foreground hover:text-foreground'
                                     }`}
                             >
                                 Yearly
-                                <span className="absolute -top-2.5 -right-4 px-1.5 py-0.5 bg-rose-500 text-white text-[7px] font-black rounded-full shadow-lg">
-                                    -25%
+                                <span className="absolute -top-3 -right-6 px-2 py-0.5 bg-rose-500 text-white text-[8px] font-black rounded-full shadow-lg">
+                                    SAVE 25%
                                 </span>
                             </button>
                         </div>
 
                         <button
                             onClick={onClose}
-                            className="absolute top-6 right-6 p-1.5 rounded-full hover:bg-muted transition-colors text-muted-foreground hover:text-foreground border border-border"
+                            className="absolute top-6 right-8 p-1.5 rounded-md hover:bg-muted transition-colors text-muted-foreground hover:text-foreground border border-border"
                         >
-                            <X size={16} />
+                            <X size={18} />
                         </button>
                     </div>
 
-                    {/* Pricing Cards Grid - Non-scrollable content focus */}
-                    <div className="flex-1 overflow-hidden px-4 md:px-8 pb-6">
-                        <div className="w-full h-full grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 py-4">
+                    {/* Centered Pricing Cards Grid */}
+                    <div className="flex-1 px-10 pb-10 overflow-y-auto no-scrollbar flex items-center justify-center">
+                        <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-3 gap-5 py-4 h-fit items-stretch">
                             {plans.map((plan) => (
-                                <motion.div
+                                <div
                                     key={plan.id}
-                                    whileHover={{ y: -3 }}
-                                    className={`flex flex-col p-5 md:p-6 rounded-[1.5rem] md:rounded-[2rem] bg-card-bg/40 border transition-all duration-500 relative group h-full ${plan.highlight
-                                            ? 'border-primary-custom shadow-xl shadow-primary-custom/5 bg-card-bg/60'
+                                    className={`flex flex-col p-8 rounded-[2rem] bg-card-bg/40 border transition-all duration-500 relative group h-full ${plan.highlight
+                                            ? 'border-primary-custom shadow-[0_0_40px_rgba(var(--primary-rgb),0.1)]'
                                             : 'border-border'
                                         }`}
                                 >
-                                    <div className="absolute inset-0 rounded-[1.5rem] md:rounded-[2rem] border border-primary-custom opacity-0 group-hover:opacity-10 transition-opacity pointer-events-none scale-[1.01]"></div>
-
-                                    {plan.badge && (
-                                        <div className={`absolute top-4 right-5 px-2 py-0.5 rounded text-[7px] font-black tracking-widest uppercase ${plan.highlight ? 'bg-primary-custom text-white' : 'bg-muted text-muted-foreground'
-                                            }`}>
-                                            {plan.badge}
+                                    <div className="space-y-1 mb-2">
+                                        <h3 className="text-2xl font-semibold text-foreground tracking-tight">{plan.name}</h3>
+                                        <div className="flex items-baseline mb-4">
+                                            <span className="text-3xl font-semibold text-foreground">{plan.price}</span>
+                                            {plan.period && <span className="text-muted-foreground text-sm font-medium">{plan.period}</span>}
                                         </div>
-                                    )}
-
-                                    <div className="space-y-0.5 mb-1 text-center md:text-left">
-                                        <h3 className="text-sm font-black text-foreground tracking-tight flex items-center justify-center md:justify-start gap-2 uppercase italic">
-                                            {plan.name}
-                                        </h3>
-                                        <div className="flex flex-col pt-2 pb-3 border-b border-border/50 mb-4 items-center md:items-start">
-                                            <div className="flex items-baseline gap-1">
-                                                <span className="text-3xl font-black text-foreground tracking-tighter">{plan.price}</span>
-                                                {plan.period && <span className="text-muted-foreground text-[10px] font-bold uppercase">{plan.period}</span>}
-                                            </div>
-                                            {billingCycle === 'annual' && plan.yearlyTotal && (
-                                                <p className="text-[8px] text-primary-custom font-black uppercase tracking-widest mt-1 bg-primary-custom/10 w-fit px-1.5 py-0.5 rounded">
-                                                    {plan.yearlyTotal}
-                                                </p>
-                                            )}
-                                        </div>
-                                        <p className="text-[11px] text-muted-foreground font-bold leading-tight min-h-[28px] mb-4">
+                                        <p className="text-[14px] text-muted-foreground font-medium mb-6 min-h-[40px]">
                                             {plan.description}
                                         </p>
                                     </div>
 
                                     <button
                                         disabled={plan.isCurrent}
-                                        className={`w-full py-2.5 rounded-xl text-[10px] font-black uppercase tracking-[0.1em] transition-all active:scale-95 mb-4 ${plan.isCurrent
-                                                ? 'bg-muted/50 border border-border text-muted-foreground/50 cursor-default'
+                                        className={`w-full py-2.5 rounded-lg text-[14px] font-medium transition-all active:scale-95 mb-8 ${plan.isCurrent
+                                                ? 'bg-transparent border border-border text-muted-foreground cursor-default'
                                                 : plan.highlight
-                                                    ? 'bg-primary-custom text-white hover:brightness-110 shadow-md shadow-primary-custom/20'
-                                                    : 'bg-foreground text-background hover:opacity-90 shadow-sm'
+                                                    ? 'bg-foreground text-background hover:opacity-90'
+                                                    : 'bg-muted text-foreground hover:bg-muted/80 border border-border'
                                             }`}
                                     >
-                                        {plan.isCurrent ? 'Active Plan' : plan.buttonText}
+                                        {plan.buttonText}
                                     </button>
 
-                                    {/* Features list - minimized spacing */}
-                                    <div className="flex-1 space-y-2.5 overflow-hidden">
-                                        <p className="text-[8px] font-black text-muted-foreground/40 uppercase tracking-[0.2em] mb-2">Inclusions</p>
-                                        <div className="space-y-2 overflow-y-auto no-scrollbar scroll-smooth pr-1 max-h-[140px] md:max-h-none">
-                                            {plan.features.map((feature, i) => (
-                                                <div key={i} className="flex items-start gap-3 group/item">
-                                                    <div className={`mt-0.5 p-1 rounded-lg transition-all duration-300 shrink-0 ${plan.highlight
-                                                            ? 'bg-primary-custom/10 text-primary-custom group-hover/item:scale-105'
-                                                            : 'bg-muted text-muted-foreground/70 group-hover/item:text-primary-custom'
-                                                        }`}>
-                                                        <feature.icon size={11} strokeWidth={3} />
-                                                    </div>
-                                                    <span className="text-[11px] font-bold text-muted-foreground leading-tight group-hover/item:text-foreground transition-colors">
-                                                        {feature.text}
-                                                    </span>
+                                    <div className="flex-1 space-y-4">
+                                        {plan.features.map((feature, i) => (
+                                            <div key={i} className="flex items-start gap-3.5 group/item">
+                                                <div className={`mt-0.5 transition-colors ${plan.highlight ? 'text-primary-custom' : 'text-muted-foreground'}`}>
+                                                    <feature.icon size={16} strokeWidth={1.5} />
                                                 </div>
-                                            ))}
-                                        </div>
+                                                <span className="text-[13px] font-medium text-muted-foreground leading-tight group-hover/item:text-foreground transition-colors">
+                                                    {feature.text}
+                                                </span>
+                                            </div>
+                                        ))}
                                     </div>
 
-                                    <div className="mt-4 pt-3 border-t border-border/50 text-center md:text-left">
-                                        <p className="text-[8px] text-muted-foreground/30 font-black uppercase italic leading-none tracking-tighter">
-                                            *Fair usage policy applies.
+                                    <div className="mt-8 pt-4 border-t border-border">
+                                        <p className="text-[11px] text-muted-foreground font-medium italic">
+                                            {plan.id === 'starter' ? '*Trial usage limits apply.' : '*Fair usage policy applies.'}
                                         </p>
                                     </div>
-                                </motion.div>
+                                </div>
                             ))}
                         </div>
                     </div>
