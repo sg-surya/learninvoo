@@ -78,7 +78,7 @@ export default function ClientLayout({
                     {/* Main Content Card */}
                     <main className="flex-1 mx-[10px] mb-[10px] bg-card-bg rounded-[2.5rem] shadow-[16px_16px_40px_-5px_rgba(0,0,0,0.1)] border border-border/40 relative z-10 flex flex-col overflow-hidden transition-colors duration-300">
                         <Breadcrumbs />
-                        <div ref={scrollRef} className={`flex-1 ${pathname === '/notes' ? 'overflow-hidden' : 'overflow-y-auto custom-scrollbar'}`}>
+                        <div ref={scrollRef} className={`flex-1 ${(pathname === '/notes' || pathname === '/chat') ? 'overflow-hidden' : 'overflow-y-auto custom-scrollbar'}`}>
                             {children}
                         </div>
                     </main>

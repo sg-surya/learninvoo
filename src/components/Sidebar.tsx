@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, GraduationCap, PieChart, BookOpen, ChevronLeft, ChevronRight, Wand2 } from 'lucide-react';
+import { LayoutDashboard, GraduationCap, PieChart, BookOpen, ChevronLeft, ChevronRight, Wand2, MessageSquare } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface SidebarProps {
@@ -17,7 +17,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
     const navItems = [
         { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
         { href: '/tools', label: 'Tools', icon: Wand2 },
-        { href: '/classes', label: 'Classes', icon: GraduationCap }, // Reverted to '/classes', 'Classes', GraduationCap
+        { href: '/chat', label: 'AI Chat', icon: MessageSquare },
+        { href: '/classes', label: 'Classes', icon: GraduationCap },
         { href: '/reports', label: 'Report', icon: PieChart },
         { href: '/assignments', label: 'Assignments', icon: BookOpen },
     ];
