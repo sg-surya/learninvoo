@@ -220,7 +220,7 @@ const Header: React.FC = () => {
                                                         </div>
                                                         <div>
                                                             <h4 className="text-sm font-bold text-foreground leading-tight">{result.title}</h4>
-                                                            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-0.5">{result.type}</p>
+                                                            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-0.5">{result.type}</p>
                                                         </div>
                                                     </div>
                                                     <div className="opacity-0 group-hover:opacity-100 transition-opacity">
@@ -410,8 +410,8 @@ const Header: React.FC = () => {
                                             )}
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <h4 className="text-[12px] font-black text-foreground truncate font-display italic uppercase tracking-tight group-hover/card:text-primary-custom transition-colors leading-tight">{user?.fullName || 'Educator'}</h4>
-                                            <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest leading-tight">@{user?.username || 'user'}</p>
+                                            <h4 className="text-[12px] font-display font-bold text-foreground truncate italic uppercase tracking-tight group-hover/card:text-primary-custom transition-colors leading-tight">{user?.fullName || 'Educator'}</h4>
+                                            <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest leading-tight">@{user?.username || 'user'}</p>
                                         </div>
                                     </div>
                                 </Link>

@@ -113,7 +113,7 @@ const DashboardView: React.FC = () => {
             {/* Header Area */}
             <header className="mb-12 flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div className="space-y-1">
-                    <h1 className="text-4xl font-black text-foreground tracking-tight">
+                    <h1 className="text-4xl font-display font-extrabold text-foreground tracking-tight">
                         {getTimeBasedGreeting()}, <span className="text-primary-custom">{user?.fullName?.split(' ')[0] || 'Educator'}</span>
                     </h1>
                     <p className="text-sm font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
@@ -140,8 +140,8 @@ const DashboardView: React.FC = () => {
                                 <span className="px-3 py-1 bg-primary-custom/10 text-primary-custom text-[10px] font-black rounded-full border border-primary-custom/20 uppercase tracking-widest">In Session</span>
                             </div>
                             <div className="relative z-10">
-                                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-4">Current Module</p>
-                                <h3 className="text-2xl font-black text-foreground mb-1">Class 9-B Mathematics</h3>
+                                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-4">Current Module</p>
+                                <h3 className="text-2xl font-display font-extrabold text-foreground mb-1">Class 9-B Mathematics</h3>
                                 <p className="text-sm font-bold text-muted-foreground mb-6 italic">Quadratic Equations (Ex 4.2)</p>
 
                                 <div className="flex items-center gap-4">
@@ -164,10 +164,10 @@ const DashboardView: React.FC = () => {
                         <div className="bg-card-bg/80 backdrop-blur-2xl p-8 rounded-3xl border border-border shadow-sm flex flex-col justify-between">
                             <div>
                                 <div className="flex justify-between items-start mb-2">
-                                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Class Performance</p>
+                                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Class Performance</p>
                                     <TrendingUp size={16} className="text-primary-custom" />
                                 </div>
-                                <h4 className="text-xl font-black text-foreground">+12% <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest ml-1">avg growth</span></h4>
+                                <h4 className="text-xl font-display font-extrabold text-foreground">+12% <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest ml-1">avg growth</span></h4>
                             </div>
                             <LineChart />
                         </div>

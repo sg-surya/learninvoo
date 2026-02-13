@@ -61,7 +61,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
                             initial="hidden"
                             animate="visible"
                             exit="exit"
-                            className="text-xl font-bold text-foreground tracking-tight whitespace-nowrap overflow-hidden"
+                            className="text-xl font-display font-bold text-foreground tracking-tight whitespace-nowrap overflow-hidden"
                         >
                             Learnivo AI
                         </motion.span>
