@@ -171,20 +171,40 @@ const VisualGeneratorView: React.FC = () => {
         setSelectedChapters(new Set());
     };
 
-    const handleGenerate = () => {
+    const handleGenerate = async () => {
         const canGenerate = sourceMode === 'topic' ? topic.trim() : selectedBook;
         if (!canGenerate) return;
         setViewState('generating');
-        setTimeout(() => {
-            setGeneratedVisuals([
-                { id: '1', url: 'https://picsum.photos/seed/visual1/800/600', style: 'Colorful' },
-                { id: '2', url: 'https://picsum.photos/seed/visual2/800/600', style: 'Minimal' },
-                { id: '3', url: 'https://picsum.photos/seed/visual3/800/600', style: 'Hand-drawn' },
-                { id: '4', url: 'https://picsum.photos/seed/visual4/800/600', style: '3D' },
-            ]);
+
+        try {
+            const response = await fetch('http://127.0.0.1:8000/api/v1/visual/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    topic: topic,
+                    grade: grade || 'Middle School',
+                    visual_style: visualStyle || 'Scientific Diagram',
+                    source_mode: sourceMode,
+                    book_title: selectedBook?.title,
+                    chapters: selectedBook ? Array.from(selectedChapters) : null
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to generate visuals');
+            }
+
+            const data = await response.json();
+            setGeneratedVisuals(data.visuals || []);
             setSelectedVisual(0);
             setViewState('result');
-        }, 2500);
+        } catch (error) {
+            console.error('Visual generation failed:', error);
+            alert('Failed to generate visuals. Please try again.');
+            setViewState('form');
+        }
     };
 
     const handleSave = async () => {

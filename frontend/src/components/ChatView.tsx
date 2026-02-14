@@ -63,9 +63,12 @@ const ChatView = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [isDeeperResearch, setIsDeeperResearch] = useState(false);
+    const [aiMode, setAiMode] = useState<'standard' | 'advanced'>('standard');
+    const [webSearch, setWebSearch] = useState(false);
 
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const suggestActions = [
         { title: 'Summarize Text', desc: 'Turn long articles into easy summaries.', icon: FileText },
@@ -126,18 +129,48 @@ const ChatView = () => {
         setIsLoading(true);
         if (textareaRef.current) textareaRef.current.style.height = 'auto';
 
-        setTimeout(() => {
+        try {
+            const response = await fetch('http://127.0.0.1:8000/api/v1/chat/send', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    message: messageText,
+                    deeper_research: isDeeperResearch
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to get AI response');
+            }
+
+            const data = await response.json();
+
             const aiMsg: Message = {
                 id: generateUUID(),
                 role: 'assistant',
-                content: "I've processed your request. Let's start a smart conversation about that. How would you like me to proceed with the information provided?",
+                content: data.response,
                 timestamp: new Date()
             };
+
             setSessions(prev => prev.map(s =>
                 s.id === targetId ? { ...s, messages: [...s.messages, aiMsg] } : s
             ));
+        } catch (error) {
+            console.error('Chat error:', error);
+            const errorMsg: Message = {
+                id: generateUUID(),
+                role: 'assistant',
+                content: "I'm sorry, I encountered an error processing your request. Please try again.",
+                timestamp: new Date()
+            };
+            setSessions(prev => prev.map(s =>
+                s.id === targetId ? { ...s, messages: [...s.messages, errorMsg] } : s
+            ));
+        } finally {
             setIsLoading(false);
-        }, 1000);
+        }
     };
 
     return (
@@ -243,6 +276,28 @@ const ChatView = () => {
                             <span className="text-[15px] font-bold text-foreground">Assistant Core v1.2</span>
                             <ChevronDown size={14} className="text-muted-foreground group-hover:text-foreground" />
                         </button>
+
+                        {/* Active Modes Badges */}
+                        <div className="flex items-center gap-2">
+                            {aiMode === 'advanced' && (
+                                <div className="px-3 py-1 bg-lime-500/10 border border-lime-500/30 rounded-lg flex items-center gap-1.5">
+                                    <Cpu size={12} className="text-lime-500" />
+                                    <span className="text-[11px] font-bold text-lime-500 uppercase tracking-wider">Advanced AI</span>
+                                </div>
+                            )}
+                            {webSearch && (
+                                <div className="px-3 py-1 bg-blue-500/10 border border-blue-500/30 rounded-lg flex items-center gap-1.5">
+                                    <Globe size={12} className="text-blue-500" />
+                                    <span className="text-[11px] font-bold text-blue-500 uppercase tracking-wider">Web Search</span>
+                                </div>
+                            )}
+                            {isDeeperResearch && (
+                                <div className="px-3 py-1 bg-purple-500/10 border border-purple-500/30 rounded-lg flex items-center gap-1.5">
+                                    <BookOpen size={12} className="text-purple-500" />
+                                    <span className="text-[11px] font-bold text-purple-500 uppercase tracking-wider">Deep Research</span>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
 
@@ -315,10 +370,64 @@ const ChatView = () => {
 
                                             <div className="flex items-center gap-3">
                                                 <div className="flex items-center gap-1 pr-4 mr-2 border-r border-border">
-                                                    <button className="p-2.5 hover:bg-muted text-muted-foreground/60 hover:text-lime-500 rounded-xl transition-all"><Cpu size={18} /></button>
-                                                    <button className="p-2.5 hover:bg-muted text-muted-foreground/60 hover:text-lime-500 rounded-xl transition-all"><Globe size={18} /></button>
-                                                    <button className="p-2.5 hover:bg-muted text-muted-foreground/60 hover:text-lime-500 rounded-xl transition-all"><Paperclip size={18} /></button>
-                                                    <button className="p-2.5 hover:bg-muted text-muted-foreground/60 hover:text-lime-500 rounded-xl transition-all"><Mic size={18} /></button>
+                                                    {/* AI Mode Toggle */}
+                                                    <button
+                                                        onClick={() => setAiMode(aiMode === 'standard' ? 'advanced' : 'standard')}
+                                                        className={`p-2.5 hover:bg-muted rounded-xl transition-all group relative ${aiMode === 'advanced' ? 'text-lime-500 bg-lime-500/10' : 'text-muted-foreground/60 hover:text-lime-500'}`}
+                                                        title={aiMode === 'standard' ? 'Switch to Advanced AI' : 'Switch to Standard AI'}
+                                                    >
+                                                        <Cpu size={18} />
+                                                        <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-foreground text-background text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                                                            {aiMode === 'standard' ? 'Advanced AI' : 'Standard AI'}
+                                                        </span>
+                                                    </button>
+
+                                                    {/* Web Search Toggle */}
+                                                    <button
+                                                        onClick={() => setWebSearch(!webSearch)}
+                                                        className={`p-2.5 hover:bg-muted rounded-xl transition-all group relative ${webSearch ? 'text-lime-500 bg-lime-500/10' : 'text-muted-foreground/60 hover:text-lime-500'}`}
+                                                        title={webSearch ? 'Web Search: ON' : 'Web Search: OFF'}
+                                                    >
+                                                        <Globe size={18} />
+                                                        <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-foreground text-background text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                                                            Web Search
+                                                        </span>
+                                                    </button>
+
+                                                    {/* File Upload */}
+                                                    <button
+                                                        onClick={() => fileInputRef.current?.click()}
+                                                        className="p-2.5 hover:bg-muted text-muted-foreground/60 hover:text-lime-500 rounded-xl transition-all group relative"
+                                                        title="Attach File"
+                                                    >
+                                                        <Paperclip size={18} />
+                                                        <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-foreground text-background text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                                                            Attach File
+                                                        </span>
+                                                    </button>
+                                                    <input
+                                                        ref={fileInputRef}
+                                                        type="file"
+                                                        className="hidden"
+                                                        onChange={(e) => {
+                                                            const file = e.target.files?.[0];
+                                                            if (file) {
+                                                                alert(`File "${file.name}" selected. File upload feature coming soon!`);
+                                                            }
+                                                        }}
+                                                    />
+
+                                                    {/* Voice Input */}
+                                                    <button
+                                                        onClick={() => alert('Voice input feature coming soon! 🎤')}
+                                                        className="p-2.5 hover:bg-muted text-muted-foreground/60 hover:text-lime-500 rounded-xl transition-all group relative"
+                                                        title="Voice Input"
+                                                    >
+                                                        <Mic size={18} />
+                                                        <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-foreground text-background text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                                                            Voice Input
+                                                        </span>
+                                                    </button>
                                                 </div>
                                                 <button
                                                     onClick={() => handleSend()}

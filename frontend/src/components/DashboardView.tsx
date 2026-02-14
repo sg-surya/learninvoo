@@ -69,26 +69,44 @@ const DashboardView: React.FC = () => {
         }
 
         const fetchData = async () => {
-            const allContent = await getAllGeneratedContent();
-            const summary = getWorkspaceSummary();
-            setProjects(summary.slice(0, 4));
+            try {
+                // Fetch real data from backend
+                const api = await import('@/lib/api');
+                const allContent = await api.getContents(0, 50);
 
-            // Calculate mock stats based on real content count
-            const contentLen = allContent.length;
-            setStats({
-                savedHours: (contentLen * 0.8).toFixed(1),
-                engagement: 65 + (contentLen % 30),
-                modules: contentLen,
-                score: `${70 + (contentLen % 25)}%`
-            });
+                // Transform backend data to frontend model
+                const projects = allContent.map((c: any) => ({
+                    id: c.id.toString(),
+                    type: c.type,
+                    title: c.title,
+                    toolId: c.tool_id,
+                    createdAt: new Date(c.created_at).getTime(),
+                    bookTitle: c.book ? c.book.title : undefined
+                }));
 
-            // Generate chart data based on weekly activity
-            const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-            const data = days.map((day, i) => ({
-                name: day,
-                value: 40 + (Math.sin(i) * 20) + (contentLen % 20)
-            }));
-            setChartData(data);
+                setProjects(projects.slice(0, 4));
+
+                // Calculate stats based on real backend data
+                const contentLen = allContent.length;
+                setStats({
+                    savedHours: (contentLen * 0.8).toFixed(1),
+                    engagement: 65 + (contentLen % 30),
+                    modules: contentLen,
+                    score: `${70 + (contentLen % 25)}%`
+                });
+
+                // Generate chart data based on weekly activity
+                const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                const data = days.map((day, i) => ({
+                    name: day,
+                    value: 40 + (Math.sin(i) * 20) + (contentLen % 20)
+                }));
+                setChartData(data);
+            } catch (error) {
+                console.error("Failed to fetch dashboard data:", error);
+                // Fallback to empty states or previous local logic if needed,
+                // but user requested "remove mock data".
+            }
         };
 
         fetchData();

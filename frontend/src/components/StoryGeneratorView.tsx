@@ -96,33 +96,60 @@ const StoryGeneratorView: React.FC = () => {
     const genreOptions = ['Folklore', 'Modern Fable', 'Sci-Fi Adventure', 'Mystery', 'Educational (Fact-based)'];
     const languageOptions = ['English', 'Hindi', 'Bengali', 'Spanish', 'French'];
 
-    const handleGenerate = () => {
+    const handleGenerate = async () => {
         if (!topic) return;
         setViewState('generating');
 
-        setTimeout(() => {
-            const mockStory: StoryContent = {
-                title: `The ${topic || 'Golden Compass'} Adventure`,
+        try {
+            const { generateStory } = await import('@/lib/api');
+            const response = await generateStory({
+                topic: topic,
+                grade: grade || 'Elementary',
+                genre: genre || 'Adventure',
+                length: length || 'Medium',
+                language: language || 'English'
+            });
+
+            // Parse the AI-generated content into chapters
+            const content = response.content || '';
+
+            // Try to extract chapters from markdown headers
+            const chapterMatches = content.split(/#{1,3}\s+(?:Chapter\s+\d+:|.*)/gi);
+            const chapters: { title: string; content: string; }[] = [];
+
+            // If we have structured chapter content
+            if (chapterMatches.length > 1) {
+                const titleMatches = content.match(/#{1,3}\s+(Chapter\s+\d+:.*|.*)/gi) || [];
+                for (let i = 0; i < titleMatches.length && i < chapterMatches.length - 1; i++) {
+                    chapters.push({
+                        title: titleMatches[i].replace(/^#{1,3}\s+/, '').replace(/Chapter\s+\d+:\s*/i, '').trim(),
+                        content: chapterMatches[i + 1].trim()
+                    });
+                }
+            }
+
+            // Fallback: if no chapters detected, create a single chapter
+            if (chapters.length === 0) {
+                chapters.push({
+                    title: 'The Story',
+                    content: content
+                });
+            }
+
+            const story: StoryContent = {
+                title: topic || 'Generated Story',
                 tone: genre || 'Adventure',
-                moral: 'Wisdom is found within curiosity and courage.',
-                chapters: [
-                    {
-                        title: 'The Unfolding Mystery',
-                        content: `Deep in the heart of the whispering woods, where the sunlight barely touched the forest floor, lived a young tinkerer named Elara. She didn't have many friends, but she had her curiosity, which was more than enough. One crisp morning, Elara discovered a box buried beneath the roots of an ancient banyan tree. It didn't look like much—just a tarnished copper chest—but when she touched the lid, the air hummed with a low, melodic vibration.`
-                    },
-                    {
-                        title: 'The Call to Journey',
-                        content: `Inside the stone lay single, glowing pulse that seemed to pulse with a life of its own. Elara knew she couldn't keep this discovery to herself. The village elders spoke of such artifacts in hushed voices, calling them 'Echo Stones'—remnants of a forgotten age where magic and metallurgy were one and the same. As she held the stone, a map began to manifest in the dust at her feet, showing a path to the Silent Peaks.`
-                    },
-                    {
-                        title: 'Through the Shimmering Gates',
-                        content: `The climb was arduous, each step testing Elara's resolve. The air grew thinner and colder, but the Echo Stone provided a gentle warmth against her palm. At the summit, she found not a temple or a treasure, but a gate made entirely of refracting glass. The map had led her to the repository of all lost thoughts, where every idea ever forgotten was stored in shimmering crystals. Elara realized then that she wasn't just a tinkerer; she was a keeper of possibilities.`
-                    }
-                ]
+                moral: 'Every adventure teaches us something new.',
+                chapters: chapters.slice(0, 5) // Limit to 5 chapters
             };
-            setGeneratedStory(mockStory);
+
+            setGeneratedStory(story);
             setViewState('result');
-        }, 3500);
+        } catch (error) {
+            console.error('Story generation failed:', error);
+            alert('Failed to generate story. Please try again.');
+            setViewState('form');
+        }
     };
 
     const handleSave = async () => {

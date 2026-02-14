@@ -11,15 +11,9 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { saveGeneratedContent, generateId, GeneratedContent } from '@/lib/storage';
+import { generateLesson, generateQuiz, generateStory } from '@/lib/api';
 
-// Mock Books Data for 'Book' mode
-const MOCK_BOOKS = [
-    { id: 'b1', title: 'Science Explorer - Grade 9', grade: 'Grade 9', subject: 'Science' },
-    { id: 'b2', title: 'History Alive! - Grade 10', grade: 'Grade 10', subject: 'History' },
-    { id: 'b3', title: 'Mathematics Principles - Grade 11', grade: 'Grade 11', subject: 'Mathematics' },
-    { id: 'b4', title: 'Literature Common Core - Grade 12', grade: 'Grade 12', subject: 'Literature' },
-    { id: 'b5', title: 'Physics Fundamentals - Grade 11', grade: 'Grade 11', subject: 'Physics' },
-];
+
 
 interface ToolInput {
     id: string;
@@ -274,21 +268,21 @@ const ToolPage = () => {
 
     // Load books
     useEffect(() => {
-        const saved = localStorage.getItem('library_resources');
-        if (saved) {
+        const fetchBooks = async () => {
             try {
-                const parsed = JSON.parse(saved);
-                if (Array.isArray(parsed) && parsed.length > 0) {
-                    setBooks(parsed);
+                const api = await import('@/lib/api');
+                const backendBooks = await api.getBooks();
+                if (backendBooks && backendBooks.length > 0) {
+                    setBooks(backendBooks);
                 } else {
-                    setBooks(MOCK_BOOKS);
+                    setBooks([]); // Or MOCK_BOOKS if we want fallback, but user said remove mock data
                 }
-            } catch (e) {
-                setBooks(MOCK_BOOKS);
+            } catch (error) {
+                console.error("Failed to load books:", error);
+                setBooks([]);
             }
-        } else {
-            setBooks(MOCK_BOOKS);
-        }
+        };
+        fetchBooks();
     }, []);
 
     // Filter books for modal
@@ -362,54 +356,85 @@ const ToolPage = () => {
         );
     }
 
-    const handleGenerate = () => {
+    const handleGenerate = async () => {
         setIsGenerating(true);
         setGeneratedContent(null);
         setIsSaved(false);
         setGeneratedId(null);
 
-        // Simulate AI delay
-        setTimeout(() => {
+        try {
+            let result: any = null;
+
+            if (toolId === 'lesson-planner') {
+                const response = await generateLesson({
+                    topic: (formData.topic as string) || 'General',
+                    grade: (formData.grade as string) || 'Grade 6',
+                    duration: parseInt((formData.duration as string)?.replace(/\D/g, '') || '45'),
+                    details: (formData.notes as string) || (formData.objectives as string) || '',
+                    bookId: sourceMode === 'book' ? (formData.book as string) : undefined,
+                    chapterIds: sourceMode === 'book' ? ((formData.chapters as string)?.split(',') || []) : undefined
+                });
+                result = { type: 'text', content: response.content };
+            } else if (toolId === 'quiz-exam-generator') {
+                const response = await generateQuiz({
+                    topic: (formData.topic as string) || 'General Knowledge',
+                    grade: (formData.grade as string) || 'Grade 6',
+                    difficulty: (formData.difficulty as string) || 'Medium',
+                    questionCount: parseInt((formData.numQuestions as string) || '5'),
+                    type: (formData.questionTypes as string) || 'Multiple Choice'
+                });
+                result = { type: 'text', content: response.content };
+            } else if (toolId === 'story-generator') {
+                const response = await generateStory({
+                    topic: (formData.topic as string) || 'Friendship',
+                    grade: (formData.grade as string) || 'Grade 3',
+                    genre: (formData.genre as string) || 'Adventure',
+                    length: 'Short',
+                    language: 'English'
+                });
+                result = { type: 'text', content: response.content };
+            } else {
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                result = config.dummyOutput;
+            }
+
+            setGeneratedContent(result);
+            setGeneratedId(generateId());
+        } catch (error) {
+            console.error("Generation failed:", error);
+            alert("Failed to generate content. Please try again.");
+        } finally {
             setIsGenerating(false);
-            setGeneratedContent(config.dummyOutput);
-            setGeneratedId(generateId()); // Generate ID for this content
-        }, 2000);
+        }
     };
 
-    // Save to Workspace function
     const handleSaveToWorkspace = async () => {
         if (!generatedContent || !generatedId) return;
 
         setIsSaving(true);
         try {
-            // Determine title from form data or use default
-            const topic = formData.topic as string || formData.book as string || config.title;
+            const topic = (formData.topic as string) || (formData.book as string) || config.title;
             const chapter = formData.chapter as string;
             const title = chapter ? `${topic} - ${chapter}` : topic;
 
-            const contentToSave: GeneratedContent = {
-                id: generatedId,
-                type: getContentType(toolId),
+            const contentToSave = {
                 title: title,
                 description: config.desc,
-                content: generatedContent.type === 'text'
-                    ? generatedContent.content
-                    : generatedContent.scannedText || JSON.stringify(generatedContent),
-                contentType: generatedContent.type,
-                imageUrl: generatedContent.type === 'image' ? generatedContent.content : undefined,
-                bookId: sourceMode === 'book' ? (formData.book as string) : undefined,
-                bookTitle: sourceMode === 'book' ? (formData.book as string) : undefined,
-                chapterInfo: formData.chapter as string,
-                toolId: toolId,
-                formData: formData as Record<string, any>,
-                createdAt: Date.now(),
+                type: getContentType(toolId),
+                content_data: typeof generatedContent.content === 'string' ? generatedContent.content : JSON.stringify(generatedContent.content),
+                content_type: generatedContent.type,
+                tool_id: toolId,
+                book_id: sourceMode === 'book' ? (formData.book ? parseInt(formData.book as string) : undefined) : undefined,
             };
 
-            await saveGeneratedContent(contentToSave);
+            const api = await import('@/lib/api');
+            await api.saveContent(contentToSave);
+
             setIsSaved(true);
+            setTimeout(() => setIsSaved(false), 3000);
         } catch (error) {
-            console.error('Error saving to workspace:', error);
-            alert('Error saving to workspace. Please try again.');
+            console.error('Failed to save:', error);
+            alert('Failed to save to workspace.');
         } finally {
             setIsSaving(false);
         }

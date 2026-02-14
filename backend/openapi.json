@@ -1,14 +1,17 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "FastAPI",
+    "title": "Learnivo Backend",
     "version": "0.1.0"
   },
   "paths": {
-    "/": {
+    "/health/": {
       "get": {
-        "summary": "Read Root",
-        "operationId": "read_root__get",
+        "tags": [
+          "Health"
+        ],
+        "summary": "Health Check",
+        "operationId": "health_check_health__get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -21,98 +24,13 @@
         }
       }
     },
-    "/api/performance": {
-      "get": {
-        "summary": "Get Performance Data",
-        "operationId": "get_performance_data_api_performance_get",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/PerformanceData"
-                  },
-                  "type": "array",
-                  "title": "Response Get Performance Data Api Performance Get"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/classes": {
-      "get": {
-        "summary": "Get Classes Data",
-        "operationId": "get_classes_data_api_classes_get",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/ClassInfo"
-                  },
-                  "type": "array",
-                  "title": "Response Get Classes Data Api Classes Get"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/students": {
-      "get": {
-        "summary": "Get Students Data",
-        "operationId": "get_students_data_api_students_get",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/Student"
-                  },
-                  "type": "array",
-                  "title": "Response Get Students Data Api Students Get"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/students/top": {
-      "get": {
-        "summary": "Get Top Students",
-        "operationId": "get_top_students_api_students_top_get",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/TopStudent"
-                  },
-                  "type": "array",
-                  "title": "Response Get Top Students Api Students Top Get"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/tools/lesson-planner": {
+    "/api/v1/lesson/generate": {
       "post": {
-        "summary": "Generate Lesson Plan",
-        "operationId": "generate_lesson_plan_api_tools_lesson_planner_post",
+        "tags": [
+          "Lesson"
+        ],
+        "summary": "Generate Lesson",
+        "operationId": "generate_lesson_api_v1_lesson_generate_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -129,7 +47,9 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LessonPlanResponse"
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Generate Lesson Api V1 Lesson Generate Post"
                 }
               }
             }
@@ -147,128 +67,13 @@
         }
       }
     },
-    "/api/tools/visual-generator": {
+    "/api/v1/quiz/generate": {
       "post": {
-        "summary": "Generate Visuals",
-        "operationId": "generate_visuals_api_tools_visual_generator_post",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/VisualGeneratorRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/GeneratedVisual"
-                  },
-                  "type": "array",
-                  "title": "Response Generate Visuals Api Tools Visual Generator Post"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/tools/hyper-local": {
-      "post": {
-        "summary": "Generate Hyper Local Content",
-        "operationId": "generate_hyper_local_content_api_tools_hyper_local_post",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/HyperLocalRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HyperLocalResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/tools/story-generator": {
-      "post": {
-        "summary": "Generate Story",
-        "operationId": "generate_story_api_tools_story_generator_post",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/StoryGeneratorRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/StoryResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/tools/quiz-generator": {
-      "post": {
+        "tags": [
+          "Quiz"
+        ],
         "summary": "Generate Quiz",
-        "operationId": "generate_quiz_api_tools_quiz_generator_post",
+        "operationId": "generate_quiz_api_v1_quiz_generate_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -285,7 +90,9 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/QuizResponse"
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Generate Quiz Api V1 Quiz Generate Post"
                 }
               }
             }
@@ -303,15 +110,18 @@
         }
       }
     },
-    "/api/tools/rubric-generator": {
+    "/api/v1/story/generate": {
       "post": {
-        "summary": "Generate Rubric",
-        "operationId": "generate_rubric_api_tools_rubric_generator_post",
+        "tags": [
+          "Story"
+        ],
+        "summary": "Generate Story",
+        "operationId": "generate_story_api_v1_story_generate_post",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/RubricGeneratorRequest"
+                "$ref": "#/components/schemas/StoryGeneratorRequest"
               }
             }
           },
@@ -323,7 +133,9 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/RubricResponse"
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Generate Story Api V1 Story Generate Post"
                 }
               }
             }
@@ -341,76 +153,35 @@
         }
       }
     },
-    "/api/tools/simulation-generator": {
-      "post": {
-        "summary": "Generate Simulation",
-        "operationId": "generate_simulation_api_tools_simulation_generator_post",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SimulationGeneratorRequest"
-              }
-            }
-          },
-          "required": true
-        },
+    "/api/v1/user/me": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Read Current User",
+        "operationId": "read_current_user_api_v1_user_me_get",
         "responses": {
           "200": {
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SimulationResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
+                "schema": {}
               }
             }
           }
         }
       }
     },
-    "/api/tools/paper-digitizer": {
-      "post": {
-        "summary": "Digitize Paper",
-        "operationId": "digitize_paper_api_tools_paper_digitizer_post",
-        "requestBody": {
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "$ref": "#/components/schemas/Body_digitize_paper_api_tools_paper_digitizer_post"
-              }
-            }
-          },
-          "required": true
-        },
+    "/": {
+      "get": {
+        "summary": "Root",
+        "operationId": "root__get",
         "responses": {
           "200": {
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaperDigitizerResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
+                "schema": {}
               }
             }
           }
@@ -420,94 +191,6 @@
   },
   "components": {
     "schemas": {
-      "Body_digitize_paper_api_tools_paper_digitizer_post": {
-        "properties": {
-          "file": {
-            "type": "string",
-            "format": "binary",
-            "title": "File"
-          }
-        },
-        "type": "object",
-        "required": [
-          "file"
-        ],
-        "title": "Body_digitize_paper_api_tools_paper_digitizer_post"
-      },
-      "ClassInfo": {
-        "properties": {
-          "id": {
-            "type": "string",
-            "title": "Id"
-          },
-          "name": {
-            "type": "string",
-            "title": "Name"
-          },
-          "studentsCount": {
-            "type": "integer",
-            "title": "Studentscount"
-          },
-          "grade": {
-            "type": "string",
-            "title": "Grade"
-          },
-          "startDate": {
-            "type": "string",
-            "title": "Startdate"
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "name",
-          "studentsCount",
-          "grade",
-          "startDate"
-        ],
-        "title": "ClassInfo"
-      },
-      "CurriculumMappingItem": {
-        "properties": {
-          "standard": {
-            "type": "string",
-            "title": "Standard"
-          },
-          "description": {
-            "type": "string",
-            "title": "Description"
-          }
-        },
-        "type": "object",
-        "required": [
-          "standard",
-          "description"
-        ],
-        "title": "CurriculumMappingItem"
-      },
-      "GeneratedVisual": {
-        "properties": {
-          "id": {
-            "type": "string",
-            "title": "Id"
-          },
-          "url": {
-            "type": "string",
-            "title": "Url"
-          },
-          "style": {
-            "type": "string",
-            "title": "Style"
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "url",
-          "style"
-        ],
-        "title": "GeneratedVisual"
-      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -520,79 +203,6 @@
         },
         "type": "object",
         "title": "HTTPValidationError"
-      },
-      "HyperLocalRequest": {
-        "properties": {
-          "topic": {
-            "type": "string",
-            "title": "Topic"
-          },
-          "grade": {
-            "type": "string",
-            "title": "Grade"
-          },
-          "location": {
-            "type": "string",
-            "title": "Location"
-          },
-          "language": {
-            "type": "string",
-            "title": "Language"
-          },
-          "culturalContext": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Culturalcontext"
-          }
-        },
-        "type": "object",
-        "required": [
-          "topic",
-          "grade",
-          "location",
-          "language"
-        ],
-        "title": "HyperLocalRequest"
-      },
-      "HyperLocalResponse": {
-        "properties": {
-          "region": {
-            "type": "string",
-            "title": "Region"
-          },
-          "culturalContext": {
-            "type": "string",
-            "title": "Culturalcontext"
-          },
-          "content": {
-            "items": {
-              "$ref": "#/components/schemas/LocalizedContentItem"
-            },
-            "type": "array",
-            "title": "Content"
-          },
-          "curriculumMapping": {
-            "items": {
-              "$ref": "#/components/schemas/CurriculumMappingItem"
-            },
-            "type": "array",
-            "title": "Curriculummapping"
-          }
-        },
-        "type": "object",
-        "required": [
-          "region",
-          "culturalContext",
-          "content",
-          "curriculumMapping"
-        ],
-        "title": "HyperLocalResponse"
       },
       "LessonPlanRequest": {
         "properties": {
@@ -653,149 +263,6 @@
         ],
         "title": "LessonPlanRequest"
       },
-      "LessonPlanResponse": {
-        "properties": {
-          "title": {
-            "type": "string",
-            "title": "Title"
-          },
-          "duration": {
-            "type": "integer",
-            "title": "Duration"
-          },
-          "subject": {
-            "type": "string",
-            "title": "Subject"
-          },
-          "grade": {
-            "type": "string",
-            "title": "Grade"
-          },
-          "topic": {
-            "type": "string",
-            "title": "Topic"
-          },
-          "sections": {
-            "items": {
-              "$ref": "#/components/schemas/LessonSection"
-            },
-            "type": "array",
-            "title": "Sections"
-          }
-        },
-        "type": "object",
-        "required": [
-          "title",
-          "duration",
-          "subject",
-          "grade",
-          "topic",
-          "sections"
-        ],
-        "title": "LessonPlanResponse"
-      },
-      "LessonSection": {
-        "properties": {
-          "title": {
-            "type": "string",
-            "title": "Title"
-          },
-          "duration": {
-            "type": "string",
-            "title": "Duration"
-          },
-          "content": {
-            "type": "string",
-            "title": "Content"
-          },
-          "activity": {
-            "type": "string",
-            "title": "Activity"
-          }
-        },
-        "type": "object",
-        "required": [
-          "title",
-          "duration",
-          "content",
-          "activity"
-        ],
-        "title": "LessonSection"
-      },
-      "LocalizedContentItem": {
-        "properties": {
-          "type": {
-            "type": "string",
-            "title": "Type"
-          },
-          "title": {
-            "type": "string",
-            "title": "Title"
-          },
-          "content": {
-            "type": "string",
-            "title": "Content"
-          }
-        },
-        "type": "object",
-        "required": [
-          "type",
-          "title",
-          "content"
-        ],
-        "title": "LocalizedContentItem"
-      },
-      "PaperDigitizerResponse": {
-        "properties": {
-          "id": {
-            "type": "string",
-            "title": "Id"
-          },
-          "originalImage": {
-            "type": "string",
-            "title": "Originalimage"
-          },
-          "digitizedText": {
-            "type": "string",
-            "title": "Digitizedtext"
-          },
-          "wordCount": {
-            "type": "integer",
-            "title": "Wordcount"
-          },
-          "format": {
-            "type": "string",
-            "title": "Format"
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "originalImage",
-          "digitizedText",
-          "wordCount",
-          "format"
-        ],
-        "title": "PaperDigitizerResponse"
-      },
-      "PerformanceData": {
-        "properties": {
-          "month": {
-            "type": "string",
-            "title": "Month"
-          },
-          "value": {
-            "type": "number",
-            "title": "Value"
-          }
-        },
-        "type": "object",
-        "required": [
-          "month",
-          "value"
-        ],
-        "title": "PerformanceData"
-      },
       "QuizGeneratorRequest": {
         "properties": {
           "topic": {
@@ -828,315 +295,6 @@
           "type"
         ],
         "title": "QuizGeneratorRequest"
-      },
-      "QuizQuestion": {
-        "properties": {
-          "id": {
-            "type": "string",
-            "title": "Id"
-          },
-          "text": {
-            "type": "string",
-            "title": "Text"
-          },
-          "options": {
-            "anyOf": [
-              {
-                "items": {
-                  "type": "string"
-                },
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Options"
-          },
-          "answer": {
-            "type": "string",
-            "title": "Answer"
-          },
-          "explanation": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Explanation"
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "text",
-          "answer"
-        ],
-        "title": "QuizQuestion"
-      },
-      "QuizResponse": {
-        "properties": {
-          "title": {
-            "type": "string",
-            "title": "Title"
-          },
-          "subject": {
-            "type": "string",
-            "title": "Subject"
-          },
-          "grade": {
-            "type": "string",
-            "title": "Grade"
-          },
-          "questions": {
-            "items": {
-              "$ref": "#/components/schemas/QuizQuestion"
-            },
-            "type": "array",
-            "title": "Questions"
-          }
-        },
-        "type": "object",
-        "required": [
-          "title",
-          "subject",
-          "grade",
-          "questions"
-        ],
-        "title": "QuizResponse"
-      },
-      "RubricCriterion": {
-        "properties": {
-          "id": {
-            "type": "string",
-            "title": "Id"
-          },
-          "category": {
-            "type": "string",
-            "title": "Category"
-          },
-          "descriptions": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array",
-            "title": "Descriptions"
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "category",
-          "descriptions"
-        ],
-        "title": "RubricCriterion"
-      },
-      "RubricGeneratorRequest": {
-        "properties": {
-          "topic": {
-            "type": "string",
-            "title": "Topic"
-          },
-          "grade": {
-            "type": "string",
-            "title": "Grade"
-          },
-          "scale": {
-            "type": "string",
-            "title": "Scale"
-          }
-        },
-        "type": "object",
-        "required": [
-          "topic",
-          "grade",
-          "scale"
-        ],
-        "title": "RubricGeneratorRequest"
-      },
-      "RubricLevel": {
-        "properties": {
-          "label": {
-            "type": "string",
-            "title": "Label"
-          },
-          "points": {
-            "type": "integer",
-            "title": "Points"
-          }
-        },
-        "type": "object",
-        "required": [
-          "label",
-          "points"
-        ],
-        "title": "RubricLevel"
-      },
-      "RubricResponse": {
-        "properties": {
-          "id": {
-            "type": "string",
-            "title": "Id"
-          },
-          "title": {
-            "type": "string",
-            "title": "Title"
-          },
-          "levels": {
-            "items": {
-              "$ref": "#/components/schemas/RubricLevel"
-            },
-            "type": "array",
-            "title": "Levels"
-          },
-          "criteria": {
-            "items": {
-              "$ref": "#/components/schemas/RubricCriterion"
-            },
-            "type": "array",
-            "title": "Criteria"
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "title",
-          "levels",
-          "criteria"
-        ],
-        "title": "RubricResponse"
-      },
-      "SimulationGeneratorRequest": {
-        "properties": {
-          "topic": {
-            "type": "string",
-            "title": "Topic"
-          },
-          "grade": {
-            "type": "string",
-            "title": "Grade"
-          },
-          "complexity": {
-            "type": "string",
-            "title": "Complexity"
-          }
-        },
-        "type": "object",
-        "required": [
-          "topic",
-          "grade",
-          "complexity"
-        ],
-        "title": "SimulationGeneratorRequest"
-      },
-      "SimulationParam": {
-        "properties": {
-          "id": {
-            "type": "string",
-            "title": "Id"
-          },
-          "label": {
-            "type": "string",
-            "title": "Label"
-          },
-          "min": {
-            "type": "number",
-            "title": "Min"
-          },
-          "max": {
-            "type": "number",
-            "title": "Max"
-          },
-          "step": {
-            "type": "number",
-            "title": "Step"
-          },
-          "unit": {
-            "type": "string",
-            "title": "Unit"
-          },
-          "defaultValue": {
-            "type": "number",
-            "title": "Defaultvalue"
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "label",
-          "min",
-          "max",
-          "step",
-          "unit",
-          "defaultValue"
-        ],
-        "title": "SimulationParam"
-      },
-      "SimulationResponse": {
-        "properties": {
-          "id": {
-            "type": "string",
-            "title": "Id"
-          },
-          "title": {
-            "type": "string",
-            "title": "Title"
-          },
-          "topic": {
-            "type": "string",
-            "title": "Topic"
-          },
-          "logic": {
-            "type": "string",
-            "title": "Logic"
-          },
-          "parameters": {
-            "items": {
-              "$ref": "#/components/schemas/SimulationParam"
-            },
-            "type": "array",
-            "title": "Parameters"
-          },
-          "visualData": {
-            "items": {
-              "additionalProperties": true,
-              "type": "object"
-            },
-            "type": "array",
-            "title": "Visualdata",
-            "default": []
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "title",
-          "topic",
-          "logic",
-          "parameters"
-        ],
-        "title": "SimulationResponse"
-      },
-      "StoryChapter": {
-        "properties": {
-          "title": {
-            "type": "string",
-            "title": "Title"
-          },
-          "content": {
-            "type": "string",
-            "title": "Content"
-          }
-        },
-        "type": "object",
-        "required": [
-          "title",
-          "content"
-        ],
-        "title": "StoryChapter"
       },
       "StoryGeneratorRequest": {
         "properties": {
@@ -1183,117 +341,6 @@
         ],
         "title": "StoryGeneratorRequest"
       },
-      "StoryResponse": {
-        "properties": {
-          "title": {
-            "type": "string",
-            "title": "Title"
-          },
-          "tone": {
-            "type": "string",
-            "title": "Tone"
-          },
-          "moral": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Moral"
-          },
-          "chapters": {
-            "items": {
-              "$ref": "#/components/schemas/StoryChapter"
-            },
-            "type": "array",
-            "title": "Chapters"
-          }
-        },
-        "type": "object",
-        "required": [
-          "title",
-          "tone",
-          "chapters"
-        ],
-        "title": "StoryResponse"
-      },
-      "Student": {
-        "properties": {
-          "id": {
-            "type": "string",
-            "title": "Id"
-          },
-          "firstName": {
-            "type": "string",
-            "title": "Firstname"
-          },
-          "lastName": {
-            "type": "string",
-            "title": "Lastname"
-          },
-          "age": {
-            "type": "integer",
-            "title": "Age"
-          },
-          "interests": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array",
-            "title": "Interests"
-          },
-          "score": {
-            "type": "integer",
-            "title": "Score"
-          },
-          "grade": {
-            "type": "string",
-            "title": "Grade"
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "firstName",
-          "lastName",
-          "age",
-          "interests",
-          "score",
-          "grade"
-        ],
-        "title": "Student"
-      },
-      "TopStudent": {
-        "properties": {
-          "id": {
-            "type": "string",
-            "title": "Id"
-          },
-          "name": {
-            "type": "string",
-            "title": "Name"
-          },
-          "score": {
-            "type": "integer",
-            "title": "Score"
-          },
-          "avatar": {
-            "type": "string",
-            "title": "Avatar"
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "name",
-          "score",
-          "avatar"
-        ],
-        "title": "TopStudent"
-      },
       "ValidationError": {
         "properties": {
           "loc": {
@@ -1317,13 +364,6 @@
           "type": {
             "type": "string",
             "title": "Error Type"
-          },
-          "input": {
-            "title": "Input"
-          },
-          "ctx": {
-            "type": "object",
-            "title": "Context"
           }
         },
         "type": "object",
@@ -1333,77 +373,6 @@
           "type"
         ],
         "title": "ValidationError"
-      },
-      "VisualGeneratorRequest": {
-        "properties": {
-          "sourceMode": {
-            "type": "string",
-            "title": "Sourcemode"
-          },
-          "topic": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Topic"
-          },
-          "bookId": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Bookid"
-          },
-          "chapterIds": {
-            "anyOf": [
-              {
-                "items": {
-                  "type": "string"
-                },
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Chapterids"
-          },
-          "grade": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Grade"
-          },
-          "style": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Style"
-          }
-        },
-        "type": "object",
-        "required": [
-          "sourceMode"
-        ],
-        "title": "VisualGeneratorRequest"
       }
     }
   }

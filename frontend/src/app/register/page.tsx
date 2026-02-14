@@ -69,7 +69,7 @@ export default function RegisterPage() {
         return regex.test(username);
     };
 
-    const handleRegister = (e: React.FormEvent) => {
+    const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
 
         // Basic validation
@@ -83,34 +83,36 @@ export default function RegisterPage() {
             return;
         }
 
-        // Save to LocalStorage
-        const users = JSON.parse(localStorage.getItem('learnivo_users') || '[]');
+        try {
+            const api = await import('@/lib/api');
+            const newUser = {
+                email: formData.email,
+                password: formData.password,
+                full_name: formData.fullName,
+                role: role
+            };
 
-        // Check if email already exists
-        if (users.find((u: any) => u.email === formData.email)) {
-            alert('Email already registered');
-            return;
+            await api.signup(newUser);
+
+            // Auto login after signup
+            const loginData = new FormData();
+            loginData.append('username', formData.email);
+            loginData.append('password', formData.password);
+
+            const loginResponse = await api.login(loginData);
+            if (loginResponse.access_token) {
+                localStorage.setItem('access_token', loginResponse.access_token);
+                const user = await api.getMe();
+                // Store minimal user info
+                localStorage.setItem('learnivo_current_user', JSON.stringify(user));
+
+                router.push('/dashboard');
+            }
+
+        } catch (error: any) {
+            console.error('Registration failed:', error);
+            alert(error.message || 'Registration failed. Please try again.');
         }
-
-        // Check if username already exists
-        if (users.find((u: any) => u.username === formData.username)) {
-            alert('Username already taken. Please try another one.');
-            return;
-        }
-
-        const newUser = {
-            ...formData,
-            role,
-            id: Date.now(),
-            createdAt: new Date().toISOString(),
-            lastUsernameChange: new Date().toISOString() // Set initial timestamp
-        };
-        users.push(newUser);
-        localStorage.setItem('learnivo_users', JSON.stringify(users));
-        localStorage.setItem('learnivo_current_user', JSON.stringify(newUser));
-
-        // Redirect to Dashboard
-        router.push('/dashboard');
     };
 
     const containerVariants = {

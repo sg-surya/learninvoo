@@ -1,0 +1,14 @@
+__pycache__
+venv/
+.env
+.env.*
+! .env.example
+*.pyc
+*.pyo
+*.pyd
+.git
+.gitignore
+debug_*.py
+test_*.py
+*output.txt
+*.log

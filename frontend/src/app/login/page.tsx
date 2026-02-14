@@ -30,22 +30,32 @@ export default function LoginPage() {
         }
     }, [router]);
 
-    const handleLogin = (e: React.FormEvent) => {
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        const users = JSON.parse(localStorage.getItem('learnivo_users') || '[]');
-        const user = users.find((u: any) => u.email === email && u.password === password);
+        try {
+            const formData = new FormData();
+            formData.append('username', email);
+            formData.append('password', password);
 
-        if (user) {
-            if (rememberMe) {
-                localStorage.setItem('learnivo_remembered_email', email);
-            } else {
-                localStorage.removeItem('learnivo_remembered_email');
+            const response = await import('@/lib/api').then(mod => mod.login(formData));
+
+            if (response.access_token) {
+                localStorage.setItem('access_token', response.access_token);
+                // Also fetch user details
+                const user = await import('@/lib/api').then(mod => mod.getMe());
+                localStorage.setItem('learnivo_current_user', JSON.stringify(user));
+
+                if (rememberMe) {
+                    localStorage.setItem('learnivo_remembered_email', email);
+                } else {
+                    localStorage.removeItem('learnivo_remembered_email');
+                }
+
+                router.push('/dashboard');
             }
-            localStorage.setItem('learnivo_current_user', JSON.stringify(user));
-            router.push('/dashboard');
-        } else {
-            alert('Invalid email or password');
+        } catch (error: any) {
+            alert(error.message || 'Login failed. Please check your credentials.');
         }
     };
 

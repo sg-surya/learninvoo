@@ -102,29 +102,45 @@ const SimulationGeneratorView: React.FC = () => {
     const [isRunning, setIsRunning] = useState(false);
     const [isSaved, setIsSaved] = useState(false);
 
-    const handleGenerate = () => {
+    const handleGenerate = async () => {
         if (!topic) return;
         setViewState('generating');
 
-        setTimeout(() => {
-            const mockSim: SimulationContent = {
+        try {
+            const response = await fetch('http://127.0.0.1:8000/api/v1/simulation/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    topic: topic,
+                    grade: grade || 'Middle School',
+                    complexity: complexity || 'Standard'
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to generate simulation');
+            }
+
+            const simData = await response.json();
+
+            const simulation: SimulationContent = {
                 id: generateId(),
-                title: `${topic || 'Electric Circuit'} Lab`,
-                topic: topic,
-                parameters: [
-                    { id: 'v', label: 'Voltage', min: 0, max: 24, step: 0.5, unit: 'V', defaultValue: 12 },
-                    { id: 'r', label: 'Resistance', min: 1, max: 100, step: 1, unit: 'Ω', defaultValue: 10 },
-                    { id: 't', label: 'Time Scale', min: 1, max: 10, step: 0.1, unit: 's', defaultValue: 1 }
-                ],
-                logic: 'I = V / R',
-                visualData: [] // Would be calculated in real time
+                ...simData,
+                visualData: []
             };
-            setGeneratedSim(mockSim);
+
+            setGeneratedSim(simulation);
             const initialValues: any = {};
-            mockSim.parameters.forEach(p => initialValues[p.id] = p.defaultValue);
+            simulation.parameters.forEach(p => initialValues[p.id] = p.defaultValue);
             setParamValues(initialValues);
             setViewState('result');
-        }, 3000);
+        } catch (error) {
+            console.error('Simulation generation failed:', error);
+            alert('Failed to generate simulation. Please try again.');
+            setViewState('form');
+        }
     };
 
     const handleSave = async () => {
