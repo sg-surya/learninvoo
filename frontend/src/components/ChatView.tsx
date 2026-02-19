@@ -73,9 +73,9 @@ const ChatView = () => {
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const suggestActions = [
-        { title: 'Summarize Text', desc: 'Turn long articles into easy summaries.', icon: FileText },
-        { title: 'Creative Writing', desc: 'Generate stories, blog posts, or fresh content ideas.', icon: Sparkles },
-        { title: 'Answer Questions', desc: 'Ask me anything—from facts to advice—and get instant answers.', icon: BrainCircuit },
+        { title: 'Summarize Text', desc: 'Turn long articles into easy summaries.', icon: FileText, prompt: 'Help me summarize a long text or article into a clear, concise summary suitable for my students.' },
+        { title: 'Creative Writing', desc: 'Generate stories, blog posts, or fresh content ideas.', icon: Sparkles, prompt: 'Help me create an engaging creative writing piece or story that I can use in my classroom.' },
+        { title: 'Answer Questions', desc: 'Ask me anything—from facts to advice—and get instant answers.', icon: BrainCircuit, prompt: 'Hello! I have a question. Can you help me with teaching strategies and educational advice?' },
     ];
 
     const currentSession = sessions.find(s => s.id === activeSessionId);
@@ -457,7 +457,7 @@ const ChatView = () => {
                                     {suggestActions.map((action, i) => (
                                         <button
                                             key={i}
-                                            onClick={() => handleSend(action.title)}
+                                            onClick={() => handleSend(action.prompt)}
                                             className="p-6 bg-card-bg border border-border hover:border-lime-500/30 shadow-sm hover:shadow-2xl hover:shadow-lime-500/10 rounded-[2rem] text-left transition-all duration-300 group flex flex-col h-full"
                                         >
                                             <div className="w-12 h-12 bg-muted rounded-2xl flex items-center justify-center text-muted-foreground/60 group-hover:bg-lime-500/10 group-hover:text-lime-500 mb-5 transition-all duration-300 transform group-hover:scale-110 group-hover:rotate-3">
