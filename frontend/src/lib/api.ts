@@ -45,6 +45,8 @@ export const generateContent = async (endpoint: string, data: any) => {
 export const generateLesson = (data: any) => generateContent('/lesson/generate', data);
 export const generateQuiz = (data: any) => generateContent('/quiz/generate', data);
 export const generateStory = (data: any) => generateContent('/story/generate', data);
+export const generateToolContent = (tool_id: string, data: any) => generateContent(`/tools/${tool_id.replace(/-/g, '_')}/generate`, data);
+export const generateVisuals = (data: any) => generateContent('/visual/generate', data);
 
 // Content Management
 export const getContents = async (skip = 0, limit = 100) => {

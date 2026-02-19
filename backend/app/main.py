@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
-from app.api.routes import lesson, quiz, story, user, health, auth, content, library, chat, simulation, visual
+from app.api.routes import lesson, quiz, story, user, health, auth, content, library, chat, simulation, visual, tools
 
 app = FastAPI(title=settings.PROJECT_NAME)
 
@@ -32,6 +32,7 @@ app.include_router(library.router, tags=["Library"], prefix=f"{settings.API_V1_S
 app.include_router(chat.router, tags=["Chat"], prefix=f"{settings.API_V1_STR}/chat")
 app.include_router(simulation.router, tags=["Simulation"], prefix=f"{settings.API_V1_STR}/simulation")
 app.include_router(visual.router, tags=["Visual"], prefix=f"{settings.API_V1_STR}/visual")
+app.include_router(tools.router, tags=["Tools"], prefix=f"{settings.API_V1_STR}/tools")
 
 @app.get("/")
 def root():

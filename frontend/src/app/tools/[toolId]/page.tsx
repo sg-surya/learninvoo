@@ -384,18 +384,17 @@ const ToolPage = () => {
                     type: (formData.questionTypes as string) || 'Multiple Choice'
                 });
                 result = { type: 'text', content: response.content };
-            } else if (toolId === 'story-generator') {
-                const response = await generateStory({
-                    topic: (formData.topic as string) || 'Friendship',
-                    grade: (formData.grade as string) || 'Grade 3',
-                    genre: (formData.genre as string) || 'Adventure',
-                    length: 'Short',
-                    language: 'English'
-                });
-                result = { type: 'text', content: response.content };
+            } else if (toolId === 'visual-generator') {
+                const response = await import('@/lib/api').then(mod => mod.generateVisuals({
+                    topic: (formData.topic as string) || 'General',
+                    grade: (formData.grade as string) || 'Middle School',
+                    visual_style: 'Educational Illustration'
+                }));
+                result = { type: 'image', content: response.visuals[0].url, alt: response.visuals[0].prompt };
             } else {
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                result = config.dummyOutput;
+                // Generic fallback for other tools
+                const response = await import('@/lib/api').then(mod => mod.generateToolContent(toolId, formData));
+                result = { type: 'text', content: response.content || response };
             }
 
             setGeneratedContent(result);

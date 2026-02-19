@@ -124,10 +124,40 @@ const LessonPlannerView: React.FC = () => {
     const [isSaved, setIsSaved] = useState(false);
     const [isCopied, setIsCopied] = useState(false);
     const [chatMessage, setChatMessage] = useState('');
+    const [assistantMessages, setAssistantMessages] = useState<{ role: 'user' | 'assistant', content: string }[]>([]);
+    const [isAssistantLoading, setIsAssistantLoading] = useState(false);
     const [checkedObjectives, setCheckedObjectives] = useState<Set<number>>(new Set());
     const [currentSlide, setCurrentSlide] = useState(0);
 
     const dropdownRef = useRef<HTMLDivElement>(null);
+
+    const handleAssistantSend = async () => {
+        if (!chatMessage.trim() || isAssistantLoading) return;
+
+        const userMsg = chatMessage;
+        setChatMessage('');
+        setAssistantMessages(prev => [...prev, { role: 'user', content: userMsg }]);
+        setIsAssistantLoading(true);
+
+        try {
+            const api = await import('@/lib/api');
+            const response = await api.generateContent('/chat/send', {
+                message: userMsg,
+                history: assistantMessages,
+                context: {
+                    tool: 'lesson-planner',
+                    topic: mode === 'book' ? selectedBook?.title : topic,
+                    current_lesson: generatedPlan
+                }
+            });
+            setAssistantMessages(prev => [...prev, { role: 'assistant', content: response.response }]);
+        } catch (error) {
+            console.error('Assistant failed:', error);
+            setAssistantMessages(prev => [...prev, { role: 'assistant', content: "I'm sorry, I'm having trouble connecting right now. Please check your internet or API key." }]);
+        } finally {
+            setIsAssistantLoading(false);
+        }
+    };
 
     useEffect(() => {
         const saved = localStorage.getItem('library_resources');
@@ -185,66 +215,30 @@ const LessonPlannerView: React.FC = () => {
         setCheckedObjectives(newChecked);
     };
 
-    const handleGenerate = () => {
+    const handleGenerate = async () => {
         setViewState('generating');
 
-        setTimeout(() => {
+        try {
+            const api = await import('@/lib/api');
             const topicName = mode === 'book' ? selectedBook?.title : topic;
 
-            const mockPlan: LessonPlanContent = {
-                title: `Introduction to ${topicName}`,
-                subtitle: `Conceptual exploration for ${grade || 'middle school'} students.`,
-                overview: `This lesson bridges foundational concepts with advanced understanding of ${topicName}. Students will move from basic models to embrace deeper concepts through thought experiments and hands-on demonstrations. The session is designed to be interactive and engaging.`,
-                objectives: [
-                    `Distinguish between basic and advanced concepts using everyday analogies.`,
-                    `Identify key patterns and principles in ${topicName}.`,
-                    `Demonstrate understanding through practical application.`,
-                    `Collaborate effectively in group discussions and activities.`
-                ],
-                duration: duration || '45 mins',
-                materials: [
-                    { name: 'Visual presentation slides', icon: 'presentation', color: 'amber' },
-                    { name: 'Worksheet handouts', icon: 'file', color: 'blue' },
-                    { name: 'Interactive simulation', icon: 'play', color: 'purple' },
-                    { name: 'Assessment rubric', icon: 'clipboard', color: 'green' }
-                ],
-                activities: [
-                    {
-                        title: 'Warm-up Discussion',
-                        duration: '10 MIN',
-                        description: `Begin with an engaging question about ${topicName}. Students share prior knowledge and experiences. Teacher facilitates discussion to assess baseline understanding.`
-                    },
-                    {
-                        title: 'Core Concept Exploration',
-                        duration: '20 MIN',
-                        description: `Live demonstration using visual aids. Discussion focuses on key principles and real-world applications. Students take notes and ask questions.`
-                    },
-                    {
-                        title: 'Hands-on Activity',
-                        duration: '15 MIN',
-                        description: `Students work in groups to complete a practical exercise. Teacher circulates to provide guidance and feedback.`
-                    }
-                ],
-                assessment: [
-                    'Formative: Observation during group activities',
-                    'Formative: Question-answer sessions',
-                    'Summative: Written quiz at end of unit',
-                    'Self-assessment: Student reflection journals'
-                ],
-                homework: `Complete the practice worksheet. Research and find 3 real-world examples related to ${topicName}. Prepare 2 questions for next class.`,
-                tips: [
-                    'Adjust pace based on student understanding',
-                    'Use local examples to make content relatable',
-                    'Prepare extra activities for fast learners',
-                    'Have backup plan for technology issues'
-                ]
-            };
+            const response = await api.generateLesson({
+                topic: topicName || 'General',
+                grade: grade || 'Grade 6',
+                duration: parseInt(duration?.replace(/\D/g, '') || '45'),
+                details: objectives || ''
+            });
 
-            setGeneratedPlan(mockPlan);
+            // The backend now returns the structured object directly
+            setGeneratedPlan(response.content);
             setViewState('result');
             setIsSaved(false);
             setCheckedObjectives(new Set());
-        }, 2000);
+        } catch (error) {
+            console.error('Generation failed:', error);
+            alert('Failed to generate lesson plan. Please try again.');
+            setViewState('form');
+        }
     };
 
     const handleSave = async () => {
@@ -657,24 +651,55 @@ const LessonPlannerView: React.FC = () => {
                         <button className="p-2 rounded-xl hover:bg-muted text-muted-foreground transition-all"><X size={20} /></button>
                     </div>
                     <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
-                        <div className="flex gap-4">
-                            <div className="w-10 h-10 rounded-2xl bg-primary-custom/10 flex items-center justify-center shrink-0 border border-primary-custom/20">
-                                <Bot size={20} className="text-primary-custom" />
-                            </div>
-                            <div className="bg-muted rounded-[2rem] rounded-tl-none p-6 text-sm font-bold text-foreground/80 leading-relaxed border border-border relative overflow-hidden">
-                                Ready to refine this slide!
-                                <div className="mt-6 flex flex-col gap-2.5">
-                                    <button className="text-left w-full px-5 py-3 bg-card-bg border border-border rounded-2xl text-[10px] font-black uppercase tracking-widest hover:border-primary-custom hover:text-primary-custom transition-all shadow-sm">"Add more imagery"</button>
-                                    <button className="text-left w-full px-5 py-3 bg-card-bg border border-border rounded-2xl text-[10px] font-black uppercase tracking-widest hover:border-primary-custom hover:text-primary-custom transition-all shadow-sm">"Make intro exciting"</button>
-                                    <button className="text-left w-full px-5 py-3 bg-card-bg border border-border rounded-2xl text-[10px] font-black uppercase tracking-widest hover:border-primary-custom hover:text-primary-custom transition-all shadow-sm">"Give me a script"</button>
+                        {assistantMessages.length === 0 ? (
+                            <div className="flex gap-4">
+                                <div className="w-10 h-10 rounded-2xl bg-primary-custom/10 flex items-center justify-center shrink-0 border border-primary-custom/20">
+                                    <Bot size={20} className="text-primary-custom" />
+                                </div>
+                                <div className="bg-muted rounded-[2rem] rounded-tl-none p-6 text-sm font-bold text-foreground/80 leading-relaxed border border-border relative overflow-hidden">
+                                    Namaste! I'm Vasu AI. I can help you refine these slides or explain concepts.
+                                    <div className="mt-6 flex flex-col gap-2.5">
+                                        <button onClick={() => setChatMessage("Suggest more activities for this lesson")} className="text-left w-full px-5 py-3 bg-card-bg border border-border rounded-2xl text-[10px] font-black uppercase tracking-widest hover:border-primary-custom hover:text-primary-custom transition-all shadow-sm">"More activities"</button>
+                                        <button onClick={() => setChatMessage("Write an exciting intro script")} className="text-left w-full px-5 py-3 bg-card-bg border border-border rounded-2xl text-[10px] font-black uppercase tracking-widest hover:border-primary-custom hover:text-primary-custom transition-all shadow-sm">"Intro script"</button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        ) : (
+                            assistantMessages.map((msg, i) => (
+                                <div key={i} className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
+                                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${msg.role === 'user' ? 'bg-primary-custom' : 'bg-foreground'}`}>
+                                        {msg.role === 'user' ? <Users size={14} className="text-white" /> : <Bot size={14} className="text-background" />}
+                                    </div>
+                                    <div className={`max-w-[85%] p-4 rounded-2xl text-xs font-bold leading-relaxed ${msg.role === 'user' ? 'bg-primary-custom/10 text-primary-custom rounded-tr-none' : 'bg-muted text-foreground rounded-tl-none border border-border'}`}>
+                                        {msg.content}
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                        {isAssistantLoading && (
+                            <div className="flex gap-3 animate-pulse">
+                                <div className="w-8 h-8 rounded-xl bg-muted" />
+                                <div className="w-24 h-8 bg-muted rounded-2xl" />
+                            </div>
+                        )}
                     </div>
                     <div className="p-6 border-t border-border bg-muted/20">
                         <div className="relative group">
-                            <textarea className="w-full bg-card-bg border border-border rounded-[2rem] pr-14 py-4 px-6 text-sm font-bold text-foreground placeholder:text-muted-foreground/30 focus:border-primary-custom focus:ring-0 focus:outline-none transition-all resize-none shadow-sm hover:border-primary-custom/50" placeholder="Type your request..." rows={2} />
-                            <button className="absolute right-3 bottom-3 w-10 h-10 bg-foreground text-background rounded-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-lg"><Send size={18} /></button>
+                            <textarea
+                                value={chatMessage}
+                                onChange={(e) => setChatMessage(e.target.value)}
+                                onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleAssistantSend(); } }}
+                                className="w-full bg-card-bg border border-border rounded-[2rem] pr-14 py-4 px-6 text-sm font-bold text-foreground placeholder:text-muted-foreground/30 focus:border-primary-custom focus:ring-0 focus:outline-none transition-all resize-none shadow-sm hover:border-primary-custom/50"
+                                placeholder="Type your request..."
+                                rows={2}
+                            />
+                            <button
+                                onClick={handleAssistantSend}
+                                disabled={isAssistantLoading || !chatMessage.trim()}
+                                className="absolute right-3 bottom-3 w-10 h-10 bg-foreground text-background rounded-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-lg disabled:opacity-50"
+                            >
+                                <Send size={18} />
+                            </button>
                         </div>
                         <div className="mt-4 flex items-center justify-between px-2">
                             <div className="flex gap-4">

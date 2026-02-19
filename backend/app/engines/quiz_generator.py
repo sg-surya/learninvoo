@@ -1,26 +1,27 @@
 from app.llm.router import LLMRouter
 from app.core.prompts import AIPrompts
 
-class StoryEngine:
-
+class QuizGeneratorEngine:
     def __init__(self):
         self.llm = LLMRouter()
 
     async def generate(self, payload: dict):
-        topic = payload.get("topic", "Friendship")
-        grade = payload.get("grade", "3rd Grade")
-        genre = payload.get("genre", "Adventure")
+        topic = payload.get("topic", "General")
+        grade = payload.get("grade", "6th Grade")
+        difficulty = payload.get("difficulty", "Medium")
+        count = payload.get("questionCount", 5)
         
         prompt = f"""
         {AIPrompts.SYSTEM_COMMON}
-        {AIPrompts.STORY_GENERATOR}
+        {AIPrompts.QUIZ_GENERATOR}
         
         INPUT DATA:
         - Topic: {topic}
         - Grade: {grade}
-        - Genre: {genre}
+        - Difficulty: {difficulty}
+        - Number of Questions: {count}
         
-        Please generate the educational story now:
+        Please generate the quiz now:
         """
         
         return await self.llm.generate(prompt)

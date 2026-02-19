@@ -1,6 +1,5 @@
-from app.llm.providers.openai_provider import OpenAIProvider
-from app.llm.providers.sarvam_provider import SarvamProvider
-from app.llm.providers.fireworks_provider import FireworksProvider
+from app.llm.providers.google_provider import GoogleProvider
+from app.llm.providers.local_provider import LocalProvider
 from app.llm.providers.mock_provider import MockProvider
 from app.llm.fallback_manager import FallbackManager
 
@@ -9,25 +8,23 @@ class LLMRouter:
     def __init__(self):
         self.providers = []
         
-        # Priority 1: Fireworks AI (Llama 3 70B)
+        # Priority 1: Google Gemini (High Quality, requires internet)
+        print("🔍 Initializing Google Provider...")
         try:
-            self.providers.append(FireworksProvider())
-        except Exception:
-            pass
+            self.providers.append(GoogleProvider())
+            print("✅ Google Provider loaded successfully")
+        except Exception as e:
+            print(f"⚠️ Google Provider skipped: {str(e)}")
 
-        # Priority 2: Sarvam AI
+        # Priority 2: Local LLM (Responsive, no internet required)
+        print("🔍 Initializing Local Provider...")
         try:
-            self.providers.append(SarvamProvider())
-        except Exception:
-            pass
-            
-        # Priority 3: OpenAI (if configured)
-        try:
-            self.providers.append(OpenAIProvider())
-        except Exception:
-            pass
+            self.providers.append(LocalProvider())
+            print("✅ Local Provider loaded successfully")
+        except Exception as e:
+            print(f"⚠️ Local Provider skipped: {str(e)}")
 
-        # Fallback: Mock Provider
+        # Fallback: Mock Provider (Always works)
         self.providers.append(MockProvider())
         
     async def generate(self, prompt: str) -> str:

@@ -20,3 +20,4 @@ pgvector
 passlib[bcrypt]
 python-jose[cryptography]
 bcrypt
+google-generativeai
