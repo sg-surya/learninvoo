@@ -15,11 +15,14 @@ class FireworksProvider(BaseLLMProvider):
 
     async def generate(self, prompt: str) -> str:
         try:
+            print(f"🚀 Fireworks Attempt: llama-v3-70b-instruct")
             response = await self.client.chat.completions.create(
-                model="accounts/fireworks/models/minimax-m2p1",
-                messages=[{"role": "user", "content": prompt}]
+                model="accounts/fireworks/models/llama-v3-70b-instruct",
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=2048
             )
             return response.choices[0].message.content
         except Exception as e:
-            print(f"Fireworks Error: {e}")
+            print(f"❌ Fireworks Error: {e}")
             raise e
+

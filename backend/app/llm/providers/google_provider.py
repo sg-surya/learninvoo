@@ -23,20 +23,30 @@ class GoogleProvider(BaseLLMProvider):
             
     async def generate(self, prompt: str) -> str:
         try:
-            # Ensure model name is clean
-            response = self.model.generate_content(prompt)
+            # TRY 1: Primary Model (from ENV or default)
+            print(f"🚀 Gemini Attempt: {self.model.model_name}")
+            response = await self.model.generate_content_async(prompt)
             if response and response.text:
                 return response.text
             raise Exception("Gemini returned an empty response")
         except Exception as e:
-            # If 1.5 fails, try a very basic fallback to 'gemini-pro' or 'gemini-1.0-pro'
-            if "404" in str(e) or "not found" in str(e).lower():
-                 print(f"🔄 Model {self.model.model_name} not found, trying basic gemini-pro...")
-                 try:
-                     fallback_model = genai.GenerativeModel("gemini-pro")
-                     response = fallback_model.generate_content(prompt)
-                     return response.text
-                 except Exception:
-                     pass
-            print(f"❌ Gemini Error: {str(e)}")
+            error_str = str(e).lower()
+            print(f"❌ Gemini Primary Error ({self.model.model_name}): {error_str}")
+            
+            # TRY 2: Fallback to a very stable model if first one fails
+            # Most common errors are 404 (wrong name) or 403 (quota/region)
+            if "not found" in error_str or "404" in error_str or "unsupported" in error_str:
+                fallback_names = ["gemini-1.5-flash-latest", "gemini-pro"]
+                for model_name in fallback_names:
+                    try:
+                        print(f"🔄 Trying Gemini Fallback: {model_name}")
+                        fallback_model = genai.GenerativeModel(model_name)
+                        response = await fallback_model.generate_content_async(prompt)
+                        if response and response.text:
+                            return response.text
+                    except Exception as fe:
+                        print(f"⚠️ Fallback {model_name} also failed: {fe}")
+            
+            # If all attempts within this provider fail, re-raise to trigger FallbackManager (MockProvider)
             raise e
+

@@ -1,51 +1,31 @@
 from app.llm.providers.base import BaseLLMProvider
 import asyncio
 
+import random
+
 class MockProvider(BaseLLMProvider):
     async def generate(self, prompt: str) -> str:
         # Simulate network delay
         await asyncio.sleep(1)
         
-        # Simple heuristic to return semi-relevant content
-        if "lesson plan" in prompt.lower():
-            return """
-## Weekly Lesson Plan: Introduction to Topic
+        # Responses for when we are in fallback mode
+        placeholders = [
+            "I understand you're asking about this topic. As Vasu AI, I'd suggest focusing on building conceptual clarity through local examples and interactive activities.",
+            "That's an interesting perspective. Indian classrooms often benefit from combining traditional wisdom with modern pedagogical tools like active learning.",
+            "I'm currently in a limited response mode, but I can tell you that centering the student's experience in the local context is key to engagement.",
+            "Namaste! I'm processing your request. Even in this simplified mode, I advocate for syllabus alignment and cultural relevance in every lesson."
+        ]
+        
+        # Only return keyword-specific content if it's the PRIMARY intent (hacky heuristic)
+        # We check if the keyword is near the end of the prompt (where the user's message usually is)
+        user_part = prompt.split("CURRENT MESSAGE FROM TEACHER:")[-1].lower() if "CURRENT MESSAGE FROM TEACHER:" in prompt else prompt.lower()
+        
+        if "lesson plan" in user_part:
+            return f"## [Draft] Lesson Plan Suggestion\n\n**Topic Focus:** Focus on the core aspects identified.\n\n### Activities\n- Discussion on local relevance.\n- Group exercise with peer feedback."
+        elif "quiz" in user_part:
+            return "## [Draft] Quiz Questions\n\n1. Explain the importance of this topic in your daily life?\n2. Give one local example related to this concept."
+        elif "story" in user_part:
+            return "## [Draft] Story Outline\n\nOnce in a small village in India, a young student discovered that learning isn't just in books, but in the world around them... (This is a simplified response)."
+            
+        return random.choice(placeholders)
 
-**Objective:** Students will understand the core concepts.
-
-### Day 1: Introduction
-- **Activity:** Open discussion about the topic.
-- **Resource:** Textbooks page 24-30.
-
-### Day 2: Deep Dive
-- **Activity:** Group work and presentations.
-- **Assessment:** Short quiz.
-
-### Day 3: Practical Application
-- **Activity:** Real-world examples.
-- **Homework:** Write a short essay.
-"""
-        elif "quiz" in prompt.lower():
-            return """
-## Generated Quiz
-
-**1. What is the main concept of this topic?**
-   a) Concept A
-   b) Concept B
-   c) Concept C
-   d) All of the above
-
-**2. Which of the following is true?**
-   a) Statement 1
-   b) Statement 2
-   c) Statement 3
-"""
-        elif "story" in prompt.lower():
-            return """
-**Title: The Adventure of Learning**
-
-Once upon a time, there was a student who loved to learn. They asked many questions and explored the world around them.
-One day, they discovered a magical book that could answer any question...
-"""
-        else:
-            return "Generated content from backend provider."
