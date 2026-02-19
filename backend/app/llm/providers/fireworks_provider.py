@@ -1,6 +1,9 @@
 import openai
+import logging
 from app.core.config import settings
 from app.llm.providers.base import BaseLLMProvider
+
+logger = logging.getLogger(__name__)
 
 class FireworksProvider(BaseLLMProvider):
     def __init__(self):
@@ -15,14 +18,14 @@ class FireworksProvider(BaseLLMProvider):
 
     async def generate(self, prompt: str) -> str:
         try:
-            print(f"🚀 Fireworks Attempt: llama-v3-70b-instruct")
+            logger.info("[FIREWORKS] Attempt: llama-v3p1-70b-instruct")
             response = await self.client.chat.completions.create(
-                model="accounts/fireworks/models/llama-v3-70b-instruct",
+                model="accounts/fireworks/models/llama-v3p1-70b-instruct",
                 messages=[{"role": "user", "content": prompt}],
                 max_tokens=2048
             )
             return response.choices[0].message.content
         except Exception as e:
-            print(f"❌ Fireworks Error: {e}")
+            logger.error("[FIREWORKS] Error: %s", e)
             raise e
 

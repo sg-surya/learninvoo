@@ -62,7 +62,9 @@ async def create_user_signup(
             detail="The user with this username already exists in the system",
         )
         
+    
     user_obj = models.User(
+
         email=user_in.email,
         hashed_password=security.get_password_hash(user_in.password),
         full_name=user_in.full_name,

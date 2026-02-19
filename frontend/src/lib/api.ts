@@ -1,6 +1,6 @@
 import axios, { InternalAxiosRequestConfig, AxiosError, AxiosResponse } from 'axios';
 
-const API_BASE_URL = 'http://127.0.0.1:8000/api/v1';
+const API_BASE_URL = 'http://localhost:8000/api/v1';
 
 // Create an axios instance
 const api = axios.create({
@@ -83,8 +83,16 @@ export const getBooks = async (skip = 0, limit = 100) => {
 // Auth helpers
 export const login = async (formData: FormData) => {
     try {
-        const response = await api.post('/auth/login', formData, {
-            headers: { 'Content-Type': 'multipart/form-data' },
+        // Convert FormData to URLSearchParams for OAuth2 compatibility
+        const params = new URLSearchParams();
+        formData.forEach((value, key) => {
+            params.append(key, value.toString());
+        });
+
+        const response = await api.post('/auth/login', params, {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
         });
         return response.data;
     } catch (error: any) {

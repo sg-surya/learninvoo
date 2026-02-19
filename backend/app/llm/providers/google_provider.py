@@ -1,52 +1,53 @@
-import google.generativeai as genai
+from google import genai
 import os
+import logging
 from app.llm.providers.base import BaseLLMProvider
 from dotenv import load_dotenv
 
 load_dotenv()
+logger = logging.getLogger(__name__)
 
 class GoogleProvider(BaseLLMProvider):
     def __init__(self):
         api_key = os.getenv("GOOGLE_API_KEY")
         if not api_key:
             raise ValueError("GOOGLE_API_KEY not found in environment variables")
-        genai.configure(api_key=api_key)
-        preferred_model = os.getenv("GOOGLE_LLM_MODEL", "gemini-1.5-flash")
         
-        # Try to verify the preferred model exists, otherwise pick first available
-        try:
-            self.model = genai.GenerativeModel(preferred_model)
-            # We don't verify here as it might require a network call
-        except Exception:
-            # Fallback if initialization fails
-            self.model = genai.GenerativeModel("gemini-pro")
+        self.client = genai.Client(api_key=api_key)
+        self.preferred_model = os.getenv("GOOGLE_LLM_MODEL", "gemini-2.0-flash")
             
     async def generate(self, prompt: str) -> str:
         try:
             # TRY 1: Primary Model (from ENV or default)
-            print(f"🚀 Gemini Attempt: {self.model.model_name}")
-            response = await self.model.generate_content_async(prompt)
+            logger.info("[GEMINI] Attempt: %s", self.preferred_model)
+            response = self.client.models.generate_content(
+                model=self.preferred_model,
+                contents=prompt,
+            )
             if response and response.text:
                 return response.text
             raise Exception("Gemini returned an empty response")
         except Exception as e:
             error_str = str(e).lower()
-            print(f"❌ Gemini Primary Error ({self.model.model_name}): {error_str}")
+            logger.error("[GEMINI] Primary Error (%s): %s", self.preferred_model, error_str[:200])
             
-            # TRY 2: Fallback to a very stable model if first one fails
-            # Most common errors are 404 (wrong name) or 403 (quota/region)
+            # TRY 2: Fallback to stable models if first one fails
             if "not found" in error_str or "404" in error_str or "unsupported" in error_str:
-                fallback_names = ["gemini-1.5-flash-latest", "gemini-pro"]
+                fallback_names = ["gemini-2.0-flash", "gemini-1.5-flash"]
                 for model_name in fallback_names:
+                    if model_name == self.preferred_model:
+                        continue
                     try:
-                        print(f"🔄 Trying Gemini Fallback: {model_name}")
-                        fallback_model = genai.GenerativeModel(model_name)
-                        response = await fallback_model.generate_content_async(prompt)
+                        logger.info("[GEMINI] Trying fallback: %s", model_name)
+                        response = self.client.models.generate_content(
+                            model=model_name,
+                            contents=prompt,
+                        )
                         if response and response.text:
                             return response.text
                     except Exception as fe:
-                        print(f"⚠️ Fallback {model_name} also failed: {fe}")
+                        logger.warning("[GEMINI] Fallback %s also failed: %s", model_name, fe)
             
-            # If all attempts within this provider fail, re-raise to trigger FallbackManager (MockProvider)
+            # If all attempts within this provider fail, re-raise to trigger FallbackManager
             raise e
 

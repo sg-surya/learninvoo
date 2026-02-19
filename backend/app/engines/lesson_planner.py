@@ -47,7 +47,8 @@ class LessonPlannerEngine:
             return json.loads(cleaned_response)
         except Exception as e:
             # Fallback if AI fails completely - Make it VERY relevant
-            print(f"❌ JSON Parse Error: {str(e)} | Raw Response starts with: {response[:100]}")
+            import logging
+            logging.getLogger(__name__).error("[LESSON] JSON Parse Error: %s | Raw: %s", str(e), response[:100])
             return {
                 "title": f"Mastery in {topic}",
                 "subtitle": f"A comprehensive lesson for {grade}",

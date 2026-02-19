@@ -1,23 +1,31 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, status
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.api.routes import lesson, quiz, story, user, health, auth, content, library, chat, simulation, visual, tools
 
+
 app = FastAPI(title=settings.PROJECT_NAME)
 
-# Set up CORS
-origins = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-]
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    print(f"DEBUG: Validation Error at {request.url.path}")
+    print(f"DEBUG: Error details: {exc.errors()}")
+    print(f"DEBUG: Request body mapping: {exc.body}")
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content={"detail": exc.errors(), "body": str(exc.body)},
+    )
 
+
+# Set up CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-    allow_origin_regex="https?://.*", # Allow all origins for development to fix CORS issues
 )
 
 # Include Routers

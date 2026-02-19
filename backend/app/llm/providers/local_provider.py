@@ -1,9 +1,11 @@
 import httpx
 import os
+import logging
 from app.llm.providers.base import BaseLLMProvider
 from dotenv import load_dotenv
 
 load_dotenv()
+logger = logging.getLogger(__name__)
 
 class LocalProvider(BaseLLMProvider):
     def __init__(self):
@@ -28,5 +30,5 @@ class LocalProvider(BaseLLMProvider):
                     return data["choices"][0]["message"]["content"]
                 raise Exception(f"Local LLM Error: {response.status_code}")
         except Exception as e:
-            print(f"❌ Local LLM Error: {str(e)}")
+            logger.error("[LOCAL] LLM Error: %s", str(e))
             raise e
