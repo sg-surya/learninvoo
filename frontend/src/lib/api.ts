@@ -36,10 +36,8 @@ export const generateContent = async (endpoint: string, data: any) => {
         return response.data;
     } catch (error: any) {
         console.error('API Error:', error);
-        throw {
-            message: error.response?.data?.detail || 'Something went wrong',
-            status: error.response?.status,
-        };
+        const message = error.response?.data?.detail || error.message || 'Something went wrong';
+        throw new Error(message);
     }
 };
 
@@ -54,7 +52,8 @@ export const getContents = async (skip = 0, limit = 100) => {
         const response = await api.get(`/content/?skip=${skip}&limit=${limit}`);
         return response.data;
     } catch (error: any) {
-        throw { message: error.response?.data?.detail || 'Failed to fetch content' };
+        const message = error.response?.data?.detail || error.message || 'Failed to fetch content';
+        throw new Error(message);
     }
 };
 
@@ -63,7 +62,8 @@ export const saveContent = async (content: any) => {
         const response = await api.post('/content/', content);
         return response.data;
     } catch (error: any) {
-        throw { message: error.response?.data?.detail || 'Failed to save content' };
+        const message = error.response?.data?.detail || error.message || 'Failed to save content';
+        throw new Error(message);
     }
 };
 
@@ -86,10 +86,10 @@ export const login = async (formData: FormData) => {
         });
         return response.data;
     } catch (error: any) {
-        throw {
-            message: error.response?.data?.detail || 'Login failed',
-            status: error.response?.status,
-        };
+        const message = error.response?.data?.detail || error.message || 'Login failed';
+        const err = new Error(message) as any;
+        err.status = error.response?.status;
+        throw err;
     }
 };
 
@@ -98,10 +98,10 @@ export const signup = async (data: any) => {
         const response = await api.post('/auth/signup', data);
         return response.data;
     } catch (error: any) {
-        throw {
-            message: error.response?.data?.detail || 'Signup failed',
-            status: error.response?.status,
-        };
+        const message = error.response?.data?.detail || error.message || 'Signup failed';
+        const err = new Error(message) as any;
+        err.status = error.response?.status;
+        throw err;
     }
 };
 
@@ -110,10 +110,10 @@ export const getMe = async () => {
         const response = await api.get('/user/me');
         return response.data;
     } catch (error: any) {
-        throw {
-            message: error.response?.data?.detail || 'Failed to fetch user',
-            status: error.response?.status,
-        };
+        const message = error.response?.data?.detail || error.message || 'Failed to fetch user';
+        const err = new Error(message) as any;
+        err.status = error.response?.status;
+        throw err;
     }
 }
 
