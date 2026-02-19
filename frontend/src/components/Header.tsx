@@ -382,23 +382,23 @@ const Header: React.FC = () => {
                 <div className="relative" ref={dropdownRef} onMouseEnter={() => setIsDropdownOpen(true)} onMouseLeave={() => setIsDropdownOpen(false)}>
                     <Link
                         href="/profile"
-                        className={`group flex items-center gap-2.5 px-3 py-1.5 bg-white/40 dark:bg-black/20 backdrop-blur-xl rounded-full border border-white/40 dark:border-white/10 shadow-sm cursor-pointer transition-all hover:bg-white/60 ${isDropdownOpen ? 'ring-2 ring-primary-custom/20 border-primary-custom/30' : ''}`}
+                        className={`group flex items-center gap-2.5 px-3 py-1.5 bg-card-bg/90 backdrop-blur-xl rounded-full border border-border shadow-sm cursor-pointer transition-all hover:bg-card-bg ${isDropdownOpen ? 'ring-2 ring-primary-custom/20 border-primary-custom/30' : ''}`}
                     >
                         <div className="relative">
-                            <div className="w-8 h-8 rounded-full overflow-hidden border border-white/60 bg-muted shadow-sm flex-shrink-0">
+                            <div className="w-8 h-8 rounded-full overflow-hidden border border-border bg-muted shadow-sm flex-shrink-0">
                                 {user?.profileImage ? (
                                     <img src={user.profileImage} alt="User" className="w-full h-full object-cover" />
                                 ) : (
                                     <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.fullName || 'User'}`} alt="User" className="w-full h-full object-cover" />
                                 )}
                             </div>
-                            <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full ring-1 ring-emerald-500/20"></div>
+                            <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-card-bg rounded-full ring-1 ring-emerald-500/20"></div>
                         </div>
                         <div className="flex flex-col items-start pr-1 max-w-[100px]">
-                            <span className="text-[13px] font-bold text-slate-800 dark:text-slate-100 leading-none mb-0.5 truncate w-full transition-colors">
+                            <span className="text-[13px] font-bold text-foreground leading-none mb-0.5 truncate w-full transition-colors">
                                 {user?.fullName || 'User'}
                             </span>
-                            <span className="text-[10px] font-medium text-slate-500/70 dark:text-slate-400/60 leading-none transition-colors">Free plan</span>
+                            <span className="text-[10px] font-medium text-muted-foreground leading-none transition-colors">Free plan</span>
                         </div>
                         <div className="text-muted-foreground/30 group-hover:text-primary-custom transition-all duration-300">
                             <ChevronDown size={14} className={`transition-transform duration-300 ${isDropdownOpen ? 'rotate-180 text-primary-custom' : ''}`} />
@@ -412,30 +412,29 @@ const Header: React.FC = () => {
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, y: 8, scale: 0.98 }}
                                 transition={{ duration: 0.15, ease: "easeOut" }}
-                                style={{ boxShadow: '0 15px 35px rgba(0,0,0,0.1)' }}
-                                className="absolute right-0 mt-2.5 w-[230px] bg-white/70 dark:bg-slate-900/80 backdrop-blur-3xl rounded-[1.25rem] border border-white/60 dark:border-white/10 p-2.5 z-[100] overflow-hidden transition-colors"
+                                className="absolute right-0 mt-2.5 w-[230px] bg-card-bg backdrop-blur-xl rounded-[1.25rem] border border-border shadow-[0_15px_40px_rgba(0,0,0,0.08)] dark:shadow-[0_15px_40px_rgba(0,0,0,0.3)] p-2.5 z-[100] overflow-hidden transition-colors"
                             >
                                 {/* Compact User Info Header */}
                                 <Link
                                     href="/profile"
-                                    className="block px-2.5 py-2 mb-1.5 bg-white/40 dark:bg-white/5 rounded-[1rem] border border-white/50 dark:border-white/5 shadow-sm hover:bg-white/60 dark:hover:bg-white/10 transition-all group/card"
+                                    className="block px-2.5 py-2 mb-1.5 bg-muted/50 rounded-[1rem] border border-border/50 shadow-sm hover:bg-muted transition-all group/card"
                                 >
                                     <div className="flex items-center gap-2.5">
                                         <div className="relative">
-                                            <div className="w-9 h-9 rounded-xl border border-white/60 dark:border-white/10 shadow-sm overflow-hidden bg-white dark:bg-slate-800">
+                                            <div className="w-9 h-9 rounded-xl border border-border shadow-sm overflow-hidden bg-card-bg">
                                                 {user?.profileImage ? (
                                                     <img src={user.profileImage} alt="User" className="w-full h-full object-cover" />
                                                 ) : (
                                                     <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.fullName || 'User'}`} alt="User" className="w-full h-full object-cover" />
                                                 )}
                                             </div>
-                                            <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-500 border-2 border-white dark:border-slate-900 rounded-full"></div>
+                                            <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-500 border-2 border-card-bg rounded-full"></div>
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <h4 className="text-[13px] font-black text-slate-800 dark:text-slate-100 leading-tight tracking-tight uppercase italic truncate group-hover/card:text-primary-custom transition-colors">
+                                            <h4 className="text-[13px] font-black text-foreground leading-tight tracking-tight uppercase italic truncate group-hover/card:text-primary-custom transition-colors">
                                                 {user?.fullName || 'User'}
                                             </h4>
-                                            <p className="text-[9px] font-bold text-slate-500/70 dark:text-slate-400/60 leading-tight uppercase tracking-widest truncate">
+                                            <p className="text-[9px] font-bold text-muted-foreground leading-tight uppercase tracking-widest truncate">
                                                 {user?.username ? `@${user.username}` : (user?.email || 'FREE PLAN')}
                                             </p>
                                         </div>
@@ -446,9 +445,9 @@ const Header: React.FC = () => {
                                 <div className="space-y-0.5">
                                     <button
                                         onClick={() => togglePricing(true)}
-                                        className="w-full flex items-center gap-2.5 px-2.5 py-2 text-[12px] font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-white/5 rounded-lg transition-all group"
+                                        className="w-full flex items-center gap-2.5 px-2.5 py-2 text-[12px] font-bold text-foreground/70 hover:text-foreground hover:bg-muted rounded-lg transition-all group"
                                     >
-                                        <CreditCard size={15} className="text-slate-400 dark:text-slate-500 group-hover:text-primary-custom" />
+                                        <CreditCard size={15} className="text-muted-foreground group-hover:text-primary-custom" />
                                         <span>Upgrade plan</span>
                                     </button>
 
@@ -461,27 +460,27 @@ const Header: React.FC = () => {
 
                                     <button
                                         onClick={() => { setIsDropdownOpen(false); setIsSettingsOpen(true); }}
-                                        className="w-full flex items-center gap-2.5 px-2.5 py-2 text-[12px] font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-white/5 rounded-lg transition-all group"
+                                        className="w-full flex items-center gap-2.5 px-2.5 py-2 text-[12px] font-bold text-foreground/70 hover:text-foreground hover:bg-muted rounded-lg transition-all group"
                                     >
-                                        <Settings size={15} className="text-slate-400 dark:text-slate-500 group-hover:text-primary-custom" />
+                                        <Settings size={15} className="text-muted-foreground group-hover:text-primary-custom" />
                                         <span>Settings</span>
                                     </button>
 
-                                    <div className="h-px bg-slate-900/[0.05] dark:bg-white/[0.05] my-1 mx-1.5"></div>
+                                    <div className="h-px bg-border/50 my-1 mx-1.5"></div>
 
-                                    <button className="w-full flex items-center justify-between px-2.5 py-2 text-[12px] font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-white/5 rounded-lg transition-all group">
+                                    <button className="w-full flex items-center justify-between px-2.5 py-2 text-[12px] font-bold text-foreground/70 hover:text-foreground hover:bg-muted rounded-lg transition-all group">
                                         <div className="flex items-center gap-2.5">
-                                            <Info size={15} className="text-slate-400 dark:text-slate-500 group-hover:text-primary-custom" />
+                                            <Info size={15} className="text-muted-foreground group-hover:text-primary-custom" />
                                             <span>Help</span>
                                         </div>
-                                        <ChevronDown size={12} className="text-slate-300 dark:text-slate-600 -rotate-90" />
+                                        <ChevronDown size={12} className="text-muted-foreground/50 -rotate-90" />
                                     </button>
 
                                     <button
                                         onClick={handleLogout}
-                                        className="w-full flex items-center gap-2.5 px-2.5 py-2 text-[12px] font-bold text-slate-600 dark:text-slate-400 hover:text-red-600 hover:bg-red-50/50 dark:hover:bg-red-500/10 rounded-lg transition-all group"
+                                        className="w-full flex items-center gap-2.5 px-2.5 py-2 text-[12px] font-bold text-foreground/70 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-all group"
                                     >
-                                        <LogOut size={15} className="text-slate-400 dark:text-slate-500 group-hover:text-red-500" />
+                                        <LogOut size={15} className="text-muted-foreground group-hover:text-red-500" />
                                         <span>Log out</span>
                                     </button>
                                 </div>
