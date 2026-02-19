@@ -1,35 +1,40 @@
 import httpx
-import json
+import logging
 from app.core.config import settings
 from app.llm.providers.base import BaseLLMProvider
 
+logger = logging.getLogger(__name__)
+
+
 class SarvamProvider(BaseLLMProvider):
+    """Sarvam AI LLM Provider — Primary provider for Learnivo."""
+    
     def __init__(self):
         self.api_key = settings.SARVAM_API_KEY
         if not self.api_key:
-             raise ValueError("SARVAM_API_KEY not set")
-        self.base_url = "https://api.sarvam.ai/v1/chat/completions" 
+            raise ValueError("SARVAM_API_KEY not set in environment variables")
+        self.base_url = "https://api.sarvam.ai/v1/chat/completions"
+        self.model = "sarvam-m"
+        logger.info("[SARVAM] Initialized with model: %s", self.model)
         
     async def generate(self, prompt: str) -> str:
         headers = {
             "Content-Type": "application/json",
-            "api-subscription-key": f"{self.api_key}" 
+            "api-subscription-key": self.api_key
         }
         
-        # Sarvam usually supports OpenAI compatible schema
         payload = {
-            "model": "sarvam-2b", # Using a known model like sarvam-2b (often aliased but verified sarvam-m works too)
-            # Actually let's use the one that definitely worked: sarvam-m
-            "model": "sarvam-m",
+            "model": self.model,
             "messages": [
                 {"role": "user", "content": prompt}
             ],
-            "max_tokens": 1024,
+            "max_tokens": 2048,
             "temperature": 0.7
         }
         
         async with httpx.AsyncClient() as client:
             try:
+                logger.info("[SARVAM] Sending request to %s with model %s", self.base_url, self.model)
                 response = await client.post(
                     self.base_url, 
                     headers=headers, 
@@ -39,17 +44,23 @@ class SarvamProvider(BaseLLMProvider):
                 response.raise_for_status()
                 data = response.json()
                 
-                # Handling OpenAI format response
+                # OpenAI-compatible response format
                 if "choices" in data and len(data["choices"]) > 0:
-                    return data["choices"][0]["message"]["content"]
+                    content = data["choices"][0]["message"]["content"]
+                    logger.info("[SARVAM] Response received successfully (%d chars)", len(content))
+                    return content
                 elif "content" in data:
                     return data["content"]
                 else:
-                    raise Exception(f"Unexpected response format: {data}")
+                    raise Exception(f"Unexpected Sarvam response format: {list(data.keys())}")
                     
             except httpx.HTTPStatusError as e:
-                print(f"Sarvam API Error: {e.response.text}")
-                raise e
+                error_text = e.response.text[:200] if e.response else "No response"
+                logger.error("[SARVAM] API Error %d: %s", e.response.status_code, error_text)
+                raise Exception(f"Sarvam API Error ({e.response.status_code}): {error_text}")
+            except httpx.TimeoutException:
+                logger.error("[SARVAM] Request timed out after 30s")
+                raise Exception("Sarvam API request timed out")
             except Exception as e:
-                print(f"Sarvam Provider Error: {e}")
+                logger.error("[SARVAM] Provider Error: %s", str(e)[:200])
                 raise e

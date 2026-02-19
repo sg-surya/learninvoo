@@ -1,3 +1,4 @@
+from app.llm.providers.sarvam_provider import SarvamProvider
 from app.llm.providers.google_provider import GoogleProvider
 from app.llm.fallback_manager import FallbackManager
 import logging
@@ -6,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 
 class LLMRouter:
-    """Singleton LLM Router - Only Google Gemini provider."""
+    """Singleton LLM Router — Sarvam AI (Primary) + Google Gemini (Fallback)."""
     
     _instance = None
     _lock = __import__('threading').Lock()
@@ -26,16 +27,24 @@ class LLMRouter:
         
         self.providers = []
         
-        # Google Gemini — Primary and only provider
-        logger.info("[INIT] Initializing Google Gemini Provider...")
+        # 1. Sarvam AI — Primary Provider
+        try:
+            self.providers.append(SarvamProvider())
+            logger.info("[ROUTER] Sarvam AI loaded as PRIMARY provider")
+        except Exception as e:
+            logger.error("[ROUTER] Sarvam AI failed to init: %s", str(e))
+
+        # 2. Google Gemini — Fallback Provider
         try:
             self.providers.append(GoogleProvider())
-            logger.info("[OK] Google Gemini Provider loaded successfully")
+            logger.info("[ROUTER] Google Gemini loaded as FALLBACK provider")
         except Exception as e:
-            logger.error("[FAIL] Google Provider failed to initialize: %s", str(e))
+            logger.error("[ROUTER] Google Gemini failed to init: %s", str(e))
 
-        logger.info("[READY] LLMRouter initialized with %d provider(s)", len(self.providers))
+        logger.info("[ROUTER] Initialized with %d provider(s)", len(self.providers))
         self._initialized = True
 
     async def generate(self, prompt: str) -> str:
+        if not self.providers:
+            raise Exception("No LLM providers available. Check your API keys in .env")
         return await FallbackManager.try_providers(self.providers, prompt)
