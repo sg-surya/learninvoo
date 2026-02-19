@@ -132,6 +132,13 @@ const ChatView = () => {
         if (textareaRef.current) textareaRef.current.style.height = 'auto';
 
         try {
+            // Get current session messages for history context
+            const currentSession = sessions.find(s => s.id === targetId);
+            const historyMessages = currentSession?.messages
+                ?.filter(m => m.id !== userMsg.id) // exclude the message we just added
+                ?.slice(-10) // last 10 messages for context
+                ?.map(m => ({ role: m.role, content: m.content })) || [];
+
             const response = await fetch('http://127.0.0.1:8000/api/v1/chat/send', {
                 method: 'POST',
                 headers: {
@@ -139,6 +146,7 @@ const ChatView = () => {
                 },
                 body: JSON.stringify({
                     message: messageText,
+                    history: historyMessages,
                     deeper_research: isDeeperResearch
                 })
             });
