@@ -8,6 +8,9 @@ import {
     FileText, Presentation, Info, Package, Activity, ClipboardCheck,
     Send, Mic, Paperclip, History, Bot, Zap
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { saveGeneratedContent, generateId } from '@/lib/storage';
 
 type PlanMode = 'topic' | 'book';
@@ -670,8 +673,10 @@ const LessonPlannerView: React.FC = () => {
                                     <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${msg.role === 'user' ? 'bg-primary-custom' : 'bg-foreground'}`}>
                                         {msg.role === 'user' ? <Users size={14} className="text-white" /> : <Bot size={14} className="text-background" />}
                                     </div>
-                                    <div className={`max-w-[85%] p-4 rounded-2xl text-xs font-bold leading-relaxed ${msg.role === 'user' ? 'bg-primary-custom/10 text-primary-custom rounded-tr-none' : 'bg-muted text-foreground rounded-tl-none border border-border'}`}>
-                                        {msg.content}
+                                    <div className={`max-w-[85%] p-4 rounded-2xl text-xs font-bold leading-relaxed markdown-container ${msg.role === 'user' ? 'bg-primary-custom/10 text-primary-custom rounded-tr-none' : 'bg-muted text-foreground rounded-tl-none border border-border'}`}>
+                                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                            {msg.content}
+                                        </ReactMarkdown>
                                     </div>
                                 </div>
                             ))

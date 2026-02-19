@@ -32,6 +32,8 @@ import {
     PanelLeft
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 const generateUUID = () => {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
@@ -479,7 +481,11 @@ const ChatView = () => {
                                                 ? 'bg-muted text-foreground rounded-tr-none border border-border'
                                                 : 'bg-card-bg border border-border text-foreground rounded-tl-none shadow-xl shadow-lime-500/5 border-l-[4px] border-l-lime-500'
                                                 }`}>
-                                                <p className="text-[15px] font-medium leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+                                                <div className="text-[15px] font-medium leading-relaxed markdown-container">
+                                                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                                        {msg.content}
+                                                    </ReactMarkdown>
+                                                </div>
 
                                                 {msg.role === 'assistant' && (
                                                     <div className="mt-4 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">

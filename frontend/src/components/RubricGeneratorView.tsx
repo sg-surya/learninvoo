@@ -7,6 +7,8 @@ import {
     Table, Layout, Edit3, Trash2, Copy, Save, Share2, Filter, MoreHorizontal, Settings
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { saveGeneratedContent, generateId } from '@/lib/storage';
 
 type ViewState = 'form' | 'generating' | 'result';
@@ -345,7 +347,13 @@ const RubricGeneratorView: React.FC = () => {
                                                         className="w-full bg-muted/30 border-2 border-transparent focus:border-primary-custom/30 rounded-2xl p-4 focus:bg-card-bg text-sm font-bold resize-none text-foreground leading-relaxed outline-none transition-all"
                                                         rows={5}
                                                     />
-                                                ) : desc}
+                                                ) : (
+                                                    <div className="markdown-container">
+                                                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                                            {desc}
+                                                        </ReactMarkdown>
+                                                    </div>
+                                                )}
                                             </div>
                                             {isEditing && (
                                                 <div className="absolute top-4 right-4 opacity-0 group-hover/row:opacity-100 transition-opacity">

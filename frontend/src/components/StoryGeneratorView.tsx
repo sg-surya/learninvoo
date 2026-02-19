@@ -7,6 +7,8 @@ import {
     Book, Music, Image as ImageIcon, Volume2, Save, Share2, Type, Languages
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { saveGeneratedContent, generateId } from '@/lib/storage';
 
 type ViewState = 'form' | 'generating' | 'result';
@@ -364,9 +366,11 @@ const StoryGeneratorView: React.FC = () => {
 
                                 <div className="relative">
                                     <div className="absolute left-[-40px] top-0 bottom-0 w-px bg-gradient-to-b from-primary-custom/20 via-primary-custom/5 to-transparent" />
-                                    <p className="text-foreground/90 leading-relaxed font-bold text-justify whitespace-pre-wrap uppercase tracking-tight" style={{ fontSize: fontSize, lineHeight: 1.8 }}>
-                                        {generatedStory?.chapters[currentChapter].content}
-                                    </p>
+                                    <div className="text-foreground/90 leading-relaxed font-bold markdown-container" style={{ fontSize: fontSize, lineHeight: 1.8 }}>
+                                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                            {generatedStory?.chapters[currentChapter].content || ''}
+                                        </ReactMarkdown>
+                                    </div>
                                 </div>
                             </motion.article>
                         </AnimatePresence>

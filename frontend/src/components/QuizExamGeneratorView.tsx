@@ -7,6 +7,8 @@ import {
     FileText, HelpCircle, List, Clock, ShieldCheck, Share2, Copy, Save, Eye, EyeOff, Wand2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { saveGeneratedContent, generateId } from '@/lib/storage';
 
 type ViewState = 'form' | 'generating' | 'result';
@@ -363,7 +365,11 @@ const QuizExamGeneratorView: React.FC = () => {
                                         {idx + 1}
                                     </div>
                                     <div className="flex-1 pt-2">
-                                        <h3 className="text-2xl font-black text-foreground leading-snug mb-10 tracking-tight uppercase italic">{q.text}</h3>
+                                        <div className="text-2xl font-black text-foreground leading-snug mb-10 tracking-tight italic markdown-container">
+                                            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                                {q.text}
+                                            </ReactMarkdown>
+                                        </div>
 
                                         {q.options && (
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
@@ -376,7 +382,11 @@ const QuizExamGeneratorView: React.FC = () => {
                                                                 : 'bg-muted/30 border-transparent text-muted-foreground group-hover/q:border-border'}`}
                                                     >
                                                         <span className="text-primary-custom/40 mr-4 font-black">{String.fromCharCode(65 + i)}</span>
-                                                        <span className="uppercase tracking-tight">{opt}</span>
+                                                        <span className="tracking-tight markdown-container inline-block">
+                                                            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                                                {opt}
+                                                            </ReactMarkdown>
+                                                        </span>
                                                     </div>
                                                 ))}
                                             </div>
@@ -396,9 +406,11 @@ const QuizExamGeneratorView: React.FC = () => {
                                                             <div className="flex items-center gap-3 text-primary-custom font-black text-[10px] uppercase tracking-[0.3em] mb-4">
                                                                 <Check size={18} /> Correct Answer: <span className="text-xs ml-2 text-foreground">{q.answer}</span>
                                                             </div>
-                                                            <p className="text-muted-foreground text-base font-bold leading-relaxed italic uppercase tracking-tight">
-                                                                "{q.explanation}"
-                                                            </p>
+                                                            <div className="text-muted-foreground text-base font-bold leading-relaxed italic tracking-tight markdown-container">
+                                                                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                                                    {q.explanation || ''}
+                                                                </ReactMarkdown>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </motion.div>

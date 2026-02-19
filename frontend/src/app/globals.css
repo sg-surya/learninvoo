@@ -312,3 +312,60 @@ button:active {
 .rich-text-editor-container .ProseMirror:focus {
   outline: none;
 }
+
+/* Markdown Container Styles */
+.markdown-container {
+  @apply space-y-2;
+}
+
+.markdown-container h1, .markdown-container h2, .markdown-container h3 {
+  @apply font-black tracking-tighter uppercase italic text-foreground mt-4 mb-2;
+}
+
+.markdown-container h1 { @apply text-2xl; }
+.markdown-container h2 { @apply text-xl; }
+.markdown-container h3 { @apply text-lg; }
+
+.markdown-container p {
+  @apply leading-relaxed;
+}
+
+.markdown-container ul, .markdown-container ol {
+  @apply pl-6 my-2 space-y-1;
+}
+
+.markdown-container ul {
+  @apply list-disc;
+}
+
+.markdown-container ol {
+  @apply list-decimal;
+}
+
+.markdown-container li {
+  @apply pl-1;
+}
+
+.markdown-container strong {
+  @apply font-black text-foreground;
+}
+
+.markdown-container blockquote {
+  @apply border-l-4 border-primary-custom pl-4 italic text-muted-foreground my-4;
+}
+
+.markdown-container code {
+  @apply bg-muted px-1.5 py-0.5 rounded text-sm font-mono border border-border;
+}
+
+.markdown-container pre {
+  @apply bg-muted p-4 rounded-xl border border-border overflow-x-auto my-4;
+}
+
+.markdown-container pre code {
+  @apply bg-transparent p-0 border-none;
+}
+
+.markdown-container a {
+  @apply text-primary-custom underline underline-offset-4 hover:opacity-80 transition-opacity;
+}
