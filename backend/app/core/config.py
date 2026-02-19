@@ -18,15 +18,15 @@ class Settings(BaseSettings):
     SQLALCHEMY_DATABASE_URI: str | None = None
     
     # LLM Providers
-    OPENAI_API_KEY: str | None = None
-    ANTHROPIC_API_KEY: str | None = None
     SARVAM_API_KEY: str | None = None
-    FIREWORKS_API_KEY: str | None = None
+    GOOGLE_API_KEY: str | None = None
+    GOOGLE_LLM_MODEL: str = "gemini-2.0-flash"
     
     # Redis
-    REDIS_HOST: str = "redis"
+    REDIS_HOST: str = "localhost"
     REDIS_PORT: int = 6379
     
+    # Security
     SECRET_KEY: str = "YOUR_SECRET_KEY"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
