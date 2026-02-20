@@ -13,10 +13,33 @@ class LessonPlannerEngine:
         language = payload.get("language", "English")
         fmt = payload.get("format", "Standard")
         details = payload.get("details", "")
+        book_id = payload.get("bookId")
+        chapter_ids = payload.get("chapterIds")
+
+        # RAG Context Retrieval
+        rag_context = ""
+        if book_id or chapter_ids:
+            try:
+                from app.services.rag_service import RAGService
+                rag_content = await RAGService.get_context(book_id, chapter_ids)
+                if rag_content:
+                    rag_context = f"""
+                    ## SOURCE MATERIAL (CRITICAL CONTEXT):
+                    The following content is from the teacher's selected book/chapters.
+                    You MUST base your lesson plan primarily on this material.
+                    Do not invent facts outside this source unless necessary for context.
+                    
+                    {rag_content[:20000]}  # Limiting context for safety
+                    """
+                    print(f"[RAG] Injected context length: {len(rag_content)}")
+            except Exception as e:
+                print(f"[RAG ERROR] Failed to fetch context: {e}")
         
         prompt = f"""
         {AIPrompts.SYSTEM_COMMON}
         {AIPrompts.LESSON_PLANNER}
+        
+        {rag_context}
         
         INPUT DATA:
         - Topic: {topic}

@@ -232,7 +232,9 @@ const LessonPlannerView: React.FC = () => {
                 days: days || '1',
                 language: language || 'English',
                 format: format || 'Standard',
-                details: objectives || ''
+                details: objectives || '',
+                bookId: mode === 'book' && selectedBook?.id ? String(selectedBook.id) : undefined,
+                chapterIds: mode === 'book' && selectedChapters.size > 0 ? Array.from(selectedChapters) : undefined
             });
 
             // The backend now returns the structured object directly
@@ -595,9 +597,9 @@ const LessonPlannerView: React.FC = () => {
                         <div className="absolute -top-40 -right-40 w-[500px] h-[500px] bg-primary-custom/5 rounded-full blur-[120px]" />
                         <div className="relative z-10 h-full flex flex-col justify-center">
                             {currentSlide === 0 && (<div className="animate-in slide-in-from-bottom-8 duration-700">
-                                <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-primary-custom/10 text-primary-custom text-[10px] font-black uppercase tracking-[0.3em] mb-12 border border-primary-custom/20"><Sparkles size={18} className="fill-primary-custom" /> Lesson Introduction</div>
-                                <h2 className="text-6xl md:text-7xl font-black text-foreground mb-8 tracking-tighter leading-[0.9] uppercase italic">{generatedPlan?.title?.split(' ').slice(0, 2).join(' ')}<br /><span className="text-primary-custom">{generatedPlan?.title?.split(' ').slice(2).join(' ')}</span></h2>
-                                <p className="text-2xl text-muted-foreground font-bold max-w-3xl leading-snug mb-16 uppercase opacity-80">{generatedPlan?.subtitle}</p>
+                                <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-primary-custom/10 text-primary-custom text-[10px] font-black uppercase tracking-[0.3em] mb-8 border border-primary-custom/20"><Sparkles size={18} className="fill-primary-custom" /> Lesson Introduction</div>
+                                <h2 className="text-4xl md:text-5xl font-black text-foreground mb-6 tracking-tighter leading-[0.95] uppercase italic">{generatedPlan?.title?.split(' ').slice(0, 2).join(' ')}<br /><span className="text-primary-custom">{generatedPlan?.title?.split(' ').slice(2).join(' ')}</span></h2>
+                                <p className="text-lg md:text-xl text-muted-foreground font-bold max-w-3xl leading-snug mb-12 uppercase opacity-80">{generatedPlan?.subtitle}</p>
                                 <div className="flex items-center gap-12">
                                     <div className="flex items-center gap-4"><div className="w-16 h-16 rounded-[2rem] bg-foreground flex items-center justify-center text-background shadow-lg"><Clock size={28} /></div><div><div className="text-[10px] text-muted-foreground font-black uppercase tracking-widest mb-1">Duration</div><div className="text-2xl font-black text-foreground italic">{generatedPlan?.duration}</div></div></div>
                                     <div className="w-px h-12 bg-border" />
@@ -605,29 +607,29 @@ const LessonPlannerView: React.FC = () => {
                                 </div>
                             </div>)}
                             {currentSlide === 1 && (<div className="animate-in fade-in duration-500">
-                                <div className="flex items-center gap-6 mb-12"><div className="w-16 h-16 rounded-3xl bg-muted flex items-center justify-center border border-border"><Target size={32} className="text-primary-custom" /></div><h3 className="text-4xl font-black text-foreground uppercase italic tracking-tighter">Learning Objectives</h3></div>
-                                <div className="grid grid-cols-1 gap-4 max-w-4xl">{generatedPlan?.objectives.map((obj, i) => (<div key={i} className="flex items-start gap-6 p-6 bg-muted/40 rounded-[2.5rem] border border-border/50 group hover:border-primary-custom/30 transition-all"><div className="w-10 h-10 rounded-2xl bg-primary-custom text-white flex items-center justify-center font-black text-lg shadow-lg shadow-primary-custom/20">{i + 1}</div><span className="text-foreground/90 font-black text-xl leading-tight uppercase tracking-tight">{obj}</span></div>))}</div>
+                                <div className="flex items-center gap-4 mb-8"><div className="w-14 h-14 rounded-3xl bg-muted flex items-center justify-center border border-border"><Target size={28} className="text-primary-custom" /></div><h3 className="text-3xl font-black text-foreground uppercase italic tracking-tighter">Learning Objectives</h3></div>
+                                <div className="grid grid-cols-1 gap-3 max-w-4xl">{generatedPlan?.objectives.map((obj, i) => (<div key={i} className="flex items-start gap-5 p-5 bg-muted/40 rounded-[2rem] border border-border/50 group hover:border-primary-custom/30 transition-all"><div className="w-8 h-8 rounded-xl bg-primary-custom text-white flex items-center justify-center font-black text-base shadow-lg shadow-primary-custom/20">{i + 1}</div><span className="text-foreground/90 font-black text-lg leading-tight uppercase tracking-tight">{obj}</span></div>))}</div>
                             </div>)}
                             {currentSlide === 2 && (<div className="animate-in fade-in duration-500">
-                                <div className="flex items-center gap-6 mb-12"><div className="w-16 h-16 rounded-3xl bg-muted flex items-center justify-center border border-border"><Package size={32} className="text-primary-custom" /></div><h3 className="text-4xl font-black text-foreground uppercase italic tracking-tighter">Required Materials</h3></div>
-                                <div className="grid grid-cols-2 gap-6">{generatedPlan?.materials.map((m, i) => (<div key={i} className="flex items-center gap-6 p-8 bg-muted/40 rounded-[3rem] border border-border/50 group hover:bg-card-bg hover:shadow-xl transition-all"><div className="w-16 h-16 rounded-[2rem] bg-amber-500/10 flex items-center justify-center border border-amber-500/20"><Lightbulb size={32} className="text-amber-500" /></div><span className="text-foreground font-black text-xl uppercase tracking-tighter leading-none">{m.name}</span></div>))}</div>
+                                <div className="flex items-center gap-4 mb-8"><div className="w-14 h-14 rounded-3xl bg-muted flex items-center justify-center border border-border"><Package size={28} className="text-primary-custom" /></div><h3 className="text-3xl font-black text-foreground uppercase italic tracking-tighter">Required Materials</h3></div>
+                                <div className="grid grid-cols-2 gap-4">{generatedPlan?.materials.map((m, i) => (<div key={i} className="flex items-center gap-5 p-6 bg-muted/40 rounded-[2.5rem] border border-border/50 group hover:bg-card-bg hover:shadow-xl transition-all"><div className="w-12 h-12 rounded-[1.5rem] bg-amber-500/10 flex items-center justify-center border border-amber-500/20"><Lightbulb size={24} className="text-amber-500" /></div><span className="text-foreground font-black text-lg uppercase tracking-tighter leading-none">{m.name}</span></div>))}</div>
                             </div>)}
                             {currentSlide > 2 && currentSlide < totalSlides - 1 && (<div className="animate-in slide-in-from-right-12 duration-500">
-                                <div className="flex justify-between items-center mb-12">
-                                    <div className="flex items-center gap-6">
-                                        <div className="w-16 h-16 rounded-[2rem] bg-primary-custom flex items-center justify-center text-white shadow-xl shadow-primary-custom/20 font-black text-2xl">{currentSlide - 2}</div>
-                                        <h3 className="text-5xl font-black text-foreground uppercase italic tracking-tighter leading-none">{generatedPlan?.activities[currentSlide - 3]?.title}</h3>
+                                <div className="flex justify-between items-center mb-8">
+                                    <div className="flex items-center gap-5">
+                                        <div className="w-12 h-12 rounded-[1.5rem] bg-primary-custom flex items-center justify-center text-white shadow-xl shadow-primary-custom/20 font-black text-xl">{currentSlide - 2}</div>
+                                        <h3 className="text-4xl font-black text-foreground uppercase italic tracking-tighter leading-none">{generatedPlan?.activities[currentSlide - 3]?.title}</h3>
                                     </div>
-                                    <span className="text-xs font-black text-primary-custom bg-primary-custom/10 px-6 py-3 rounded-full uppercase tracking-widest border border-primary-custom/20">{generatedPlan?.activities[currentSlide - 3]?.duration}</span>
+                                    <span className="text-[10px] font-black text-primary-custom bg-primary-custom/10 px-5 py-2.5 rounded-full uppercase tracking-widest border border-primary-custom/20">{generatedPlan?.activities[currentSlide - 3]?.duration}</span>
                                 </div>
                                 <div className="relative">
-                                    <div className="absolute -left-10 top-0 bottom-0 w-2 bg-primary-custom rounded-full" />
-                                    <p className="text-3xl text-foreground font-bold leading-relaxed italic opacity-90">{generatedPlan?.activities[currentSlide - 3]?.description}</p>
+                                    <div className="absolute -left-8 top-0 bottom-0 w-1.5 bg-primary-custom rounded-full" />
+                                    <p className="text-xl md:text-2xl text-foreground font-bold leading-relaxed italic opacity-90">{generatedPlan?.activities[currentSlide - 3]?.description}</p>
                                 </div>
                             </div>)}
                             {currentSlide === totalSlides - 1 && (<div className="animate-in fade-in duration-500">
-                                <div className="flex items-center gap-6 mb-12"><div className="w-16 h-16 rounded-3xl bg-muted flex items-center justify-center border border-border"><ClipboardCheck size={32} className="text-primary-custom" /></div><h3 className="text-4xl font-black text-foreground uppercase italic tracking-tighter">Assessment & Success</h3></div>
-                                <div className="grid grid-cols-1 gap-5">{generatedPlan?.assessment.map((a, i) => (<div key={i} className="flex items-center gap-6 p-6 bg-muted/40 rounded-[2.5rem] border border-border/50 hover:bg-card-bg transition-all shadow-sm"><div className="w-4 h-4 bg-primary-custom rounded-full shadow-[0_0_15px_rgba(var(--primary-rgb),0.6)] shrink-0" /><span className="text-foreground/80 font-black text-xl uppercase tracking-tight italic">{a}</span></div>))}</div>
+                                <div className="flex items-center gap-4 mb-8"><div className="w-14 h-14 rounded-3xl bg-muted flex items-center justify-center border border-border"><ClipboardCheck size={28} className="text-primary-custom" /></div><h3 className="text-3xl font-black text-foreground uppercase italic tracking-tighter">Assessment & Success</h3></div>
+                                <div className="grid grid-cols-1 gap-4">{generatedPlan?.assessment.map((a, i) => (<div key={i} className="flex items-center gap-5 p-5 bg-muted/40 rounded-[2rem] border border-border/50 hover:bg-card-bg transition-all shadow-sm"><div className="w-3 h-3 bg-primary-custom rounded-full shadow-[0_0_10px_rgba(var(--primary-rgb),0.6)] shrink-0" /><span className="text-foreground/80 font-black text-lg uppercase tracking-tight italic">{a}</span></div>))}</div>
                             </div>)}
                         </div>
                     </div>

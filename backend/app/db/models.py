@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime, JSON
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime, JSON, BigInteger
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from app.db.session import Base
@@ -49,8 +49,8 @@ class Content(Base):
     content_type = Column(String, default="text") # text, image, json
     tool_id = Column(String)
     
-    book_id = Column(Integer, ForeignKey("books.id"), nullable=True)
-    chapter_id = Column(Integer, ForeignKey("chapters.id"), nullable=True)
+    book_id = Column(BigInteger, ForeignKey("books.id"), nullable=True)
+    chapter_id = Column(BigInteger, ForeignKey("chapters.id"), nullable=True)
     user_id = Column(Integer, ForeignKey("users.id"))
     
     created_at = Column(DateTime(timezone=True), server_default=func.now())
@@ -63,7 +63,7 @@ class Content(Base):
 class Book(Base):
     __tablename__ = "books"
     
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(BigInteger, primary_key=True, index=True)
     title = Column(String, index=True)
     author = Column(String)
     grade_level = Column(String)
@@ -76,8 +76,8 @@ class Book(Base):
 class Chapter(Base):
     __tablename__ = "chapters"
     
-    id = Column(Integer, primary_key=True, index=True)
-    book_id = Column(Integer, ForeignKey("books.id"))
+    id = Column(BigInteger, primary_key=True, index=True)
+    book_id = Column(BigInteger, ForeignKey("books.id"))
     title = Column(String)
     sequence_number = Column(Integer)
     content = Column(Text) # The chapter text content

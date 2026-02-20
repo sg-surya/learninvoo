@@ -7,3 +7,5 @@ class StoryGeneratorRequest(BaseModel):
     genre: str
     length: Optional[str] = None
     language: Optional[str] = None
+    bookId: Optional[str] = None
+    chapterIds: Optional[List[str]] = None

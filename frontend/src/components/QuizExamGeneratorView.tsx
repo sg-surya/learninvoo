@@ -4,12 +4,13 @@ import React, { useState, useRef, useEffect } from 'react';
 import {
     Sparkles, CheckSquare, ChevronDown, ChevronLeft, ChevronRight, Check, X,
     ArrowLeft, Download, RefreshCw, Send, Bot, Zap, Plus, BookOpen, Search,
-    FileText, HelpCircle, List, Clock, ShieldCheck, Share2, Copy, Save, Eye, EyeOff, Wand2
+    FileText, HelpCircle, List, Clock, ShieldCheck, Share2, Copy, Save, Eye, EyeOff, Wand2, Layers
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { saveGeneratedContent, generateId } from '@/lib/storage';
+import * as api from '@/lib/api';
 
 type ViewState = 'form' | 'generating' | 'result';
 type SourceMode = 'topic' | 'book';
@@ -27,6 +28,26 @@ interface QuizContent {
     subject: string;
     grade: string;
     questions: Question[];
+}
+
+interface Chapter {
+    id: string;
+    title: string;
+    sequence_number: number;
+    content?: string;
+}
+
+interface Book {
+    id: string;
+    title: string;
+    author: string;
+    subject: string;
+    grade: string;
+    cover?: string;
+    color: string;
+    iconColor: string;
+    chapters: Chapter[];
+    classLevel?: string; // Matching LessonPlannerView structure
 }
 
 const CustomDropdown = ({
@@ -98,6 +119,15 @@ const QuizExamGeneratorView: React.FC = () => {
     const [questionCount, setQuestionCount] = useState('10');
     const [quizType, setQuizType] = useState('Multiple Choice');
 
+    // Book Selection State
+    const [books, setBooks] = useState<Book[]>([]);
+    const [selectedBook, setSelectedBook] = useState<Book | null>(null);
+    const [selectedChapters, setSelectedChapters] = useState<Set<string>>(new Set());
+    const [isBookPickerOpen, setIsBookPickerOpen] = useState(false);
+    const [bookSearchQuery, setBookSearchQuery] = useState('');
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+
     // Result states
     const [generatedQuiz, setGeneratedQuiz] = useState<QuizContent | null>(null);
     const [showAnswers, setShowAnswers] = useState(false);
@@ -108,41 +138,126 @@ const QuizExamGeneratorView: React.FC = () => {
     const difficultyOptions = ['Easy', 'Balanced', 'Challenging', 'Rigorous'];
     const typeOptions = ['Multiple Choice', 'True/False', 'Full Exam (Mixed)', 'Short Answer'];
 
-    const handleGenerate = () => {
+    useEffect(() => {
+        const fetchBooks = async () => {
+            try {
+                const fetchedBooks = await api.getBooks();
+                if (Array.isArray(fetchedBooks)) {
+                    // Map generic books to UI books if needed, or use as is
+                    // Ensure iconColor exists
+                    const uiBooks = fetchedBooks.map(b => ({
+                        ...b,
+                        iconColor: b.color?.replace('bg-', 'text-').replace('-100', '-500') || 'text-blue-500',
+                        color: b.color || 'bg-blue-100'
+                    }));
+                    setBooks(uiBooks);
+                }
+            } catch (error) {
+                console.error("Failed to fetch books:", error);
+            }
+        };
+        fetchBooks();
+    }, []);
+
+    // Filter books for search
+    const filteredBooks = books.filter(book =>
+        book.title.toLowerCase().includes(bookSearchQuery.toLowerCase()) ||
+        book.author.toLowerCase().includes(bookSearchQuery.toLowerCase())
+    );
+
+    const handleBookSelect = (book: Book) => {
+        setSelectedBook(book);
+        setSelectedChapters(new Set()); // Reset chapters
+        setIsBookPickerOpen(false);
+        setIsDropdownOpen(false);
+        setBookSearchQuery('');
+    };
+
+    const toggleChapter = (chapterId: string) => {
+        const newChapters = new Set(selectedChapters);
+        if (newChapters.has(chapterId)) {
+            newChapters.delete(chapterId);
+        } else {
+            newChapters.add(chapterId);
+        }
+        setSelectedChapters(newChapters);
+    };
+
+    const clearBookSelection = () => {
+        setSelectedBook(null);
+        setSelectedChapters(new Set());
+    };
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setIsDropdownOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const handleGenerate = async () => {
         if (sourceMode === 'topic' && !topic) return;
+        if (sourceMode === 'book' && !selectedBook) return;
+
         setViewState('generating');
 
-        setTimeout(() => {
-            const mockQuiz: QuizContent = {
-                title: `${topic || 'General Science'} Quiz`,
-                subject: 'Science',
+        try {
+            const topicName = sourceMode === 'book' ? selectedBook?.title : topic;
+
+            const payload = {
+                topic: topicName || 'General',
                 grade: grade || 'Grade 10',
-                questions: [
-                    {
-                        id: '1',
-                        text: 'Which of the following describes the primary function of chlorophyll in plants?',
-                        options: ['Absorbing sunlight', 'Storing water', 'Producing CO2', 'Regulating temperature'],
-                        answer: 'Absorbing sunlight',
-                        explanation: 'Chlorophyll is a pigment that absorbs light energy (primarily blue and red wavelengths) for photosynthesis.'
-                    },
-                    {
-                        id: '2',
-                        text: 'True or False: Photosynthesis occurs in the mitochondria of the cell.',
-                        answer: 'False',
-                        explanation: 'Photosynthesis occurs in the chloroplasts. Mitochondria are the site of cellular respiration.'
-                    },
-                    {
-                        id: '3',
-                        text: 'What are the two main products of photosynthesis?',
-                        options: ['Glucose and Oxygen', 'Water and CO2', 'Sugar and Sunlight', 'Nitrogen and ATP'],
-                        answer: 'Glucose and Oxygen',
-                        explanation: 'Plants convert sunlight, water, and CO2 into Glucose (chemical energy) and Oxygen (byproduct).'
-                    }
-                ]
+                difficulty: difficulty || 'Medium',
+                questionCount: parseInt(questionCount) || 10,
+                type: quizType,
+                bookId: sourceMode === 'book' && selectedBook?.id ? String(selectedBook.id) : undefined,
+                chapterIds: sourceMode === 'book' && selectedChapters.size > 0 ? Array.from(selectedChapters) : undefined
             };
-            setGeneratedQuiz(mockQuiz);
+
+            const response = await api.generateQuiz(payload);
+
+            // Backend returns a JSON string, parsed automatically by axios? 
+            // The prompt ensures JSON. If it's a string, parse it.
+            let quizData: QuizContent;
+            if (typeof response === 'string') {
+                // Try to find JSON block if mixed with text
+                const jsonMatch = response.match(/\{[\s\S]*\}/);
+                if (jsonMatch) {
+                    quizData = JSON.parse(jsonMatch[0]);
+                } else {
+                    throw new Error("Invalid response format");
+                }
+            } else if (response.content) {
+                // Some backends return { content: ... }
+                if (typeof response.content === 'string') {
+                    const jsonMatch = response.content.match(/\{[\s\S]*\}/);
+                    quizData = jsonMatch ? JSON.parse(jsonMatch[0]) : JSON.parse(response.content);
+                } else {
+                    quizData = response.content;
+                }
+            } else {
+                quizData = response;
+            }
+
+            // Ensure ID exists for React keys
+            quizData.questions = quizData.questions.map((q, i) => ({
+                ...q,
+                id: q.id || `q-${i}`
+            }));
+
+            setGeneratedQuiz(quizData);
             setViewState('result');
-        }, 3000);
+            setIsSaved(false);
+
+        } catch (error) {
+            console.error("Quiz generation failed:", error);
+            alert("Failed to generate quiz. Please try again.");
+            setViewState('form');
+        }
     };
 
     const handleSave = async () => {
@@ -212,21 +327,94 @@ const QuizExamGeneratorView: React.FC = () => {
                         </div>
 
                         <div className="space-y-10 relative z-10">
-                            <div className="relative group/input">
-                                <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-3 ml-1">Topic or Curriculum Area</label>
-                                <div className="relative">
-                                    <input
-                                        type="text"
-                                        value={topic}
-                                        onChange={(e) => setTopic(e.target.value)}
-                                        placeholder="e.g. Ancient Greek Mythology, Quantum Mechanics, Algebra..."
-                                        className="w-full bg-muted/30 border-2 border-border focus:border-primary-custom focus:bg-card-bg rounded-[2.5rem] px-10 py-6 text-xl font-bold transition-all outline-none placeholder:text-muted-foreground/30 text-foreground"
-                                    />
-                                    <div className="absolute right-8 top-1/2 -translate-y-1/2 text-primary-custom/20 group-hover/input:text-primary-custom group-hover/input:rotate-12 transition-all">
-                                        <Sparkles size={28} />
+
+                            {/* TOPIC INPUT MODE */}
+                            {sourceMode === 'topic' && (
+                                <div className="relative group/input">
+                                    <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-3 ml-1">Topic or Curriculum Area</label>
+                                    <div className="relative">
+                                        <input
+                                            type="text"
+                                            value={topic}
+                                            onChange={(e) => setTopic(e.target.value)}
+                                            placeholder="e.g. Ancient Greek Mythology, Quantum Mechanics, Algebra..."
+                                            className="w-full bg-muted/30 border-2 border-border focus:border-primary-custom focus:bg-card-bg rounded-[2.5rem] px-10 py-6 text-xl font-bold transition-all outline-none placeholder:text-muted-foreground/30 text-foreground"
+                                        />
+                                        <div className="absolute right-8 top-1/2 -translate-y-1/2 text-primary-custom/20 group-hover/input:text-primary-custom group-hover/input:rotate-12 transition-all">
+                                            <Sparkles size={28} />
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            )}
+
+                            {/* BOOK INPUT MODE */}
+                            {sourceMode === 'book' && (
+                                <div className="space-y-4">
+                                    <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Select Source Material</label>
+                                    {!selectedBook ? (
+                                        <div className="relative" ref={dropdownRef}>
+                                            <div className="flex items-center gap-2">
+                                                <div className="flex-1 relative">
+                                                    <Search size={18} className="absolute left-6 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                                                    <input
+                                                        type="text"
+                                                        value={bookSearchQuery}
+                                                        onChange={(e) => { setBookSearchQuery(e.target.value); setIsDropdownOpen(true); }}
+                                                        onFocus={() => setIsDropdownOpen(true)}
+                                                        placeholder="Search your library..."
+                                                        className="w-full bg-muted/30 border-2 border-border focus:border-primary-custom focus:bg-card-bg rounded-[2.5rem] pl-14 pr-6 py-6 text-xl font-bold transition-all outline-none placeholder:text-muted-foreground/30 text-foreground"
+                                                    />
+                                                </div>
+                                                <button onClick={() => setIsBookPickerOpen(true)} className="p-6 bg-muted hover:bg-primary-custom/10 rounded-[2rem] text-muted-foreground hover:text-primary-custom transition-all border-2 border-transparent hover:border-primary-custom/20">
+                                                    <BookOpen size={24} />
+                                                </button>
+                                            </div>
+                                            {isDropdownOpen && filteredBooks.length > 0 && (
+                                                <div className="absolute z-50 mt-4 w-full bg-card-bg rounded-[2rem] shadow-2xl border border-border py-4 max-h-[300px] overflow-y-auto animate-fadeIn backdrop-blur-xl">
+                                                    {filteredBooks.slice(0, 5).map((book) => (
+                                                        <button key={book.id} onClick={() => handleBookSelect(book)} className="w-full flex items-center gap-4 px-8 py-4 hover:bg-primary-custom/5 transition-all text-left group">
+                                                            <div className={`w-12 h-16 rounded-xl ${book.cover ? '' : book.color} flex items-center justify-center overflow-hidden shadow-sm`}>{book.cover ? <img src={book.cover} alt="" className="w-full h-full object-cover" /> : <BookOpen size={20} className={book.iconColor} />}</div>
+                                                            <div className="flex-1"><h4 className="font-black text-base text-foreground group-hover:text-primary-custom uppercase tracking-tight italic">{book.title}</h4><p className="text-[10px] font-bold text-muted-foreground uppercase">{book.author} • {book.classLevel}</p></div>
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    ) : (
+                                        <div className="bg-card-bg border-2 border-border p-6 rounded-[2rem] shadow-sm">
+                                            <div className="flex items-center gap-4 mb-6">
+                                                <div className={`w-14 h-20 rounded-xl ${selectedBook.cover ? '' : selectedBook.color} flex items-center justify-center overflow-hidden shadow-md shrink-0`}>
+                                                    {selectedBook.cover ? <img src={selectedBook.cover} alt="" className="w-full h-full object-cover" /> : <BookOpen size={24} className={selectedBook.iconColor} />}
+                                                </div>
+                                                <div className="flex-1">
+                                                    <h3 className="text-lg font-black text-foreground uppercase italic tracking-tight">{selectedBook.title}</h3>
+                                                    <p className="text-xs font-bold text-muted-foreground uppercase mb-2">by {selectedBook.author}</p>
+                                                    <button onClick={clearBookSelection} className="text-[10px] font-black text-rose-500 bg-rose-500/10 px-3 py-1 rounded-full uppercase tracking-widest hover:bg-rose-500 hover:text-white transition-all">Change Book</button>
+                                                </div>
+                                            </div>
+                                            {selectedBook.chapters && selectedBook.chapters.length > 0 && (
+                                                <div>
+                                                    <label className="block text-[10px] font-black text-muted-foreground mb-4 flex items-center gap-2 uppercase tracking-widest"><Layers size={14} className="text-primary-custom" />Select Chapters {selectedChapters.size > 0 && <span className="text-primary-custom">({selectedChapters.size})</span>}</label>
+                                                    <div className="flex flex-wrap gap-2">
+                                                        {selectedBook.chapters.map((chapter, idx) => (
+                                                            <button
+                                                                key={chapter.id}
+                                                                onClick={() => toggleChapter(chapter.id)}
+                                                                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase transition-all border-2 
+                                                                ${selectedChapters.has(chapter.id) ? 'bg-primary-custom border-primary-custom text-white shadow-lg shadow-primary-custom/20' : 'bg-transparent text-foreground hover:bg-muted border-border'}`}
+                                                            >
+                                                                <span className={`w-6 h-6 rounded-lg text-[10px] font-black flex items-center justify-center ${selectedChapters.has(chapter.id) ? 'bg-white/20' : 'bg-muted text-muted-foreground'}`}>{idx + 1}</span>
+                                                                <span className="max-w-[150px] truncate">{chapter.title}</span>
+                                                                {selectedChapters.has(chapter.id) && <Check size={12} />}
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            )}
 
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                                 <CustomDropdown label="Grade Level" value={grade} onChange={setGrade} options={gradeOptions} placeholder="Select..." />
@@ -247,7 +435,7 @@ const QuizExamGeneratorView: React.FC = () => {
                         <div className="mt-16 flex justify-center relative z-10">
                             <button
                                 onClick={handleGenerate}
-                                disabled={!topic}
+                                disabled={sourceMode === 'topic' ? !topic : !selectedBook}
                                 className="group px-14 py-6 bg-foreground text-background rounded-full font-black uppercase tracking-[0.3em] text-xs shadow-[0_20px_60px_rgba(0,0,0,0.3)] hover:shadow-[0_20px_60px_rgba(0,0,0,0.4)] transition-all hover:-translate-y-1 active:scale-95 disabled:opacity-30 disabled:translate-y-0 disabled:shadow-none overflow-hidden relative"
                             >
                                 <div className="absolute inset-0 bg-gradient-to-r from-primary-custom/20 to-transparent translate-x-full group-hover:translate-x-0 transition-transform duration-700 pointer-events-none" />
@@ -259,6 +447,40 @@ const QuizExamGeneratorView: React.FC = () => {
                         </div>
                     </div>
                 </motion.div>
+
+                {/* Book Picker Modal */}
+                {isBookPickerOpen && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+                        <div className="bg-white rounded-[2rem] shadow-2xl w-full max-w-2xl max-h-[80vh] overflow-hidden animate-fadeIn border border-slate-100/20">
+                            <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+                                <h3 className="text-xl font-black text-slate-800 uppercase italic tracking-tight">Select Source Book</h3>
+                                <button onClick={() => setIsBookPickerOpen(false)} className="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-100 transition-all"><X size={20} /></button>
+                            </div>
+                            <div className="p-4 border-b border-slate-100 bg-slate-50/50">
+                                <div className="relative">
+                                    <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                                    <input type="text" value={bookSearchQuery} onChange={(e) => setBookSearchQuery(e.target.value)} placeholder="Search by title, author, or subject..." className="w-full bg-white border border-slate-200 rounded-xl pl-12 pr-4 py-3 text-sm font-bold focus:border-lime-500 focus:ring-2 focus:ring-lime-500/20 focus:outline-none transition-all" autoFocus />
+                                </div>
+                            </div>
+                            <div className="overflow-y-auto max-h-[500px] divide-y divide-slate-100">
+                                {filteredBooks.map((book) => (
+                                    <button key={book.id} onClick={() => handleBookSelect(book)} className="w-full flex items-center gap-5 p-5 hover:bg-lime-50 text-left group transition-all">
+                                        <div className={`w-14 h-20 rounded-xl ${book.cover ? '' : book.color} flex items-center justify-center overflow-hidden shadow-sm group-hover:shadow-md transition-all`}>{book.cover ? <img src={book.cover} alt="" className="w-full h-full object-cover" /> : <BookOpen size={24} className={book.iconColor} />}</div>
+                                        <div className="flex-1">
+                                            <h4 className="font-black text-lg text-slate-800 group-hover:text-lime-700 uppercase italic tracking-tight">{book.title}</h4>
+                                            <div className="flex items-center gap-3 mt-1">
+                                                <span className="px-2 py-0.5 bg-slate-100 rounded text-[10px] font-black text-slate-500 uppercase tracking-widest">{book.subject}</span>
+                                                <span className="text-xs font-bold text-slate-400">•</span>
+                                                <p className="text-xs font-bold text-slate-500 uppercase">by {book.author}</p>
+                                            </div>
+                                        </div>
+                                        <ChevronRight size={18} className="text-slate-300 group-hover:text-lime-500 group-hover:translate-x-1 transition-all" />
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         );
     }

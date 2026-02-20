@@ -2,6 +2,7 @@ from typing import Any, List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 
 from app.api import deps
 from app.db import models
@@ -16,17 +17,11 @@ async def read_books(
     limit: int = 100,
 ) -> Any:
     """
-    Retrieve books.
+    Retrieve books with chapters.
     """
-    result = await db.execute(select(models.Book).offset(skip).limit(limit))
+    stmt = select(models.Book).options(selectinload(models.Book.chapters)).offset(skip).limit(limit)
+    result = await db.execute(stmt)
     books = result.scalars().all()
-    # Simple mock population if no books exist
-    if not books:
-        # Check again inside a transaction to prevent race, but for basic dev it's ok
-        # Actually simplest to just return empty list or mock data from code if DB empty
-        # But user asked for backend data. Let's create dummy if empty
-        pass
-        
     return books
 
 @router.post("/books", response_model=schemas.Book)
@@ -37,12 +32,16 @@ async def create_book(
     current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
-    Create a new book (admin only ideally, but open for now).
+    Create a new book.
     """
     book = models.Book(**book_in.model_dump())
     db.add(book)
     await db.commit()
     await db.refresh(book)
+    # Re-fetch to load chapters (empty initially but consistent return)
+    stmt = select(models.Book).options(selectinload(models.Book.chapters)).where(models.Book.id == book.id)
+    result = await db.execute(stmt)
+    book = result.scalars().first()
     return book
 
 @router.get("/books/{id}", response_model=schemas.Book)
@@ -54,7 +53,8 @@ async def read_book(
     """
     Get book by ID.
     """
-    result = await db.execute(select(models.Book).filter(models.Book.id == id))
+    stmt = select(models.Book).options(selectinload(models.Book.chapters)).filter(models.Book.id == id)
+    result = await db.execute(stmt)
     book = result.scalars().first()
     if not book:
         raise HTTPException(status_code=404, detail="Book not found")

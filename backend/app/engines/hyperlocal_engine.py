@@ -15,10 +15,31 @@ class HyperLocalEngine:
         region = payload.get("region", "Mumbai, India")
         language = payload.get("language", "English")
         nuances = payload.get("custom_nuances", "")
+        book_id = payload.get("bookId")
+        chapter_ids = payload.get("chapterIds")
         
+        rag_context = ""
+        if book_id or chapter_ids:
+            try:
+                from app.services.rag_service import RAGService
+                rag_content = await RAGService.get_context(book_id, chapter_ids)
+                if rag_content:
+                    rag_context = f"""
+                    ## SOURCE MATERIAL (CRITICAL CONTEXT):
+                    The following content is from the teacher's selected book/chapters.
+                    You MUST relate the local examples ({region}) specifically to the concepts explained in this text.
+                    For example, if the text is about 'Rainwater Harvesting', find local examples of that.
+                    
+                    {rag_content[:20000]}
+                    """
+            except Exception as e:
+                print(f"[RAG ERROR] {e}")
+
         # Construct specific prompt for Hyper Local content
         prompt = f"""
         {AIPrompts.SYSTEM_COMMON}
+        
+        {rag_context}
         
         ## TASK: Generate Hyper-Local Educational Content
         You are an expert local guide and educator.
@@ -29,8 +50,8 @@ class HyperLocalEngine:
         Specific Local Nuances: {nuances}
         
         ## REQUIREMENTS:
-        1. **Vocabulary**: 3 local terms related to the topic (e.g., if water, use specific local words for water bodies).
-        2. **Landmarks**: 2 real, specific landmarks near {region} relevant to {topic}.
+        1. **Vocabulary**: 3 local terms related to the topic/source material.
+        2. **Landmarks**: 2 real, specific landmarks near {region} relevant to the topic.
         3. **Case Study**: A short, engaging story/narrative set in {region}.
         4. **Activities**: 2 cultural connection activities.
         5. **Typos/Grammar**: Ensure PERFECT spelling and grammar. Use Title Case for headers.

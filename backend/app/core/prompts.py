@@ -64,11 +64,26 @@ class AIPrompts:
     QUIZ_GENERATOR = """
     ## TASK: Precision Assessment Generator
     Generate a quiz that moves beyond rote memorization.
-    Structure:
-    1. Section A: Conceptual Foundations (3 MCQ)
-    2. Section B: Application in Action (2 Case-study based questions)
-    3. Section C: Critical Reflection (1 Short answer)
-    Provide clear explanations for why the correct answer is correct.
+    
+    ## STRICT OUTPUT RULE:
+    You MUST return ONLY a valid JSON object. Do not include markdown formatting like ```json ... ```.
+    Ensure the JSON is parseable.
+
+    ## JSON SCHEMA:
+    {
+        "title": "Topic Quiz",
+        "subject": "Subject Name",
+        "grade": "Grade Level",
+        "questions": [
+            {
+                "id": "1",
+                "text": "Question text here?",
+                "options": ["Option A", "Option B", "Option C", "Option D"],
+                "answer": "Correct Option Text",
+                "explanation": "Why this answer is correct."
+            }
+        ]
+    }
     """
 
     STORY_GENERATOR = """

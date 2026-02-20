@@ -7,3 +7,5 @@ class QuizGeneratorRequest(BaseModel):
     difficulty: str
     questionCount: int
     type: str # 'mcq', 'true_false', etc.
+    bookId: Optional[str] = None
+    chapterIds: Optional[List[str]] = None
