@@ -127,4 +127,14 @@ export const getMe = async () => {
     }
 }
 
+export const askSahayak = async (query: string, context?: string) => {
+    try {
+        const response = await api.post('/sahayak/ask', { query, context });
+        return response.data;
+    } catch (error: any) {
+        console.error('Sahayak API Error:', error);
+        return { answer: "I'm having trouble connecting to my cognitive core. Please try again later." };
+    }
+};
+
 export default api;

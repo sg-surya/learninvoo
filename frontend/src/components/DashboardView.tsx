@@ -50,6 +50,7 @@ import {
     Legend
 } from 'recharts';
 import { getAllGeneratedContent, getWorkspaceSummary, WorkspaceItem, getTypeColor } from '@/lib/storage';
+import SahayakAssistant from './SahayakAssistant';
 
 const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
@@ -64,6 +65,11 @@ const CustomTooltip = ({ active, payload }: any) => {
 };
 
 const SchoolAdminDashboard = ({ user }: { user: any }) => {
+    const itemVariants = {
+        hidden: { y: 20, opacity: 0 },
+        visible: { y: 0, opacity: 1 }
+    };
+
     const adminStats = [
         { label: 'Total Teachers', value: '42', icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10' },
         { label: 'Total Students', value: '1,250', icon: GraduationCap, color: 'text-purple-500', bg: 'bg-purple-500/10' },
@@ -95,8 +101,8 @@ const SchoolAdminDashboard = ({ user }: { user: any }) => {
                     <h1 className="text-5xl font-display font-black text-foreground tracking-tight leading-tight">
                         School <span className="bg-gradient-to-r from-lime-600 to-lime-400 bg-clip-text text-transparent">Management</span>
                     </h1>
-                    <p className="text-[15px] font-medium text-muted-foreground">
-                        Overview for {user?.school || 'Your Institution'}
+                    <p className="text-[15px] font-medium text-muted-foreground flex items-center gap-2">
+                        Overview for <span className="text-foreground font-black">{user?.school || 'Learnivo High School'}</span>. System status is nominal.
                     </p>
                 </div>
                 <div className="flex gap-4">
@@ -117,7 +123,7 @@ const SchoolAdminDashboard = ({ user }: { user: any }) => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.1 }}
-                        className="bg-card-bg/60 backdrop-blur-xl p-6 rounded-[2rem] border border-border/60 hover:border-lime-500/30 transition-all group"
+                        className="bg-card-bg/60 backdrop-blur-xl p-6 rounded-[2rem] border border-border/60 hover:border-lime-500/50 hover:bg-card-bg hover:shadow-lg hover:shadow-lime-500/5 transition-all group"
                     >
                         <div className="flex justify-between items-start mb-4">
                             <div className={`p-3 rounded-2xl ${stat.bg} ${stat.color}`}>
@@ -132,8 +138,10 @@ const SchoolAdminDashboard = ({ user }: { user: any }) => {
             </div>
 
             <div className="grid grid-cols-12 gap-8">
-                {/* Main Chart Section */}
+                {/* Main Content Area */}
                 <div className="col-span-12 lg:col-span-8 space-y-8">
+
+                    {/* Analytics Chart */}
                     <div className="bg-card-bg/60 backdrop-blur-3xl p-8 rounded-[2.5rem] border border-border/60 shadow-sm relative overflow-hidden">
                         <div className="flex justify-between items-center mb-8">
                             <div>
@@ -157,44 +165,54 @@ const SchoolAdminDashboard = ({ user }: { user: any }) => {
                         </div>
                     </div>
 
-                    {/* Quick Management Tiles */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="bg-gradient-to-br from-blue-500/5 to-purple-500/5 p-8 rounded-[2rem] border border-blue-500/10 hover:border-blue-500/30 transition-all cursor-pointer group">
-                            <div className="w-12 h-12 bg-blue-500/10 text-blue-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                                <Users size={24} />
-                            </div>
-                            <h3 className="text-lg font-black text-foreground mb-2">Teacher Directory</h3>
-                            <p className="text-xs font-medium text-muted-foreground leading-relaxed mb-6">Manage teacher accounts, assign classes, and monitor performance metrics.</p>
-                            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-blue-500">
-                                View 42 Teachers <ArrowRight size={14} />
-                            </div>
-                        </div>
-
-                        <div className="bg-gradient-to-br from-orange-500/5 to-red-500/5 p-8 rounded-[2rem] border border-orange-500/10 hover:border-orange-500/30 transition-all cursor-pointer group">
-                            <div className="w-12 h-12 bg-orange-500/10 text-orange-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                                <CreditCard size={24} />
-                            </div>
-                            <h3 className="text-lg font-black text-foreground mb-2">License & Billing</h3>
-                            <p className="text-xs font-medium text-muted-foreground leading-relaxed mb-6">Manage school subscription, add licenses, and view detailed invoices.</p>
-                            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-orange-500">
-                                Plan: Enterprise <ArrowRight size={14} />
-                            </div>
-                        </div>
+                    {/* School Management Tools Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {[
+                            { label: 'Admissions', icon: UserPlus, color: 'text-indigo-500', bg: 'bg-indigo-500/10', desc: 'Manage new enrollments & inquiries', href: '/admin/students' },
+                            { label: 'Fee Management', icon: CreditCard, color: 'text-emerald-500', bg: 'bg-emerald-500/10', desc: 'Track payments, dues & invoices', href: '/admin/fees' },
+                            { label: 'Attendance', icon: Calendar, color: 'text-rose-500', bg: 'bg-rose-500/10', desc: 'Monitor daily attendance trends', href: '/admin/attendance' },
+                            { label: 'Staff Directory', icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10', desc: 'Manage faculty profiles & roles', href: '/admin/staff' },
+                            { label: 'Timetable', icon: Clock, color: 'text-amber-500', bg: 'bg-amber-500/10', desc: 'Dynamic class scheduling system', href: '/admin/timetable' },
+                            { label: 'Exam Control', icon: FileCheck, color: 'text-fuchsia-500', bg: 'bg-fuchsia-500/10', desc: 'Schedule exams & publish results', href: '/admin/exams' },
+                        ].map((item, i) => (
+                            <Link key={i} href={item.href}>
+                                <motion.div
+                                    variants={itemVariants}
+                                    whileHover={{ y: -5, scale: 1.02 }}
+                                    className="bg-card-bg/60 backdrop-blur-xl p-6 rounded-[2rem] border border-border/40 shadow-sm hover:shadow-xl hover:shadow-lime-500/5 hover:bg-card-bg hover:border-lime-500/50 transition-all cursor-pointer group flex flex-col justify-between min-h-[180px]"
+                                >
+                                    <div>
+                                        <div className={`w-12 h-12 ${item.bg} ${item.color} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                                            <item.icon size={22} />
+                                        </div>
+                                        <h3 className="text-[15px] font-black text-foreground mb-1">{item.label}</h3>
+                                        <p className="text-[11px] font-medium text-muted-foreground leading-snug">{item.desc}</p>
+                                    </div>
+                                    <div className="mt-4 flex justify-end">
+                                        <div className={`w-8 h-8 rounded-full bg-muted/50 flex items-center justify-center group-hover:${item.bg} transition-colors`}>
+                                            <ArrowRight size={14} className={`text-muted-foreground group-hover:${item.color}`} />
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            </Link>
+                        ))}
                     </div>
                 </div>
 
                 {/* Sidebar */}
                 <div className="col-span-12 lg:col-span-4 space-y-8">
+
+                    {/* Live Activity Feed */}
                     <div className="bg-card-bg border border-border/80 rounded-[2rem] p-8">
                         <h3 className="text-xs font-black uppercase tracking-[0.3em] text-muted-foreground mb-6 flex items-center gap-2">
-                            <Activity size={16} /> Live Activity
+                            <Activity size={16} /> Live Updates
                         </h3>
                         <div className="space-y-6">
                             {[
-                                { text: 'Sarah J. generated a Quiz', time: '2m ago', active: true },
-                                { text: 'New Student Registration', time: '15m ago', active: false },
-                                { text: 'Class 10B Results Published', time: '1h ago', active: false },
-                                { text: 'System Maintenance Scheduled', time: '2d ago', active: false },
+                                { text: 'Fee Payment Received: $450', time: 'Just now', active: true },
+                                { text: 'New Admission Inquiry: Grade 5', time: '12m ago', active: true },
+                                { text: 'Teacher Absence: Mr. Sharma', time: '45m ago', active: false },
+                                { text: 'Monthly Attendance Report Ready', time: '1h ago', active: false },
                             ].map((item, i) => (
                                 <div key={i} className="flex gap-4 items-start group">
                                     <div className={`mt-1.5 w-2 h-2 rounded-full shrink-0 ${item.active ? 'bg-lime-500 animate-pulse' : 'bg-border'}`} />
@@ -207,17 +225,30 @@ const SchoolAdminDashboard = ({ user }: { user: any }) => {
                         </div>
                     </div>
 
+                    {/* System Health */}
                     <div className="bg-gray-900 rounded-[2rem] p-8 text-white relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-lime-500/20 rounded-full blur-[50px] pointer-events-none" />
                         <h3 className="text-xs font-black uppercase tracking-[0.3em] text-lime-400 mb-6">System Status</h3>
                         <div className="space-y-4 relative z-10">
                             <div className="flex justify-between items-center">
-                                <span className="text-sm font-bold opacity-80">Server Uptime</span>
-                                <span className="text-lime-400 font-mono font-bold">99.9%</span>
+                                <span className="text-sm font-bold opacity-80">Database Sync</span>
+                                <span className="text-lime-400 font-mono font-bold">Active</span>
                             </div>
                             <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
-                                <div className="h-full w-[99%] bg-lime-500" />
+                                <div className="h-full w-[99%] bg-lime-500 animate-pulse" />
                             </div>
+
+                            <div className="space-y-2 mt-4">
+                                <div className="flex justify-between text-xs text-gray-400 font-medium">
+                                    <span>Server Load</span>
+                                    <span>24%</span>
+                                </div>
+                                <div className="flex justify-between text-xs text-gray-400 font-medium">
+                                    <span>Active Users</span>
+                                    <span>142</span>
+                                </div>
+                            </div>
+
                             <div className="pt-4 flex gap-4">
                                 <button className="flex-1 py-3 bg-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-white/20 transition-all">Logs</button>
                                 <button className="flex-1 py-3 bg-lime-500 text-black rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-lime-400 transition-all">Support</button>
@@ -226,6 +257,9 @@ const SchoolAdminDashboard = ({ user }: { user: any }) => {
                     </div>
                 </div>
             </div>
+
+            {/* Sahayak AI Assistant */}
+            <SahayakAssistant />
         </div>
     );
 };

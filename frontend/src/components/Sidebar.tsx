@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -19,7 +19,12 @@ import {
     Image as ImageIcon,
     Zap,
     Cpu,
-    MousePointer2
+    MousePointer2,
+    Users,
+    CreditCard,
+    Calendar,
+    Settings,
+    Shield
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -30,8 +35,17 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
     const pathname = usePathname();
+    const [userRole, setUserRole] = useState<string>('student');
 
-    const navItems = [
+    useEffect(() => {
+        const storedUser = localStorage.getItem('learnivo_current_user');
+        if (storedUser) {
+            const user = JSON.parse(storedUser);
+            setUserRole(user.role || 'student');
+        }
+    }, []);
+
+    const teacherNavItems = [
         { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
         { href: '/tools', label: 'Tools', icon: Wand2 },
         { href: '/chat', label: 'AI Chat', icon: MessageSquare },
@@ -40,7 +54,19 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
         { href: '/assignments', label: 'Assignments', icon: BookOpen },
     ];
 
-    const quickTools = [
+    const adminNavItems = [
+        { href: '/dashboard', label: 'Console', icon: Shield },
+        { href: '/admin/staff', label: 'Staff', icon: Users },
+        { href: '/admin/students', label: 'Students', icon: GraduationCap },
+        { href: '/admin/fees', label: 'Fees', icon: CreditCard },
+        { href: '/admin/timetable', label: 'Timetable', icon: Calendar },
+        { href: '/admin/exams', label: 'Exams', icon: FileCheck },
+        { href: '/admin/settings', label: 'Settings', icon: Settings },
+    ];
+
+    const navItems = userRole === 'school_admin' ? adminNavItems : teacherNavItems;
+
+    const teacherQuickTools = [
         { href: '/tools/lesson-planner', label: 'Lesson Planner', icon: Wand2 },
         { href: '/tools/quiz-exam-generator', label: 'Quiz Engine', icon: BrainCircuit },
         { href: '/tools/paper-digitizer', label: 'Digitize', icon: FileCheck },
@@ -48,6 +74,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
         { href: '/tools/visual-generator', label: 'Visuals', icon: ImageIcon },
         { href: '/tools/story-generator', label: 'Stories', icon: Sparkles },
     ];
+
+    const adminQuickTools = [
+        { href: '/admin/admissions', label: 'New Admission', icon: Users },
+        { href: '/admin/fees/record', label: 'Record Fee', icon: CreditCard },
+        { href: '/admin/notices', label: 'Post Notice', icon: MessageSquare },
+    ];
+
+    const quickTools = userRole === 'school_admin' ? adminQuickTools : teacherQuickTools;
 
     const isInTool = pathname.startsWith('/tools/') && pathname !== '/tools';
 

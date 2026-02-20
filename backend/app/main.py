@@ -4,6 +4,7 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.api.routes import lesson, quiz, story, user, health, auth, content, library, chat, simulation, visual, tools
+from app.api.sahayak import routes as sahayak # Import new router
 
 
 app = FastAPI(title=settings.PROJECT_NAME)
@@ -41,6 +42,7 @@ app.include_router(chat.router, tags=["Chat"], prefix=f"{settings.API_V1_STR}/ch
 app.include_router(simulation.router, tags=["Simulation"], prefix=f"{settings.API_V1_STR}/simulation")
 app.include_router(visual.router, tags=["Visual"], prefix=f"{settings.API_V1_STR}/visual")
 app.include_router(tools.router, tags=["Tools"], prefix=f"{settings.API_V1_STR}/tools")
+app.include_router(sahayak.router, tags=["Sahayak AI"], prefix=f"{settings.API_V1_STR}/sahayak")
 
 @app.get("/")
 def root():

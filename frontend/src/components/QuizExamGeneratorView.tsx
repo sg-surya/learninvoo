@@ -320,7 +320,7 @@ const QuizExamGeneratorView: React.FC = () => {
                                     Library Mode
                                 </button>
                             </div>
-                            <h2 className="text-5xl font-black text-foreground text-center leading-[1.1] tracking-tighter uppercase italic">
+                            <h2 className="text-4xl md:text-5xl font-black text-foreground text-center leading-[1.1] tracking-tight uppercase italic font-outfit">
                                 Design rigorous <br />
                                 <span className="text-primary-custom">assessments</span> in seconds.
                             </h2>
@@ -526,8 +526,8 @@ const QuizExamGeneratorView: React.FC = () => {
                         <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
                     </button>
                     <div>
-                        <h1 className="text-xl font-black uppercase italic tracking-tighter leading-none">{generatedQuiz?.title}</h1>
-                        <p className="text-[10px] font-black text-primary-custom uppercase tracking-[0.3em] mt-1.5">{grade} • {difficulty} • {quizType}</p>
+                        <h1 className="text-lg font-black uppercase italic tracking-tight leading-none font-outfit">{generatedQuiz?.title}</h1>
+                        <p className="text-[9px] font-bold text-primary-custom uppercase tracking-[0.4em] mt-2 opacity-70">{grade} • {difficulty} • {quizType}</p>
                     </div>
                 </div>
 
@@ -557,53 +557,57 @@ const QuizExamGeneratorView: React.FC = () => {
                 <div className="bg-card-bg rounded-[3.5rem] shadow-[0_32px_120px_-20px_rgba(0,0,0,0.1)] p-16 border border-border relative overflow-hidden group">
                     <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-primary-custom/5 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
 
-                    <div className="text-center mb-20 pb-16 border-b border-border relative z-10">
-                        <h1 className="text-5xl md:text-6xl font-black text-foreground mb-8 tracking-tighter uppercase italic leading-none">{generatedQuiz?.title}</h1>
-                        <div className="flex justify-center flex-wrap gap-10">
+                    <div className="text-center mb-16 pb-12 border-b border-border/40 relative z-10">
+                        <h1 className="text-4xl md:text-5xl font-black text-foreground mb-6 tracking-tight uppercase italic leading-[1.1] font-outfit max-w-3xl mx-auto">
+                            {generatedQuiz?.title}
+                        </h1>
+                        <div className="flex justify-center flex-wrap gap-12">
                             {[
                                 { label: "Grade Level", value: grade },
                                 { label: "Questions", value: `${generatedQuiz?.questions.length} Total` },
                                 { label: "Time Limit", value: "30 Mins" }
                             ].map((stat, i) => (
                                 <div key={i} className="flex flex-col items-center">
-                                    <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mb-3">{stat.label}</span>
-                                    <span className="text-sm font-black text-foreground uppercase tracking-tight">{stat.value}</span>
+                                    <span className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-[0.4em] mb-2">{stat.label}</span>
+                                    <span className="text-xs font-black text-foreground uppercase tracking-wider bg-muted/50 px-3 py-1 rounded-lg border border-border/40">{stat.value}</span>
                                 </div>
                             ))}
                         </div>
                     </div>
 
-                    <div className="space-y-16 relative z-10">
+                    <div className="space-y-12 relative z-10 max-w-4xl mx-auto">
                         {generatedQuiz?.questions.map((q, idx) => (
                             <motion.div
                                 key={q.id}
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: idx * 0.1 }}
-                                className="group/q"
+                                className="group/q bg-card-bg/40 hover:bg-card-bg/80 p-8 rounded-[2.5rem] border border-transparent hover:border-border/40 transition-all duration-500"
                             >
-                                <div className="flex gap-8">
-                                    <div className="w-12 h-12 rounded-2xl bg-muted text-muted-foreground font-black flex items-center justify-center shrink-0 group-hover/q:bg-primary-custom group-hover/q:text-white transition-all duration-500 shadow-soft group-hover/q:shadow-lg group-hover/q:shadow-primary-custom/20">
+                                <div className="flex gap-10">
+                                    <div className="w-10 h-10 rounded-xl bg-muted text-muted-foreground font-black flex items-center justify-center shrink-0 group-hover/q:bg-primary-custom group-hover/q:text-white transition-all duration-500 shadow-soft text-xs">
                                         {idx + 1}
                                     </div>
-                                    <div className="flex-1 pt-2">
-                                        <div className="text-2xl font-black text-foreground leading-snug mb-10 tracking-tight italic markdown-container">
+                                    <div className="flex-1">
+                                        <div className="text-xl md:text-2xl font-bold text-foreground leading-[1.4] mb-8 tracking-tight font-outfit markdown-container">
                                             <ReactMarkdown remarkPlugins={[remarkGfm]}>
                                                 {q.text}
                                             </ReactMarkdown>
                                         </div>
 
                                         {q.options && (
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 {q.options.map((opt, i) => (
                                                     <div
                                                         key={i}
-                                                        className={`px-8 py-6 rounded-[2rem] border-2 font-bold text-sm transition-all duration-500
+                                                        className={`px-6 py-4 rounded-2xl border-2 font-medium text-sm transition-all duration-500 flex items-center gap-4
                                                             ${showAnswers && opt === q.answer
-                                                                ? 'bg-green-500/10 border-green-500 text-green-600 shadow-lg shadow-green-500/10'
-                                                                : 'bg-muted/30 border-transparent text-muted-foreground group-hover/q:border-border'}`}
+                                                                ? 'bg-primary-custom/10 border-primary-custom text-primary-custom shadow-[0_8px_30px_rgb(var(--primary-rgb),0.08)]'
+                                                                : 'bg-muted/20 border-transparent text-muted-foreground/80 hover:border-border/40'}`}
                                                     >
-                                                        <span className="text-primary-custom/40 mr-4 font-black">{String.fromCharCode(65 + i)}</span>
+                                                        <span className={`w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-black shrink-0 ${showAnswers && opt === q.answer ? 'bg-primary-custom text-white' : 'bg-muted/50 text-muted-foreground/40'}`}>
+                                                            {String.fromCharCode(65 + i)}
+                                                        </span>
                                                         <span className="tracking-tight markdown-container inline-block">
                                                             <ReactMarkdown remarkPlugins={[remarkGfm]}>
                                                                 {opt}
@@ -620,15 +624,18 @@ const QuizExamGeneratorView: React.FC = () => {
                                                     initial={{ opacity: 0, height: 0 }}
                                                     animate={{ opacity: 1, height: 'auto' }}
                                                     exit={{ opacity: 0, height: 0 }}
-                                                    className="mt-8 pt-8 border-t border-dashed border-border"
+                                                    className="mt-8 pt-8 border-t border-dashed border-border/60"
                                                 >
-                                                    <div className="bg-primary-custom/5 p-8 rounded-[2rem] border border-primary-custom/10 relative overflow-hidden group/ans">
-                                                        <div className="absolute top-0 right-0 p-6 opacity-10"><HelpCircle size={32} className="text-primary-custom" /></div>
+                                                    <div className="bg-primary-custom/[0.03] p-8 rounded-[2rem] border border-primary-custom/10 relative overflow-hidden group/ans">
+                                                        <div className="absolute top-0 right-0 p-8 opacity-[0.05] group-hover/ans:opacity-[0.1] transition-opacity"><Zap size={40} className="text-primary-custom" /></div>
                                                         <div className="relative z-10">
-                                                            <div className="flex items-center gap-3 text-primary-custom font-black text-[10px] uppercase tracking-[0.3em] mb-4">
-                                                                <Check size={18} /> Correct Answer: <span className="text-xs ml-2 text-foreground">{q.answer}</span>
+                                                            <div className="flex items-center gap-3 text-primary-custom font-black text-[10px] uppercase tracking-[0.4em] mb-6">
+                                                                <div className="w-8 h-8 rounded-lg bg-primary-custom text-white flex items-center justify-center shadow-lg shadow-primary-custom/20">
+                                                                    <Check size={16} />
+                                                                </div>
+                                                                Correct Insight
                                                             </div>
-                                                            <div className="text-muted-foreground text-base font-bold leading-relaxed italic tracking-tight markdown-container">
+                                                            <div className="text-foreground/80 text-base font-medium leading-relaxed tracking-tight markdown-container pl-1">
                                                                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
                                                                     {q.explanation || ''}
                                                                 </ReactMarkdown>
