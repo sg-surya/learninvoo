@@ -8,7 +8,10 @@ class LessonPlannerEngine:
     async def generate(self, payload: dict):
         topic = payload.get("topic", "General")
         grade = payload.get("grade", "6th Grade")
-        duration = str(payload.get("duration", "45 mins"))
+        duration = str(payload.get("duration", "45")) + " mins"
+        days = payload.get("days", "1")
+        language = payload.get("language", "English")
+        fmt = payload.get("format", "Standard")
         details = payload.get("details", "")
         
         prompt = f"""
@@ -18,7 +21,10 @@ class LessonPlannerEngine:
         INPUT DATA:
         - Topic: {topic}
         - Grade: {grade}
-        - Preferred Duration: {duration}
+        - Duration per session: {duration}
+        - Number of Days: {days}
+        - Target Language: {language} (CRITICAL: Output MUST be in this language)
+        - Format: {fmt}
         - Specific Instructions: {details}
         
         Please generate the JSON now:

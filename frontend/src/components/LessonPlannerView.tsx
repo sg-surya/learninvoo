@@ -229,6 +229,9 @@ const LessonPlannerView: React.FC = () => {
                 topic: topicName || 'General',
                 grade: grade || 'Grade 6',
                 duration: parseInt(duration?.replace(/\D/g, '') || '45'),
+                days: days || '1',
+                language: language || 'English',
+                format: format || 'Standard',
                 details: objectives || ''
             });
 
