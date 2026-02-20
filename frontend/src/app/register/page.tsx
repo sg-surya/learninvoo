@@ -15,11 +15,12 @@ import {
     LayoutGrid,
     Activity,
     Sparkles,
-    AtSign
+    AtSign,
+    Building2
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-type Role = 'teacher' | 'student' | null;
+type Role = 'teacher' | 'student' | 'school_admin' | null;
 
 export default function RegisterPage() {
     const router = useRouter();
@@ -148,23 +149,23 @@ export default function RegisterPage() {
                                         initial="hidden"
                                         animate="visible"
                                         exit="exit"
-                                        className="space-y-10"
+                                        className="space-y-6"
                                     >
-                                        <div className="w-full max-w-sm space-y-10">
-                                            <div className="space-y-4">
+                                        <div className="w-full max-w-sm space-y-6">
+                                            <div className="space-y-2">
                                                 <h2 className="text-4xl font-black text-foreground tracking-tighter uppercase italic">Choose Your <br /> Path<span className="text-lime-500">.</span></h2>
                                                 <p className="text-muted-foreground font-medium text-sm italic">Are you ready to transform Bharat's education system?</p>
                                             </div>
 
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                                 <motion.button
                                                     whileHover={{ scale: 1.02 }}
                                                     whileTap={{ scale: 0.98 }}
                                                     onClick={() => setRole('teacher')}
-                                                    className={`p-6 rounded-3xl border-2 text-left transition-all ${role === 'teacher' ? 'border-lime-500 bg-lime-500/5' : 'border-border bg-muted/20 hover:border-lime-500/50'}`}
+                                                    className={`p-4 rounded-3xl border-2 text-left transition-all ${role === 'teacher' ? 'border-lime-500 bg-lime-500/5' : 'border-border bg-muted/20 hover:border-lime-500/50'}`}
                                                 >
-                                                    <Presentation className={role === 'teacher' ? 'text-lime-500' : 'text-muted-foreground'} size={32} />
-                                                    <p className="mt-4 font-black uppercase text-[10px] tracking-widest text-foreground">Teacher</p>
+                                                    <Presentation className={role === 'teacher' ? 'text-lime-500' : 'text-muted-foreground'} size={24} />
+                                                    <p className="mt-3 font-black uppercase text-[10px] tracking-widest text-foreground">Teacher</p>
                                                     <p className="text-[9px] font-bold text-muted-foreground uppercase mt-1">AI Workshop</p>
                                                 </motion.button>
 
@@ -172,11 +173,22 @@ export default function RegisterPage() {
                                                     whileHover={{ scale: 1.02 }}
                                                     whileTap={{ scale: 0.98 }}
                                                     onClick={() => setRole('student')}
-                                                    className={`p-6 rounded-3xl border-2 text-left transition-all ${role === 'student' ? 'border-lime-500 bg-lime-500/5' : 'border-border bg-muted/20 hover:border-lime-500/50'}`}
+                                                    className={`p-4 rounded-3xl border-2 text-left transition-all ${role === 'student' ? 'border-lime-500 bg-lime-500/5' : 'border-border bg-muted/20 hover:border-lime-500/50'}`}
                                                 >
-                                                    <GraduationCap className={role === 'student' ? 'text-lime-500' : 'text-muted-foreground'} size={32} />
-                                                    <p className="mt-4 font-black uppercase text-[10px] tracking-widest text-foreground">Student</p>
+                                                    <GraduationCap className={role === 'student' ? 'text-lime-500' : 'text-muted-foreground'} size={24} />
+                                                    <p className="mt-3 font-black uppercase text-[10px] tracking-widest text-foreground">Student</p>
                                                     <p className="text-[9px] font-bold text-muted-foreground uppercase mt-1">Study Portal</p>
+                                                </motion.button>
+
+                                                <motion.button
+                                                    whileHover={{ scale: 1.02 }}
+                                                    whileTap={{ scale: 0.98 }}
+                                                    onClick={() => setRole('school_admin')}
+                                                    className={`p-4 rounded-3xl border-2 text-left transition-all sm:col-span-2 ${role === 'school_admin' ? 'border-lime-500 bg-lime-500/5' : 'border-border bg-muted/20 hover:border-lime-500/50'}`}
+                                                >
+                                                    <Building2 className={role === 'school_admin' ? 'text-lime-500' : 'text-muted-foreground'} size={24} />
+                                                    <p className="mt-3 font-black uppercase text-[10px] tracking-widest text-foreground">School Admin</p>
+                                                    <p className="text-[9px] font-bold text-muted-foreground uppercase mt-1">Management Console</p>
                                                 </motion.button>
                                             </div>
                                             <motion.button
@@ -184,7 +196,7 @@ export default function RegisterPage() {
                                                 whileTap={{ scale: 0.98 }}
                                                 disabled={!role}
                                                 onClick={() => setStep(2)}
-                                                className="w-full h-14 bg-foreground text-background font-black uppercase text-xs tracking-[0.2em] rounded-2xl shadow-xl hover:opacity-90 disabled:opacity-50 transition-all flex items-center justify-center gap-3"
+                                                className="w-full h-12 bg-foreground text-background font-black uppercase text-xs tracking-[0.2em] rounded-2xl shadow-xl hover:opacity-90 disabled:opacity-50 transition-all flex items-center justify-center gap-3"
                                             >
                                                 Continue to Profile <ArrowRight size={18} />
                                             </motion.button>
@@ -201,7 +213,7 @@ export default function RegisterPage() {
                                         initial="hidden"
                                         animate="visible"
                                         exit="exit"
-                                        className="space-y-10"
+                                        className="space-y-6"
                                     >
                                         <button
                                             onClick={() => setStep(1)}
@@ -210,14 +222,14 @@ export default function RegisterPage() {
                                             <ChevronLeft size={16} /> Change Selection
                                         </button>
 
-                                        <div className="space-y-4">
+                                        <div className="space-y-2">
                                             <h2 className="text-4xl font-black text-foreground tracking-tighter uppercase italic">Complete <br /> Profile<span className="text-lime-500">.</span></h2>
-                                            <p className="text-muted-foreground font-medium text-sm italic">Designing your identity as a {role === 'teacher' ? 'Guru' : 'Scholar'}.</p>
+                                            <p className="text-muted-foreground font-medium text-sm italic">Designing your identity as a {role === 'teacher' ? 'Guru' : role === 'student' ? 'Scholar' : 'Administrator'}.</p>
                                         </div>
 
-                                        <form className="space-y-5" onSubmit={handleRegister}>
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                                <div className="space-y-2">
+                                        <form className="space-y-4" onSubmit={handleRegister}>
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                                <div className="space-y-1">
                                                     <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Full Name</label>
                                                     <div className="relative group">
                                                         <User className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-lime-500 transition-colors" size={16} />
@@ -225,14 +237,14 @@ export default function RegisterPage() {
                                                             type="text"
                                                             value={formData.fullName}
                                                             onChange={(e) => handleNameChange(e.target.value)}
-                                                            className="w-full h-12 pl-10 pr-4 bg-muted/30 border border-border rounded-xl outline-none focus:border-lime-500 focus:bg-card-bg transition-all font-medium text-xs text-foreground"
+                                                            className="w-full h-10 pl-10 pr-4 bg-muted/30 border border-border rounded-xl outline-none focus:border-lime-500 focus:bg-card-bg transition-all font-medium text-xs text-foreground"
                                                             placeholder="Arjun Singh"
                                                             required
                                                         />
                                                     </div>
                                                 </div>
 
-                                                <div className="space-y-2">
+                                                <div className="space-y-1">
                                                     <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Email</label>
                                                     <div className="relative group">
                                                         <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-lime-500 transition-colors" size={16} />
@@ -240,14 +252,14 @@ export default function RegisterPage() {
                                                             type="email"
                                                             value={formData.email}
                                                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                                            className="w-full h-12 pl-10 pr-4 bg-muted/30 border border-border rounded-xl outline-none focus:border-lime-500 focus:bg-card-bg transition-all font-medium text-xs text-foreground"
+                                                            className="w-full h-10 pl-10 pr-4 bg-muted/30 border border-border rounded-xl outline-none focus:border-lime-500 focus:bg-card-bg transition-all font-medium text-xs text-foreground"
                                                             placeholder="arjun@example.com"
                                                             required
                                                         />
                                                     </div>
                                                 </div>
 
-                                                <div className="space-y-2">
+                                                <div className="space-y-1">
                                                     <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Username</label>
                                                     <div className="relative group">
                                                         <AtSign className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-lime-500 transition-colors" size={16} />
@@ -258,14 +270,14 @@ export default function RegisterPage() {
                                                                 setFormData({ ...formData, username: e.target.value });
                                                                 setIsUsernameManuallyEdited(true);
                                                             }}
-                                                            className="w-full h-12 pl-10 pr-4 bg-muted/30 border border-border rounded-xl outline-none focus:border-lime-500 focus:bg-card-bg transition-all font-medium text-xs text-foreground"
+                                                            className="w-full h-10 pl-10 pr-4 bg-muted/30 border border-border rounded-xl outline-none focus:border-lime-500 focus:bg-card-bg transition-all font-medium text-xs text-foreground"
                                                             placeholder="arjun.singh"
                                                             required
                                                         />
                                                     </div>
                                                 </div>
 
-                                                <div className="space-y-2">
+                                                <div className="space-y-1">
                                                     <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Lock Password</label>
                                                     <div className="relative group">
                                                         <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-lime-500 transition-colors" size={16} />
@@ -273,23 +285,23 @@ export default function RegisterPage() {
                                                             type="password"
                                                             value={formData.password}
                                                             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                                            className="w-full h-12 pl-10 pr-4 bg-muted/30 border border-border rounded-xl outline-none focus:border-lime-500 focus:bg-card-bg transition-all font-medium text-xs text-foreground"
+                                                            className="w-full h-10 pl-10 pr-4 bg-muted/30 border border-border rounded-xl outline-none focus:border-lime-500 focus:bg-card-bg transition-all font-medium text-xs text-foreground"
                                                             placeholder="••••••••"
                                                             required
                                                         />
                                                     </div>
                                                 </div>
 
-                                                <div className="space-y-2 sm:col-span-2">
-                                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">{role === 'teacher' ? 'School/Institution' : 'Current School/Class'}</label>
+                                                <div className="space-y-1 sm:col-span-2">
+                                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">{role === 'teacher' ? 'School/Institution' : role === 'student' ? 'Current School/Class' : 'School Name'}</label>
                                                     <div className="relative group">
                                                         <LayoutGrid className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-lime-500 transition-colors" size={16} />
                                                         <input
                                                             type="text"
                                                             value={formData.school}
                                                             onChange={(e) => setFormData({ ...formData, school: e.target.value })}
-                                                            className="w-full h-12 pl-10 pr-4 bg-muted/30 border border-border rounded-xl outline-none focus:border-lime-500 focus:bg-card-bg transition-all font-medium text-xs text-foreground"
-                                                            placeholder={role === 'teacher' ? "Delhi Public School" : "10th Grade, VPS"}
+                                                            className="w-full h-10 pl-10 pr-4 bg-muted/30 border border-border rounded-xl outline-none focus:border-lime-500 focus:bg-card-bg transition-all font-medium text-xs text-foreground"
+                                                            placeholder={role === 'teacher' ? "Delhi Public School" : role === 'student' ? "10th Grade, VPS" : "Delhi Public School, R.K. Puram"}
                                                             required
                                                         />
                                                     </div>
@@ -300,7 +312,7 @@ export default function RegisterPage() {
                                                 whileHover={{ scale: 1.01 }}
                                                 whileTap={{ scale: 0.99 }}
                                                 type="submit"
-                                                className="w-full h-14 bg-foreground text-background font-black uppercase text-xs tracking-[0.2em] rounded-2xl shadow-xl hover:opacity-90 transition-all flex items-center justify-center gap-3 mt-6"
+                                                className="w-full h-12 bg-foreground text-background font-black uppercase text-xs tracking-[0.2em] rounded-2xl shadow-xl hover:opacity-90 transition-all flex items-center justify-center gap-3 mt-4"
                                             >
                                                 Finalize Registration <Activity size={18} />
                                             </motion.button>

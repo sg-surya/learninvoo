@@ -24,7 +24,16 @@ import {
     Timer,
     ChevronRight,
     Search,
-    Plus
+    Plus,
+    Users,
+    Building2,
+    BarChart3,
+    Settings,
+    CreditCard,
+    Shield,
+    Activity,
+    UserPlus,
+    School
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -35,7 +44,10 @@ import {
     YAxis,
     CartesianGrid,
     Tooltip,
-    ResponsiveContainer
+    ResponsiveContainer,
+    BarChart,
+    Bar,
+    Legend
 } from 'recharts';
 import { getAllGeneratedContent, getWorkspaceSummary, WorkspaceItem, getTypeColor } from '@/lib/storage';
 
@@ -49,6 +61,173 @@ const CustomTooltip = ({ active, payload }: any) => {
         );
     }
     return null;
+};
+
+const SchoolAdminDashboard = ({ user }: { user: any }) => {
+    const adminStats = [
+        { label: 'Total Teachers', value: '42', icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+        { label: 'Total Students', value: '1,250', icon: GraduationCap, color: 'text-purple-500', bg: 'bg-purple-500/10' },
+        { label: 'AI Generators Used', value: '15.4k', icon: Sparkles, color: 'text-lime-500', bg: 'bg-lime-500/10' },
+        { label: 'School Performance', value: 'A+', icon: Activity, color: 'text-orange-500', bg: 'bg-orange-500/10' },
+    ];
+
+    const performanceData = [
+        { name: 'Mon', usage: 400, engagement: 240 },
+        { name: 'Tue', usage: 300, engagement: 139 },
+        { name: 'Wed', usage: 200, engagement: 980 },
+        { name: 'Thu', usage: 278, engagement: 390 },
+        { name: 'Fri', usage: 189, engagement: 480 },
+        { name: 'Sat', usage: 239, engagement: 380 },
+        { name: 'Sun', usage: 349, engagement: 430 },
+    ];
+
+    return (
+        <div className="p-8 pb-20 w-full min-h-screen bg-transparent text-foreground overflow-y-auto no-scrollbar">
+            {/* Header */}
+            <header className="mb-12 flex flex-col xl:flex-row xl:items-end justify-between gap-8">
+                <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                        <div className="px-3 py-1 bg-lime-500/10 text-lime-600 rounded-full border border-lime-500/20 text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2 shadow-sm shadow-lime-500/5">
+                            <Shield size={12} />
+                            Admin Console
+                        </div>
+                    </div>
+                    <h1 className="text-5xl font-display font-black text-foreground tracking-tight leading-tight">
+                        School <span className="bg-gradient-to-r from-lime-600 to-lime-400 bg-clip-text text-transparent">Management</span>
+                    </h1>
+                    <p className="text-[15px] font-medium text-muted-foreground">
+                        Overview for {user?.school || 'Your Institution'}
+                    </p>
+                </div>
+                <div className="flex gap-4">
+                    <button className="px-6 py-3 bg-foreground text-background rounded-xl font-black text-xs uppercase tracking-widest hover:opacity-90 flex items-center gap-2 shadow-xl">
+                        <UserPlus size={16} /> Add Member
+                    </button>
+                    <button className="px-6 py-3 bg-card-bg border border-border rounded-xl font-black text-xs text-foreground uppercase tracking-widest hover:bg-muted/50 flex items-center gap-2">
+                        <Settings size={16} /> Settings
+                    </button>
+                </div>
+            </header>
+
+            {/* Stats Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                {adminStats.map((stat, i) => (
+                    <motion.div
+                        key={i}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: i * 0.1 }}
+                        className="bg-card-bg/60 backdrop-blur-xl p-6 rounded-[2rem] border border-border/60 hover:border-lime-500/30 transition-all group"
+                    >
+                        <div className="flex justify-between items-start mb-4">
+                            <div className={`p-3 rounded-2xl ${stat.bg} ${stat.color}`}>
+                                <stat.icon size={24} />
+                            </div>
+                            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest bg-white/50 dark:bg-white/5 px-2 py-1 rounded-lg">+12%</span>
+                        </div>
+                        <h3 className="text-3xl font-black text-foreground mb-1">{stat.value}</h3>
+                        <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{stat.label}</p>
+                    </motion.div>
+                ))}
+            </div>
+
+            <div className="grid grid-cols-12 gap-8">
+                {/* Main Chart Section */}
+                <div className="col-span-12 lg:col-span-8 space-y-8">
+                    <div className="bg-card-bg/60 backdrop-blur-3xl p-8 rounded-[2.5rem] border border-border/60 shadow-sm relative overflow-hidden">
+                        <div className="flex justify-between items-center mb-8">
+                            <div>
+                                <h3 className="text-xs font-black text-lime-600 uppercase tracking-[0.3em] mb-1">Institution Analytics</h3>
+                                <p className="text-2xl font-black text-foreground">AI Adoption & Usage</p>
+                            </div>
+                            <div className="flex gap-2">
+                                <Users size={20} className="text-muted-foreground" />
+                            </div>
+                        </div>
+                        <div className="h-[300px] w-full">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={performanceData}>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#88888815" />
+                                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 800, fill: '#94a3b8' }} dy={10} />
+                                    <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(132,204,22,0.1)' }} />
+                                    <Bar dataKey="usage" name="AI Generaitons" fill="#84cc16" radius={[4, 4, 0, 0]} barSize={40} />
+                                    <Bar dataKey="engagement" name="Student Engagement" fill="#3b82f6" radius={[4, 4, 0, 0]} barSize={40} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+
+                    {/* Quick Management Tiles */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="bg-gradient-to-br from-blue-500/5 to-purple-500/5 p-8 rounded-[2rem] border border-blue-500/10 hover:border-blue-500/30 transition-all cursor-pointer group">
+                            <div className="w-12 h-12 bg-blue-500/10 text-blue-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                                <Users size={24} />
+                            </div>
+                            <h3 className="text-lg font-black text-foreground mb-2">Teacher Directory</h3>
+                            <p className="text-xs font-medium text-muted-foreground leading-relaxed mb-6">Manage teacher accounts, assign classes, and monitor performance metrics.</p>
+                            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-blue-500">
+                                View 42 Teachers <ArrowRight size={14} />
+                            </div>
+                        </div>
+
+                        <div className="bg-gradient-to-br from-orange-500/5 to-red-500/5 p-8 rounded-[2rem] border border-orange-500/10 hover:border-orange-500/30 transition-all cursor-pointer group">
+                            <div className="w-12 h-12 bg-orange-500/10 text-orange-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                                <CreditCard size={24} />
+                            </div>
+                            <h3 className="text-lg font-black text-foreground mb-2">License & Billing</h3>
+                            <p className="text-xs font-medium text-muted-foreground leading-relaxed mb-6">Manage school subscription, add licenses, and view detailed invoices.</p>
+                            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-orange-500">
+                                Plan: Enterprise <ArrowRight size={14} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Sidebar */}
+                <div className="col-span-12 lg:col-span-4 space-y-8">
+                    <div className="bg-card-bg border border-border/80 rounded-[2rem] p-8">
+                        <h3 className="text-xs font-black uppercase tracking-[0.3em] text-muted-foreground mb-6 flex items-center gap-2">
+                            <Activity size={16} /> Live Activity
+                        </h3>
+                        <div className="space-y-6">
+                            {[
+                                { text: 'Sarah J. generated a Quiz', time: '2m ago', active: true },
+                                { text: 'New Student Registration', time: '15m ago', active: false },
+                                { text: 'Class 10B Results Published', time: '1h ago', active: false },
+                                { text: 'System Maintenance Scheduled', time: '2d ago', active: false },
+                            ].map((item, i) => (
+                                <div key={i} className="flex gap-4 items-start group">
+                                    <div className={`mt-1.5 w-2 h-2 rounded-full shrink-0 ${item.active ? 'bg-lime-500 animate-pulse' : 'bg-border'}`} />
+                                    <div>
+                                        <p className="text-sm font-bold text-foreground group-hover:text-lime-600 transition-colors">{item.text}</p>
+                                        <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mt-1">{item.time}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="bg-gray-900 rounded-[2rem] p-8 text-white relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-lime-500/20 rounded-full blur-[50px] pointer-events-none" />
+                        <h3 className="text-xs font-black uppercase tracking-[0.3em] text-lime-400 mb-6">System Status</h3>
+                        <div className="space-y-4 relative z-10">
+                            <div className="flex justify-between items-center">
+                                <span className="text-sm font-bold opacity-80">Server Uptime</span>
+                                <span className="text-lime-400 font-mono font-bold">99.9%</span>
+                            </div>
+                            <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+                                <div className="h-full w-[99%] bg-lime-500" />
+                            </div>
+                            <div className="pt-4 flex gap-4">
+                                <button className="flex-1 py-3 bg-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-white/20 transition-all">Logs</button>
+                                <button className="flex-1 py-3 bg-lime-500 text-black rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-lime-400 transition-all">Support</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
 };
 
 const DashboardView: React.FC = () => {
@@ -137,6 +316,10 @@ const DashboardView: React.FC = () => {
         if (hour < 17) return "Good Afternoon";
         return "Good Evening";
     };
+
+    if (user?.role === 'school_admin') {
+        return <SchoolAdminDashboard user={user} />;
+    }
 
     const containerVariants = {
         hidden: { opacity: 0 },
