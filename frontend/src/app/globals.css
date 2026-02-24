@@ -269,6 +269,192 @@ button:active {
   animation-play-state: paused;
 }
 
+@keyframes float {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(100px, 50px) scale(1.2); }
+}
+
+@keyframes scan {
+  0% { top: 0%; opacity: 0; }
+  5% { opacity: 1; }
+  95% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+/* ===== LANDING PAGE STYLES (Pixel-perfect from HTML) ===== */
+
+.lp-root {
+  background-color: #010205;
+  color: white;
+  font-family: var(--font-outfit), 'Outfit', sans-serif;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+.lp-root[data-theme="light"] {
+  background-color: #f0f2f5;
+  color: #0f172a;
+}
+
+/* Bioluminescent Background */
+.lp-bio-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background: radial-gradient(circle at 50% 50%, #0a0e1a 0%, #010205 100%);
+}
+
+.lp-root[data-theme="light"] .lp-bio-bg {
+  background: radial-gradient(circle at 50% 50%, #e8ecf2 0%, #f0f2f5 100%);
+}
+
+.lp-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.4;
+  animation: float 20s infinite alternate ease-in-out;
+}
+
+.lp-orb-blue {
+  width: 24rem;
+  height: 24rem;
+  background: #007BFF;
+  top: -10%;
+  left: -10%;
+}
+
+.lp-orb-lime {
+  width: 20rem;
+  height: 20rem;
+  background: #a3e635;
+  bottom: -10%;
+  right: -10%;
+  animation-delay: -5s;
+}
+
+.lp-root[data-theme="light"] .lp-orb { opacity: 0.15; }
+
+/* Glassmorphism 2.0 */
+.lp-glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.02);
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.lp-glass:hover {
+  border-color: rgba(204, 255, 0, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.lp-root[data-theme="light"] .lp-glass {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), inset 0 0 20px rgba(255, 255, 255, 0.5);
+}
+
+.lp-root[data-theme="light"] .lp-glass:hover {
+  border-color: rgba(132, 204, 22, 0.5);
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+}
+
+/* Text Gradient */
+.lp-text-gradient {
+  background: linear-gradient(135deg, #fff 30%, #007BFF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.lp-root[data-theme="light"] .lp-text-gradient {
+  background: linear-gradient(135deg, #0f172a 30%, #007BFF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Primary Button */
+.lp-btn-primary {
+  background: #ccff00;
+  color: black;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 0px #ccff00;
+}
+
+.lp-btn-primary:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px rgba(204, 255, 0, 0.5);
+}
+
+/* Nav Links */
+.lp-nav-link {
+  transition: color 0.3s ease, opacity 0.3s ease;
+  position: relative;
+}
+
+.lp-nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -4px;
+  left: 0;
+  background: #ccff00;
+  transition: width 0.3s ease;
+}
+
+.lp-nav-link:hover { opacity: 1; }
+.lp-nav-link:hover::after { width: 100%; }
+
+/* Dashboard 3D */
+.lp-dashboard-ui { perspective: 1000px; }
+
+.lp-dashboard-frame {
+  transform: rotateX(15deg) rotateY(-5deg);
+  transition: transform 0.8s ease-out;
+}
+
+.lp-dashboard-frame:hover {
+  transform: rotateX(0deg) rotateY(0deg);
+}
+
+/* Feature BG */
+.lp-feature-bg { background: rgba(255, 255, 255, 0.02); }
+.lp-root[data-theme="light"] .lp-feature-bg { background: rgba(0, 0, 0, 0.02); }
+
+/* Scan Beam */
+.lp-scan-beam {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: #ccff00;
+  box-shadow: 0 0 20px #ccff00;
+  animation: scan 4s infinite;
+}
+
+/* Scroll Reveal */
+.lp-reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 1s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.lp-reveal.lp-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 /* Scrollbar Hide Utility */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
