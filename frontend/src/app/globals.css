@@ -355,9 +355,11 @@ button:active {
 }
 
 .lp-root[data-theme="light"] .lp-glass {
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), inset 0 0 20px rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06), inset 0 0 20px rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
 }
 
 .lp-root[data-theme="light"] .lp-glass:hover {
@@ -641,6 +643,42 @@ button:active {
 
 .auth-header {
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.auth-theme-toggle {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  backdrop-filter: blur(10px);
+}
+
+.auth-theme-toggle:hover {
+  border-color: #ccff00;
+  color: #ccff00;
+  background: rgba(204, 255, 0, 0.08);
+}
+
+.light .auth-theme-toggle {
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+}
+
+.light .auth-theme-toggle:hover {
+  border-color: #84cc16;
+  color: #65a30d;
+  background: rgba(132, 204, 22, 0.08);
 }
 
 /* Form center */
@@ -1062,4 +1100,212 @@ button:active {
   .auth-role-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* ===== AUTH PAGES — LIGHT THEME ===== */
+
+/* Page background */
+.light .auth-page {
+  background-color: #f0f2f5;
+  color: #0f172a;
+}
+
+/* Orbs: subtler in light mode */
+.light .auth-orb {
+  opacity: 0.08;
+}
+
+.light .auth-orb-lime {
+  background: #84cc16;
+}
+
+.light .auth-orb-blue {
+  background: #3b82f6;
+}
+
+/* Logo */
+.light .auth-logo {
+  color: #0f172a;
+}
+
+.light .auth-dot {
+  color: #65a30d;
+}
+
+/* Headlines */
+.light .auth-headline {
+  color: #0f172a;
+}
+
+.light .auth-headline span {
+  color: #65a30d;
+}
+
+.light .auth-subheadline {
+  color: #64748b;
+}
+
+/* Labels */
+.light .auth-label {
+  color: #64748b;
+}
+
+/* Forgot link */
+.light .auth-forgot-link {
+  color: #65a30d;
+}
+
+/* Input fields - glassmorphic light */
+.light .auth-input {
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid #e2e8f0;
+  color: #0f172a;
+  backdrop-filter: blur(10px);
+}
+
+.light .auth-input::placeholder {
+  color: #94a3b8;
+}
+
+.light .auth-input:focus {
+  border-color: #84cc16;
+  background: white;
+  box-shadow: 0 0 20px rgba(132, 204, 22, 0.15);
+}
+
+/* Input icon */
+.light .auth-input-icon {
+  color: #94a3b8;
+}
+
+.light .auth-input-wrapper:focus-within .auth-input-icon {
+  color: #65a30d;
+}
+
+/* Checkbox */
+.light .auth-checkbox-box {
+  border-color: #d1d5db;
+}
+
+.light .auth-checkbox:hover .auth-checkbox-box {
+  border-color: #84cc16;
+}
+
+.light .auth-checkbox-box.active {
+  background: #84cc16;
+  border-color: #84cc16;
+}
+
+/* Primary button - inverted for light mode */
+.light .auth-btn-primary {
+  background: #0f172a;
+  color: white;
+}
+
+.light .auth-btn-primary:hover {
+  background: #1e293b;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* Lime button */
+.light .auth-btn-lime {
+  background: #84cc16;
+  color: #0f172a;
+}
+
+.light .auth-btn-lime:hover {
+  box-shadow: 0 0 25px rgba(132, 204, 22, 0.35);
+}
+
+/* Footer link */
+.light .auth-footer-link {
+  color: #64748b;
+}
+
+.light .auth-footer-link a {
+  color: #65a30d;
+}
+
+/* Back button */
+.light .auth-back-btn {
+  color: #64748b;
+}
+
+.light .auth-back-btn:hover {
+  color: #65a30d;
+}
+
+/* Copyright */
+.light .auth-copyright {
+  color: #94a3b8;
+}
+
+/* Role Cards - light glass effect */
+.light .auth-role-card {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid #e2e8f0;
+  color: #0f172a;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+.light .auth-role-card:hover {
+  border-color: #84cc16;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.light .auth-role-card.active {
+  border-color: #84cc16;
+  background: rgba(132, 204, 22, 0.06);
+  box-shadow: 0 0 30px rgba(132, 204, 22, 0.12);
+}
+
+/* Role icon */
+.light .auth-role-icon {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.light .auth-role-card:hover .auth-role-icon,
+.light .auth-role-card.active .auth-role-icon {
+  color: #65a30d;
+  background: rgba(132, 204, 22, 0.12);
+}
+
+/* Role title & desc */
+.light .auth-role-title {
+  color: #0f172a;
+}
+
+.light .auth-role-desc {
+  color: #64748b;
+}
+
+/* Right Brand Panel — stays dark for contrast */
+.light .auth-brand-panel {
+  background: #0a0e1a;
+  border-left: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.light .auth-brand-headline {
+  color: white;
+}
+
+.light .auth-brand-tagline {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.light .auth-accent-bar {
+  background: #ccff00;
+}
+
+.light .auth-brand-icon-box {
+  background: #010205;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.light .auth-chip {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.5);
 }

@@ -111,7 +111,7 @@ export default function RegisterPage() {
                 {/* Left Panel - Form */}
                 <section className="auth-form-panel">
                     <header className="auth-header">
-                        <Link href="/" className="auth-logo">LEARNIVO<span className="auth-dot">.</span></Link>
+                        <Link href="/" className="auth-logo">LEARNIVO<span className="auth-dot">.AI</span></Link>
                     </header>
 
                     <div className="auth-form-center">

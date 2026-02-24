@@ -57,7 +57,7 @@ export default function LandingPage() {
             <div className="w-8 h-8 bg-gradient-to-br from-[#007BFF] to-[#a3e635] rounded-lg flex items-center justify-center">
               <Layers className="w-5 h-5 text-black" />
             </div>
-            <span className="text-xl font-extrabold tracking-tighter">LEARNIVO</span>
+            <span className="text-xl font-extrabold tracking-tighter">LEARNIVO<span style={{ color: '#ccff00' }}>.AI</span></span>
           </Link>
 
           <div className="hidden md:flex items-center gap-8 text-sm font-medium opacity-70">
@@ -357,7 +357,7 @@ export default function LandingPage() {
           <div className="col-span-2">
             <div className="flex items-center gap-2 mb-6">
               <div className="w-8 h-8 bg-gradient-to-br from-[#007BFF] to-[#a3e635] rounded-lg" />
-              <span className="text-xl font-extrabold tracking-tighter">LEARNIVO</span>
+              <span className="text-xl font-extrabold tracking-tighter">LEARNIVO<span style={{ color: '#ccff00' }}>.AI</span></span>
             </div>
             <p className="opacity-40 max-w-xs">Building the intelligent infrastructure for the next billion students.</p>
           </div>
