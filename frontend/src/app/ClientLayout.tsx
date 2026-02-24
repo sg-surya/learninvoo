@@ -47,7 +47,7 @@ export default function ClientLayout({
 
     if (isPublicPage) {
         return (
-            <div className="min-h-screen bg-background text-foreground overflow-x-hidden transition-colors duration-300">
+            <div className="min-h-screen overflow-x-hidden transition-colors duration-300">
                 {children}
             </div>
         );

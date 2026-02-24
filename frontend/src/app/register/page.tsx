@@ -1,22 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-    BookOpen,
-    Mail,
-    Lock,
-    User,
-    ArrowRight,
-    Presentation,
-    GraduationCap,
-    ChevronLeft,
-    LayoutGrid,
-    Activity,
-    Sparkles,
-    AtSign,
-    Building2
+    BookOpen, Mail, Lock, User, ArrowRight, Presentation,
+    GraduationCap, ChevronLeft, LayoutGrid, Activity,
+    Sparkles, AtSign, Building2
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -32,19 +22,21 @@ export default function RegisterPage() {
         username: '',
         password: '',
         school: '',
-        class: '',
-        subjects: ''
     });
     const [isUsernameManuallyEdited, setIsUsernameManuallyEdited] = useState(false);
+
+    useEffect(() => {
+        if (localStorage.getItem('learnivo_current_user')) {
+            router.push('/dashboard');
+        }
+    }, [router]);
 
     const generateUsername = (name: string) => {
         const base = name.toLowerCase().replace(/\s+/g, '.').replace(/[^a-z0-9.]/g, '');
         if (!base) return '';
-
         const users = JSON.parse(localStorage.getItem('learnivo_users') || '[]');
         let username = base;
         let counter = 1;
-
         while (users.some((u: any) => u.username === username)) {
             username = `${base}${counter}`;
             counter++;
@@ -59,31 +51,18 @@ export default function RegisterPage() {
         });
     };
 
-    React.useEffect(() => {
-        if (localStorage.getItem('learnivo_current_user')) {
-            router.push('/dashboard');
-        }
-    }, [router]);
-
-    const validateUsername = (username: string) => {
-        const regex = /^[a-zA-Z0-9.]+$/;
-        return regex.test(username);
-    };
+    const validateUsername = (username: string) => /^[a-zA-Z0-9.]+$/.test(username);
 
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
-
-        // Basic validation
         if (!formData.fullName || !formData.email || !formData.password || !formData.username || !role) {
             alert('Please fill all fields');
             return;
         }
-
         if (!validateUsername(formData.username)) {
             alert('Username can only contain letters, numbers, and dots (.)');
             return;
         }
-
         try {
             const api = await import('@/lib/api');
             const newUser = {
@@ -92,256 +71,249 @@ export default function RegisterPage() {
                 full_name: formData.fullName,
                 role: role
             };
-
             await api.signup(newUser);
-
-            // Auto login after signup
             const loginData = new FormData();
             loginData.append('username', formData.email);
             loginData.append('password', formData.password);
-
             const loginResponse = await api.login(loginData);
             if (loginResponse.access_token) {
                 localStorage.setItem('access_token', loginResponse.access_token);
                 const user = await api.getMe();
-                // Store minimal user info
                 localStorage.setItem('learnivo_current_user', JSON.stringify(user));
-
                 router.push('/dashboard');
             }
-
         } catch (error: any) {
             console.error('Registration failed:', error);
             alert(error.message || 'Registration failed. Please try again.');
         }
     };
 
-    const containerVariants = {
-        hidden: { opacity: 0, x: 20 },
-        visible: { opacity: 1, x: 0 },
-        exit: { opacity: 0, x: -20 }
+    // Brand panel content changes per step
+    const brandContent = step === 1 ? {
+        icon: <LayoutGrid size={28} color="#ccff00" />,
+        headline: "Built for Bharat's Educators.",
+        tagline: "Join 50,000+ teachers transforming education with one single account.",
+        chips: ['TEACHER OS', 'STUDENT PORTAL', 'ADMIN PANEL']
+    } : {
+        icon: <Activity size={28} color="#ccff00" />,
+        headline: "Your AI Copilot Awaits.",
+        tagline: "One account. Unlimited intelligence. Experience the future of pedagogy.",
+        chips: ['LESSON ARCHITECT', 'QUIZ GENERATOR', 'VISION GRADING', 'VASU AI']
     };
 
     return (
-        <div className="h-screen w-full bg-background px-[10px] pb-[10px] overflow-hidden selection:bg-lime-600 selection:text-white transition-colors duration-300">
-            <div className="h-full w-full flex overflow-y-auto overflow-x-hidden font-sans rounded-b-[10px] rounded-t-none bg-card-bg shadow-2xl transition-colors duration-300">
-                {/* 🟢 LEFT SIDE: Form Area */}
-                <div className="w-full lg:w-[60%] bg-card-bg flex flex-col relative overflow-hidden transition-colors">
-                    <header className="h-20 flex items-center px-12 md:px-16 lg:px-24 shrink-0 relative z-20">
-                        <Link href="/" className="flex items-center gap-2 group">
-                            <div className="w-8 h-8 bg-foreground flex items-center justify-center rounded group-hover:bg-lime-500 transition-colors">
-                                <BookOpen className="text-lime-400 group-hover:text-background" size={18} />
-                            </div>
-                            <span className="text-xl font-black tracking-tighter text-foreground uppercase italic font-display">LEARNIVO<span className="text-lime-500">.</span></span>
-                        </Link>
+        <div className="auth-page">
+            {/* Background Orbs */}
+            <div className="auth-orb auth-orb-lime" />
+            <div className="auth-orb auth-orb-blue" />
+
+            <div className="auth-wrapper">
+                {/* Left Panel - Form */}
+                <section className="auth-form-panel">
+                    <header className="auth-header">
+                        <Link href="/" className="auth-logo">LEARNIVO<span className="auth-dot">.</span></Link>
                     </header>
 
-                    <div className="absolute -top-20 -left-20 w-64 h-64 bg-lime-500/5 rounded-full blur-3xl pointer-events-none"></div>
-                    <div className="absolute -bottom-20 -left-10 w-48 h-48 bg-lime-500/5 rounded-full blur-3xl pointer-events-none"></div>
+                    <div className="auth-form-center">
+                        <AnimatePresence mode="wait">
+                            {step === 1 ? (
+                                <motion.div
+                                    key="step1"
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -20 }}
+                                    transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+                                    className="auth-form-container" style={{ maxWidth: 480 }}
+                                >
+                                    <h1 className="auth-headline">YOUR IDENTITY<span>.</span></h1>
+                                    <p className="auth-subheadline">Select your primary role to customize your workspace experience.</p>
 
-                    <div className="flex-1 flex flex-col justify-center items-center px-12 md:px-16 lg:px-24 py-12 relative z-10">
-                        <div className="max-w-xl w-full">
-                            <AnimatePresence mode="wait">
-                                {step === 1 ? (
-                                    <motion.div
-                                        key="step1"
-                                        variants={containerVariants}
-                                        initial="hidden"
-                                        animate="visible"
-                                        exit="exit"
-                                        className="space-y-6"
-                                    >
-                                        <div className="w-full max-w-sm space-y-6">
-                                            <div className="space-y-2">
-                                                <h2 className="text-4xl font-black text-foreground tracking-tighter uppercase italic">Choose Your <br /> Path<span className="text-lime-500">.</span></h2>
-                                                <p className="text-muted-foreground font-medium text-sm italic">Are you ready to transform Bharat's education system?</p>
-                                            </div>
-
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                                <motion.button
-                                                    whileHover={{ scale: 1.02 }}
-                                                    whileTap={{ scale: 0.98 }}
-                                                    onClick={() => setRole('teacher')}
-                                                    className={`p-4 rounded-3xl border-2 text-left transition-all ${role === 'teacher' ? 'border-lime-500 bg-lime-500/5' : 'border-border bg-muted/20 hover:border-lime-500/50'}`}
-                                                >
-                                                    <Presentation className={role === 'teacher' ? 'text-lime-500' : 'text-muted-foreground'} size={24} />
-                                                    <p className="mt-3 font-black uppercase text-[10px] tracking-widest text-foreground">Teacher</p>
-                                                    <p className="text-[9px] font-bold text-muted-foreground uppercase mt-1">AI Workshop</p>
-                                                </motion.button>
-
-                                                <motion.button
-                                                    whileHover={{ scale: 1.02 }}
-                                                    whileTap={{ scale: 0.98 }}
-                                                    onClick={() => setRole('student')}
-                                                    className={`p-4 rounded-3xl border-2 text-left transition-all ${role === 'student' ? 'border-lime-500 bg-lime-500/5' : 'border-border bg-muted/20 hover:border-lime-500/50'}`}
-                                                >
-                                                    <GraduationCap className={role === 'student' ? 'text-lime-500' : 'text-muted-foreground'} size={24} />
-                                                    <p className="mt-3 font-black uppercase text-[10px] tracking-widest text-foreground">Student</p>
-                                                    <p className="text-[9px] font-bold text-muted-foreground uppercase mt-1">Study Portal</p>
-                                                </motion.button>
-
-                                                <motion.button
-                                                    whileHover={{ scale: 1.02 }}
-                                                    whileTap={{ scale: 0.98 }}
-                                                    onClick={() => setRole('school_admin')}
-                                                    className={`p-4 rounded-3xl border-2 text-left transition-all sm:col-span-2 ${role === 'school_admin' ? 'border-lime-500 bg-lime-500/5' : 'border-border bg-muted/20 hover:border-lime-500/50'}`}
-                                                >
-                                                    <Building2 className={role === 'school_admin' ? 'text-lime-500' : 'text-muted-foreground'} size={24} />
-                                                    <p className="mt-3 font-black uppercase text-[10px] tracking-widest text-foreground">School Admin</p>
-                                                    <p className="text-[9px] font-bold text-muted-foreground uppercase mt-1">Management Console</p>
-                                                </motion.button>
-                                            </div>
-                                            <motion.button
-                                                whileHover={{ scale: 1.02 }}
-                                                whileTap={{ scale: 0.98 }}
-                                                disabled={!role}
-                                                onClick={() => setStep(2)}
-                                                className="w-full h-12 bg-foreground text-background font-black uppercase text-xs tracking-[0.2em] rounded-2xl shadow-xl hover:opacity-90 disabled:opacity-50 transition-all flex items-center justify-center gap-3"
-                                            >
-                                                Continue to Profile <ArrowRight size={18} />
-                                            </motion.button>
-
-                                            <p className="text-center text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-                                                Already registered? <Link href="/login" className="text-lime-600 hover:text-lime-500">Sign In instead</Link>
-                                            </p>
-                                        </div>
-                                    </motion.div>
-                                ) : (
-                                    <motion.div
-                                        key="step2"
-                                        variants={containerVariants}
-                                        initial="hidden"
-                                        animate="visible"
-                                        exit="exit"
-                                        className="space-y-6"
-                                    >
-                                        <button
-                                            onClick={() => setStep(1)}
-                                            className="flex items-center gap-2 text-muted-foreground hover:text-foreground font-black text-[10px] uppercase tracking-widest transition-colors"
+                                    <div className="auth-role-grid">
+                                        <motion.button
+                                            whileHover={{ scale: 1.02 }}
+                                            whileTap={{ scale: 0.98 }}
+                                            type="button"
+                                            onClick={() => setRole('teacher')}
+                                            className={`auth-role-card ${role === 'teacher' ? 'active' : ''}`}
                                         >
-                                            <ChevronLeft size={16} /> Change Selection
-                                        </button>
+                                            <div className="auth-role-icon"><Presentation size={24} /></div>
+                                            <div className="auth-role-title">Teacher</div>
+                                            <p className="auth-role-desc">Manage classrooms, generate lessons, and grade with AI.</p>
+                                        </motion.button>
 
-                                        <div className="space-y-2">
-                                            <h2 className="text-4xl font-black text-foreground tracking-tighter uppercase italic">Complete <br /> Profile<span className="text-lime-500">.</span></h2>
-                                            <p className="text-muted-foreground font-medium text-sm italic">Designing your identity as a {role === 'teacher' ? 'Guru' : role === 'student' ? 'Scholar' : 'Administrator'}.</p>
-                                        </div>
+                                        <motion.button
+                                            whileHover={{ scale: 1.02 }}
+                                            whileTap={{ scale: 0.98 }}
+                                            type="button"
+                                            onClick={() => setRole('student')}
+                                            className={`auth-role-card ${role === 'student' ? 'active' : ''}`}
+                                        >
+                                            <div className="auth-role-icon"><GraduationCap size={24} /></div>
+                                            <div className="auth-role-title">Student</div>
+                                            <p className="auth-role-desc">Personalized learning paths and AI tutoring assistance.</p>
+                                        </motion.button>
 
-                                        <form className="space-y-4" onSubmit={handleRegister}>
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                                <div className="space-y-1">
-                                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Full Name</label>
-                                                    <div className="relative group">
-                                                        <User className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-lime-500 transition-colors" size={16} />
-                                                        <input
-                                                            type="text"
-                                                            value={formData.fullName}
-                                                            onChange={(e) => handleNameChange(e.target.value)}
-                                                            className="w-full h-10 pl-10 pr-4 bg-muted/30 border border-border rounded-xl outline-none focus:border-lime-500 focus:bg-card-bg transition-all font-medium text-xs text-foreground"
-                                                            placeholder="Arjun Singh"
-                                                            required
-                                                        />
-                                                    </div>
-                                                </div>
+                                        <motion.button
+                                            whileHover={{ scale: 1.02 }}
+                                            whileTap={{ scale: 0.98 }}
+                                            type="button"
+                                            onClick={() => setRole('school_admin')}
+                                            className={`auth-role-card auth-role-card-wide ${role === 'school_admin' ? 'active' : ''}`}
+                                        >
+                                            <div className="auth-role-icon"><Building2 size={24} /></div>
+                                            <div className="auth-role-title">School Admin</div>
+                                            <p className="auth-role-desc">Centralized command for fees, attendance, and parent communication.</p>
+                                        </motion.button>
+                                    </div>
 
-                                                <div className="space-y-1">
-                                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Email</label>
-                                                    <div className="relative group">
-                                                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-lime-500 transition-colors" size={16} />
-                                                        <input
-                                                            type="email"
-                                                            value={formData.email}
-                                                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                                            className="w-full h-10 pl-10 pr-4 bg-muted/30 border border-border rounded-xl outline-none focus:border-lime-500 focus:bg-card-bg transition-all font-medium text-xs text-foreground"
-                                                            placeholder="arjun@example.com"
-                                                            required
-                                                        />
-                                                    </div>
-                                                </div>
+                                    <motion.button
+                                        whileHover={{ scale: 1.01 }}
+                                        whileTap={{ scale: 0.99 }}
+                                        disabled={!role}
+                                        onClick={() => setStep(2)}
+                                        className="auth-btn-primary"
+                                        style={{ opacity: role ? 1 : 0.5 }}
+                                    >
+                                        Continue <ArrowRight size={18} />
+                                    </motion.button>
 
-                                                <div className="space-y-1">
-                                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Username</label>
-                                                    <div className="relative group">
-                                                        <AtSign className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-lime-500 transition-colors" size={16} />
-                                                        <input
-                                                            type="text"
-                                                            value={formData.username}
-                                                            onChange={(e) => {
-                                                                setFormData({ ...formData, username: e.target.value });
-                                                                setIsUsernameManuallyEdited(true);
-                                                            }}
-                                                            className="w-full h-10 pl-10 pr-4 bg-muted/30 border border-border rounded-xl outline-none focus:border-lime-500 focus:bg-card-bg transition-all font-medium text-xs text-foreground"
-                                                            placeholder="arjun.singh"
-                                                            required
-                                                        />
-                                                    </div>
-                                                </div>
+                                    <p className="auth-footer-link">
+                                        Already have an account? <Link href="/login">Sign In</Link>
+                                    </p>
+                                </motion.div>
+                            ) : (
+                                <motion.div
+                                    key="step2"
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -20 }}
+                                    transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+                                    className="auth-form-container" style={{ maxWidth: 520 }}
+                                >
+                                    <button onClick={() => setStep(1)} className="auth-back-btn">
+                                        <ChevronLeft size={14} /> Back to Role
+                                    </button>
 
-                                                <div className="space-y-1">
-                                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Lock Password</label>
-                                                    <div className="relative group">
-                                                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-lime-500 transition-colors" size={16} />
-                                                        <input
-                                                            type="password"
-                                                            value={formData.password}
-                                                            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                                            className="w-full h-10 pl-10 pr-4 bg-muted/30 border border-border rounded-xl outline-none focus:border-lime-500 focus:bg-card-bg transition-all font-medium text-xs text-foreground"
-                                                            placeholder="••••••••"
-                                                            required
-                                                        />
-                                                    </div>
-                                                </div>
+                                    <h1 className="auth-headline">JOIN BHARAT<span>.</span></h1>
+                                    <p className="auth-subheadline">Setting up your professional profile for India&apos;s largest AI teacher network.</p>
 
-                                                <div className="space-y-1 sm:col-span-2">
-                                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">{role === 'teacher' ? 'School/Institution' : role === 'student' ? 'Current School/Class' : 'School Name'}</label>
-                                                    <div className="relative group">
-                                                        <LayoutGrid className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-lime-500 transition-colors" size={16} />
-                                                        <input
-                                                            type="text"
-                                                            value={formData.school}
-                                                            onChange={(e) => setFormData({ ...formData, school: e.target.value })}
-                                                            className="w-full h-10 pl-10 pr-4 bg-muted/30 border border-border rounded-xl outline-none focus:border-lime-500 focus:bg-card-bg transition-all font-medium text-xs text-foreground"
-                                                            placeholder={role === 'teacher' ? "Delhi Public School" : role === 'student' ? "10th Grade, VPS" : "Delhi Public School, R.K. Puram"}
-                                                            required
-                                                        />
-                                                    </div>
+                                    <form onSubmit={handleRegister}>
+                                        <div className="auth-grid-2">
+                                            {/* Row 1: Name + Username */}
+                                            <div className="auth-input-group">
+                                                <span className="auth-label">Full Name</span>
+                                                <div className="auth-input-wrapper" style={{ marginTop: 10 }}>
+                                                    <User className="auth-input-icon" size={18} />
+                                                    <input
+                                                        type="text"
+                                                        value={formData.fullName}
+                                                        onChange={(e) => handleNameChange(e.target.value)}
+                                                        className="auth-input"
+                                                        placeholder="Arjun Sharma"
+                                                        required
+                                                    />
                                                 </div>
                                             </div>
 
-                                            <motion.button
-                                                whileHover={{ scale: 1.01 }}
-                                                whileTap={{ scale: 0.99 }}
-                                                type="submit"
-                                                className="w-full h-12 bg-foreground text-background font-black uppercase text-xs tracking-[0.2em] rounded-2xl shadow-xl hover:opacity-90 transition-all flex items-center justify-center gap-3 mt-4"
-                                            >
-                                                Finalize Registration <Activity size={18} />
-                                            </motion.button>
-                                        </form>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
+                                            <div className="auth-input-group">
+                                                <span className="auth-label">Username</span>
+                                                <div className="auth-input-wrapper" style={{ marginTop: 10 }}>
+                                                    <AtSign className="auth-input-icon" size={18} />
+                                                    <input
+                                                        type="text"
+                                                        value={formData.username}
+                                                        onChange={(e) => {
+                                                            setFormData({ ...formData, username: e.target.value });
+                                                            setIsUsernameManuallyEdited(true);
+                                                        }}
+                                                        className="auth-input"
+                                                        placeholder="arjun.sharma"
+                                                        required
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            {/* Row 2: Email + Password */}
+                                            <div className="auth-input-group">
+                                                <span className="auth-label">Work Email</span>
+                                                <div className="auth-input-wrapper" style={{ marginTop: 10 }}>
+                                                    <Mail className="auth-input-icon" size={18} />
+                                                    <input
+                                                        type="email"
+                                                        value={formData.email}
+                                                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                                        className="auth-input"
+                                                        placeholder="arjun@institution.edu"
+                                                        required
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="auth-input-group">
+                                                <span className="auth-label">Password</span>
+                                                <div className="auth-input-wrapper" style={{ marginTop: 10 }}>
+                                                    <Lock className="auth-input-icon" size={18} />
+                                                    <input
+                                                        type="password"
+                                                        value={formData.password}
+                                                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                                        className="auth-input"
+                                                        placeholder="••••••••••••"
+                                                        required
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            {/* Row 3: Institution (full width) */}
+                                            <div className="auth-input-group auth-grid-full">
+                                                <span className="auth-label">{role === 'teacher' ? 'School / Institution' : role === 'student' ? 'Current School / Class' : 'School Name'}</span>
+                                                <div className="auth-input-wrapper" style={{ marginTop: 10 }}>
+                                                    <Building2 className="auth-input-icon" size={18} />
+                                                    <input
+                                                        type="text"
+                                                        value={formData.school}
+                                                        onChange={(e) => setFormData({ ...formData, school: e.target.value })}
+                                                        className="auth-input"
+                                                        placeholder={role === 'teacher' ? 'IIT Delhi / Global Public School' : role === 'student' ? '10th Grade, VPS' : 'Delhi Public School, R.K. Puram'}
+                                                        required
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <motion.button
+                                            whileHover={{ scale: 1.01 }}
+                                            whileTap={{ scale: 0.99 }}
+                                            type="submit"
+                                            className="auth-btn-primary"
+                                        >
+                                            Launch Dashboard <Sparkles size={18} />
+                                        </motion.button>
+                                    </form>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
+
+                    <footer className="auth-copyright">© 2026 LEARNIVO AI TECHNOLOGIES PVT LTD.</footer>
+                </section>
+
+                {/* Right Panel - Brand */}
+                <section className="auth-brand-panel">
+                    <div className="auth-brand-content">
+                        <div className="auth-brand-icon-box">
+                            {brandContent.icon}
                         </div>
-                        <div className="mt-auto pt-20 text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em]">
-                            © 2026 LEARNIVO SECURE REGISTRATION
+                        <h2 className="auth-brand-headline">{brandContent.headline}</h2>
+                        <div className="auth-accent-bar" />
+                        <p className="auth-brand-tagline">{brandContent.tagline}</p>
+                        <div className="auth-feature-chips">
+                            {brandContent.chips.map(chip => (
+                                <span key={chip} className="auth-chip">{chip}</span>
+                            ))}
                         </div>
                     </div>
-                </div>
-
-                <div className="hidden lg:flex lg:w-[40%] bg-foreground relative overflow-hidden flex-col justify-end p-24">
-                    <div className="absolute inset-0 bg-gradient-to-br from-lime-500/10 via-transparent to-transparent pointer-events-none"></div>
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-lime-500/5 rounded-full blur-[120px] pointer-events-none"></div>
-
-                    <div className="relative z-10 space-y-6">
-                        <div className="w-12 h-12 bg-background rounded-2xl flex items-center justify-center shadow-2xl">
-                            <BookOpen className="text-lime-500" size={24} />
-                        </div>
-                        <h2 className="text-5xl font-black text-background leading-[0.9] tracking-tighter uppercase italic">Redefining <br /> Bharat's <br /> Education.</h2>
-                        <div className="h-1 w-24 bg-lime-500 rounded-full"></div>
-                        <p className="text-background/60 text-sm font-medium leading-relaxed max-w-xs uppercase tracking-widest">Join the movement that's empowering millions of Indian classrooms.</p>
-                    </div>
-
-                    <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-lime-500/10 rounded-full blur-3xl"></div>
-                </div>
+                </section>
             </div>
         </div>
     );
