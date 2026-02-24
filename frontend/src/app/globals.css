@@ -397,7 +397,236 @@ button:active {
   box-shadow: 0 0 25px rgba(204, 255, 0, 0.5);
 }
 
-/* Nav Links */
+/* ===== APPLE-STYLE FLOATING CAPSULE NAVBAR ===== */
+
+/* Nav container — needs solid bg so content doesn't bleed */
+.lp-nav {
+  background: rgba(1, 2, 5, 0.7);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  transition: all 0.4s ease;
+}
+
+.lp-root[data-theme="light"] .lp-nav {
+  background: rgba(255, 255, 255, 0.85);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 12px rgba(0, 0, 0, 0.04);
+}
+
+/* Force hide hamburger on desktop, show on mobile */
+@media (min-width: 768px) {
+  .lp-hamburger { display: none !important; }
+  .lp-nav-capsule-wrap { display: flex !important; }
+  .lp-mobile-menu { display: none !important; }
+}
+
+@media (max-width: 767px) {
+  .lp-nav-capsule-wrap { display: none !important; }
+  .lp-hamburger { display: flex !important; }
+}
+
+/* Logo dot color */
+.lp-dot {
+  color: #ccff00;
+}
+
+.lp-root[data-theme="light"] .lp-dot {
+  color: #65a30d;
+}
+
+/* Center Capsule — frosted pill with links */
+.lp-nav-capsule {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 100px;
+}
+
+.lp-capsule-link {
+  padding: 8px 20px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: rgba(255, 255, 255, 0.55);
+  border-radius: 100px;
+  transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+  position: relative;
+  white-space: nowrap;
+}
+
+.lp-capsule-link:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.lp-capsule-link.lp-capsule-active {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  font-weight: 600;
+}
+
+.lp-root[data-theme="light"] .lp-capsule-link.lp-capsule-active {
+  color: #0f172a;
+  background: rgba(0, 0, 0, 0.08);
+  font-weight: 600;
+}
+
+/* Icon button (theme toggle, hamburger) */
+.lp-icon-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.lp-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+/* Login ghost button */
+.lp-login-btn {
+  display: flex;
+  align-items: center;
+  padding: 8px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 100px;
+  transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.lp-login-btn:hover {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* CTA "Get Started" button */
+.lp-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 22px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #000;
+  background: #ccff00;
+  border-radius: 100px;
+  transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+  text-decoration: none;
+  box-shadow: 0 0 0px rgba(204, 255, 0, 0);
+}
+
+.lp-cta-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 28px rgba(204, 255, 0, 0.4);
+}
+
+/* Mobile Menu */
+.lp-mobile-menu {
+  overflow: hidden;
+  background: rgba(1, 2, 5, 0.95);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.lp-mobile-link {
+  display: block;
+  padding: 14px 16px;
+  font-size: 15px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+  border-radius: 12px;
+  transition: all 0.25s ease;
+}
+
+.lp-mobile-link:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ---- Light Mode Overrides ---- */
+
+.lp-root[data-theme="light"] .lp-nav-capsule {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.lp-root[data-theme="light"] .lp-capsule-link {
+  color: rgba(15, 23, 42, 0.55);
+}
+
+.lp-root[data-theme="light"] .lp-capsule-link:hover {
+  color: #0f172a;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.lp-root[data-theme="light"] .lp-icon-btn {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.08);
+  color: rgba(15, 23, 42, 0.5);
+}
+
+.lp-root[data-theme="light"] .lp-icon-btn:hover {
+  background: rgba(0, 0, 0, 0.08);
+  border-color: rgba(0, 0, 0, 0.15);
+  color: #0f172a;
+}
+
+.lp-root[data-theme="light"] .lp-login-btn {
+  color: rgba(15, 23, 42, 0.6);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+.lp-root[data-theme="light"] .lp-login-btn:hover {
+  color: #0f172a;
+  border-color: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.lp-root[data-theme="light"] .lp-cta-btn {
+  background: #0f172a;
+  color: #ffffff;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.lp-root[data-theme="light"] .lp-cta-btn:hover {
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.2);
+}
+
+.lp-root[data-theme="light"] .lp-mobile-menu {
+  background: rgba(240, 242, 245, 0.97);
+  border-top-color: rgba(0, 0, 0, 0.06);
+}
+
+.lp-root[data-theme="light"] .lp-mobile-link {
+  color: rgba(15, 23, 42, 0.6);
+}
+
+.lp-root[data-theme="light"] .lp-mobile-link:hover {
+  color: #0f172a;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+/* Legacy compat */
 .lp-nav-link {
   transition: color 0.3s ease, opacity 0.3s ease;
   position: relative;
@@ -432,6 +661,23 @@ button:active {
 /* Feature BG */
 .lp-feature-bg { background: rgba(255, 255, 255, 0.02); }
 .lp-root[data-theme="light"] .lp-feature-bg { background: rgba(0, 0, 0, 0.02); }
+
+/* Light mode — Hero badge readable color */
+.lp-root[data-theme="light"] .text-\[\#ccff00\] {
+  color: #4d7c0f !important;
+}
+
+.lp-root[data-theme="light"] .bg-\[\#ccff00\]\/5 {
+  background: rgba(77, 124, 15, 0.08) !important;
+}
+
+.lp-root[data-theme="light"] .border-\[\#ccff00\]\/20 {
+  border-color: rgba(77, 124, 15, 0.2) !important;
+}
+
+.lp-root[data-theme="light"] .bg-\[\#ccff00\] {
+  background: #65a30d !important;
+}
 
 /* Scan Beam */
 .lp-scan-beam {

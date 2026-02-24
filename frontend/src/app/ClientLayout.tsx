@@ -43,7 +43,8 @@ export default function ClientLayout({
         pathname === '/login' ||
         pathname === '/register' ||
         pathname === '/for-teachers' ||
-        pathname === '/for-students';
+        pathname === '/for-students' ||
+        pathname === '/for-admins';
 
     if (isPublicPage) {
         return (

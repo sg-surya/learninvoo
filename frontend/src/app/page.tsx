@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowRight, Sparkles, Layers, GraduationCap, User, BarChart3,
   CheckCircle2, Check, ShieldCheck, Server, Lock, PlayCircle,
-  FileText, Twitter, Linkedin, Instagram, Sun, Moon
+  FileText, Twitter, Linkedin, Instagram, Sun, Moon, Menu, X
 } from 'lucide-react';
 import { useTheme } from '@/components/ThemeProvider';
 
@@ -14,6 +14,7 @@ export default function LandingPage() {
   const [user, setUser] = useState<any>(null);
   const { theme, setTheme } = useTheme();
   const [isDark, setIsDark] = useState(true);
+  const [mobileMenu, setMobileMenu] = useState(false);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('learnivo_current_user');
@@ -50,37 +51,80 @@ export default function LandingPage() {
         <div className="lp-orb lp-orb-lime" />
       </div>
 
-      {/* Navigation */}
-      <nav className="fixed top-6 left-1/2 -translate-x-1/2 w-[90%] max-w-6xl z-50">
-        <div className="lp-glass px-8 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-[#007BFF] to-[#a3e635] rounded-lg flex items-center justify-center">
+      {/* Navigation — Apple-style Floating Capsule */}
+      <nav className="lp-nav fixed top-0 left-0 right-0 z-50">
+        <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+          {/* Logo — Outside capsule */}
+          <Link href="/" className="lp-logo-link flex items-center gap-2.5 group">
+            <div className="w-9 h-9 bg-gradient-to-br from-[#007BFF] to-[#a3e635] rounded-xl flex items-center justify-center shadow-lg shadow-[#007BFF]/20 group-hover:shadow-[#a3e635]/30 transition-shadow duration-500">
               <Layers className="w-5 h-5 text-black" />
             </div>
-            <span className="text-xl font-extrabold tracking-tighter">LEARNIVO<span style={{ color: '#ccff00' }}>.AI</span></span>
+            <span className="text-xl font-extrabold tracking-tighter">LEARNIVO<span className="lp-dot">.AI</span></span>
           </Link>
 
-          <div className="hidden md:flex items-center gap-8 text-sm font-medium opacity-70">
-            <a href="#ecosystem" className="lp-nav-link">Product</a>
-            <a href="#features" className="lp-nav-link">Ecosystem</a>
-            <a href="#trust" className="lp-nav-link">Security</a>
-            <a href="#pricing" className="lp-nav-link">Pricing</a>
+          {/* Center Capsule — Nav Links */}
+          <div className="lp-nav-capsule-wrap items-center">
+            <div className="lp-nav-capsule">
+              <a href="#ecosystem" className="lp-capsule-link">Product</a>
+              <a href="#features" className="lp-capsule-link">Ecosystem</a>
+              <a href="#trust" className="lp-capsule-link">Security</a>
+              <a href="#pricing" className="lp-capsule-link">Pricing</a>
+            </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            <button onClick={toggleTheme} className="w-9 h-9 rounded-full flex items-center justify-center lp-glass hover:opacity-80 transition" aria-label="Toggle theme">
+          {/* Right Actions — Outside capsule */}
+          <div className="flex items-center gap-3">
+            <button onClick={toggleTheme} className="lp-icon-btn" aria-label="Toggle theme">
               {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </button>
             {user ? (
-              <Link href="/dashboard" className="lp-btn-primary px-6 py-2.5 rounded-full text-xs uppercase tracking-widest">Dashboard</Link>
+              <Link href="/dashboard" className="lp-btn-primary px-6 py-2.5 rounded-full text-xs uppercase tracking-widest font-bold">Dashboard</Link>
             ) : (
               <>
-                <Link href="/login" className="text-sm font-semibold hover:opacity-100 transition hidden sm:block">Login</Link>
-                <Link href="/register" className="lp-btn-primary px-6 py-2.5 rounded-full text-xs uppercase tracking-widest">Register</Link>
+                <Link href="/login" className="lp-login-btn hidden sm:flex">Login</Link>
+                <Link href="/register" className="lp-cta-btn">
+                  Get Started <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
               </>
             )}
+            {/* Mobile Hamburger */}
+            <button onClick={() => setMobileMenu(!mobileMenu)} className="lp-icon-btn lp-hamburger" aria-label="Menu">
+              {mobileMenu ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
           </div>
         </div>
+
+        {/* Mobile Menu */}
+        <AnimatePresence>
+          {mobileMenu && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+              className="lp-mobile-menu"
+            >
+              <div className="px-6 py-6 space-y-1">
+                <a href="#ecosystem" onClick={() => setMobileMenu(false)} className="lp-mobile-link">Product</a>
+                <a href="#features" onClick={() => setMobileMenu(false)} className="lp-mobile-link">Ecosystem</a>
+                <a href="#trust" onClick={() => setMobileMenu(false)} className="lp-mobile-link">Security</a>
+                <a href="#pricing" onClick={() => setMobileMenu(false)} className="lp-mobile-link">Pricing</a>
+                <div className="pt-4 mt-4 border-t border-white/10 flex flex-col gap-3">
+                  {user ? (
+                    <Link href="/dashboard" className="lp-btn-primary py-3 rounded-xl text-center text-sm uppercase tracking-widest font-bold">Dashboard</Link>
+                  ) : (
+                    <>
+                      <Link href="/login" className="lp-mobile-link">Login</Link>
+                      <Link href="/register" className="lp-cta-btn justify-center py-3 w-full">
+                        Get Started <ArrowRight className="w-3.5 h-3.5" />
+                      </Link>
+                    </>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </nav>
 
       {/* Hero Section */}
@@ -200,9 +244,9 @@ export default function LandingPage() {
                 <li className="flex items-center gap-3 text-sm font-mono opacity-80"><CheckCircle2 className="w-4 h-4 text-[#ccff00]" /> Data Residency</li>
                 <li className="flex items-center gap-3 text-sm font-mono opacity-80"><CheckCircle2 className="w-4 h-4 text-[#ccff00]" /> Fee Collection</li>
               </ul>
-              <a href="#" className="font-bold flex items-center gap-2">
+              <Link href="/for-admins" className="font-bold flex items-center gap-2">
                 Admin Dashboard <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition" />
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -258,12 +302,15 @@ export default function LandingPage() {
                 <div><div className="text-3xl font-bold mb-1">&lt; 2s</div><div className="text-sm opacity-40">Grading Time</div></div>
               </div>
             </div>
-            <div className="flex-1 lp-glass aspect-video bg-gradient-to-bl from-[#ccff00]/20 to-transparent relative group overflow-hidden">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-64 h-80 bg-white rounded shadow-2xl transform -rotate-6 transition-transform group-hover:rotate-0 p-6 space-y-4">
-                  {[1, 2, 3, 4].map(i => <div key={i} className="h-2 w-full bg-black/10" />)}
-                  <div className="h-32 w-full border-2 border-dashed border-black/10 flex items-center justify-center">
-                    <span className="text-[8px] text-black/20">STUDENT DIAGRAM</span>
+            <div className="flex-1 lp-glass aspect-video bg-gradient-to-bl from-[#ccff00]/20 to-transparent relative group overflow-hidden rounded-3xl">
+              <div className="absolute inset-0 flex items-center justify-center p-8">
+                <div className="w-56 h-72 bg-white rounded-lg shadow-2xl transform -rotate-6 transition-all duration-500 group-hover:rotate-0 group-hover:scale-105 p-5 relative">
+                  {[1, 2, 3, 4, 5, 6].map(i => <div key={i} className="h-1.5 w-full bg-gray-200 rounded-full mb-3" />)}
+                  <div className="h-24 w-full border-2 border-dashed border-gray-200 rounded-lg flex items-center justify-center mt-2">
+                    <span className="text-[9px] text-gray-300 font-mono uppercase tracking-wider">Student Diagram</span>
+                  </div>
+                  <div className="absolute top-3 right-3 w-10 h-10 rounded-full bg-[#ccff00]/20 flex items-center justify-center">
+                    <span className="text-[10px] font-bold text-[#65a30d]">A+</span>
                   </div>
                 </div>
               </div>
@@ -357,7 +404,7 @@ export default function LandingPage() {
           <div className="col-span-2">
             <div className="flex items-center gap-2 mb-6">
               <div className="w-8 h-8 bg-gradient-to-br from-[#007BFF] to-[#a3e635] rounded-lg" />
-              <span className="text-xl font-extrabold tracking-tighter">LEARNIVO<span style={{ color: '#ccff00' }}>.AI</span></span>
+              <span className="text-xl font-extrabold tracking-tighter">LEARNIVO<span className="lp-dot">.AI</span></span>
             </div>
             <p className="opacity-40 max-w-xs">Building the intelligent infrastructure for the next billion students.</p>
           </div>
